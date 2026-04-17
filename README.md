@@ -2,8 +2,9 @@
 # PROJECT NAME
 
 ## Contributors
-- PERSON
-- PERSON
+- Yusuf Ozdemir
+- Adnan Alhabian
+- Abdullah Itani
 
 ## Dependencies
 - JDK 11
