@@ -183,6 +183,150 @@ class BoardTest {
         verify(shuffler);
     }
 
+    // TC11 – Number token 2 appears exactly once
+    @Test
+    void create_numberToken_twoAppearsOnce() {
+        shuffler.shuffle(EasyMock.anyObject());
+        expectLastCall().anyTimes();
+        replay(shuffler);
+
+        board.create();
+
+        long count = countByToken(2);
+        assertEquals(1, count);
+
+        verify(shuffler);
+    }
+
+    // TC12 – Number token 12 appears exactly once
+    @Test
+    void create_numberToken_twelveAppearsOnce() {
+        shuffler.shuffle(EasyMock.anyObject());
+        expectLastCall().anyTimes();
+        replay(shuffler);
+
+        board.create();
+
+        long count = countByToken(12);
+        assertEquals(1, count);
+
+        verify(shuffler);
+    }
+
+    // TC13 – Number token 3 appears exactly twice
+    @Test
+    void create_numberToken_threeAppearsTwice() {
+        shuffler.shuffle(EasyMock.anyObject());
+        expectLastCall().anyTimes();
+        replay(shuffler);
+
+        board.create();
+
+        long count = countByToken(3);
+        assertEquals(2, count);
+
+        verify(shuffler);
+    }
+
+    // TC14 – Number token 11 appears exactly twice
+    @Test
+    void create_numberToken_elevenAppearsTwice() {
+        shuffler.shuffle(EasyMock.anyObject());
+        expectLastCall().anyTimes();
+        replay(shuffler);
+
+        board.create();
+
+        long count = countByToken(11);
+        assertEquals(2, count);
+
+        verify(shuffler);
+    }
+
+    // TC15 – Number token 6 appears exactly twice
+    @Test
+    void create_numberToken_sixAppearsTwice() {
+        shuffler.shuffle(EasyMock.anyObject());
+        expectLastCall().anyTimes();
+        replay(shuffler);
+
+        board.create();
+
+        long count = countByToken(6);
+        assertEquals(2, count);
+
+        verify(shuffler);
+    }
+
+    // TC16 – Number token 8 appears exactly twice
+    @Test
+    void create_numberToken_eightAppearsTwice() {
+        shuffler.shuffle(EasyMock.anyObject());
+        expectLastCall().anyTimes();
+        replay(shuffler);
+
+        board.create();
+
+        long count = countByToken(8);
+        assertEquals(2, count);
+
+        verify(shuffler);
+    }
+
+    // TC17 – Total number token count across all tiles is exactly 18
+    @Test
+    void create_numberTokens_totalIsEighteen() {
+        shuffler.shuffle(EasyMock.anyObject());
+        expectLastCall().anyTimes();
+        replay(shuffler);
+
+        board.create();
+
+        long count = board.getTiles().stream()
+                .filter(t -> t.getNumberToken() > 0)
+                .count();
+        assertEquals(18, count);
+
+        verify(shuffler);
+    }
+
+    // TC18 – Robber starts on the desert tile
+    @Test
+    void create_robber_startsOnDesert() {
+        shuffler.shuffle(EasyMock.anyObject());
+        expectLastCall().anyTimes();
+        replay(shuffler);
+
+        board.create();
+
+        Tile desert = board.getTiles().stream()
+                .filter(t -> t.getTileType() == TileType.DESERT)
+                .findFirst()
+                .orElseThrow();
+        assertTrue(desert.hasRobber());
+
+        verify(shuffler);
+    }
+
+    // TC19 – Non-desert tiles do not have the robber
+    @Test
+    void create_robber_notOnNonDesertTiles() {
+        shuffler.shuffle(EasyMock.anyObject());
+        expectLastCall().anyTimes();
+        replay(shuffler);
+
+        board.create();
+
+        long robberCount = board.getTiles().stream()
+                .filter(t -> t.getTileType() != TileType.DESERT)
+                .filter(Tile::hasRobber)
+                .count();
+        assertEquals(0, robberCount);
+
+        verify(shuffler);
+    }
+
+
     // Helpers
 
     private long countByResource(TileType type) {

@@ -56,3 +56,48 @@ It produces 19 terrain tiles (with correct resource numbers), assigns 18 number 
 - **State of the system**: Fresh `Board` with a stubbed `Shuffler`
 - **Expected output**: Every non-DESERT tile has `getNumberToken() >= 2`
 - **BVA note**: Boundary between "no token" (0) and minimum valid token (2); catches any tile left at default 0
+
+### TC11 – Number token 2 appears exactly once
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: Exactly 1 tile has `getNumberToken() == 2`
+- **BVA note**: Token 2 is the minimum token value; its frequency boundary is 0 (missing) → 1 (valid) → 2 (duplicate, invalid)
+
+### TC12 – Number token 12 appears exactly once
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: Exactly 1 tile has `getNumberToken() == 12`
+- **BVA note**: Token 12 is the maximum token value; same frequency boundaries as TC11
+
+### TC13 – Number token 3 appears exactly twice
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: Exactly 2 tiles have `getNumberToken() == 3`
+- **BVA note**: Token 3 is the second-lowest token; frequency boundary between 1 (too few) and 2 (valid) and 3 (too many)
+
+### TC14 – Number token 11 appears exactly twice
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: Exactly 2 tiles have `getNumberToken() == 11`
+- **BVA note**: Token 11 is the second-highest token; same frequency boundaries as TC13
+
+### TC15 – Number token 6 appears exactly twice
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: Exactly 2 tiles have `getNumberToken() == 6`
+- **BVA note**: Token 6 is one of the two high-probability "red" tokens; validates its frequency is not inflated or missing
+
+### TC16 – Number token 8 appears exactly twice
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: Exactly 2 tiles have `getNumberToken() == 8`
+- **BVA note**: Token 8 is the other high-probability "red" token; same boundary as TC15
+
+### TC17 – Total number token count is exactly 18
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: Exactly 18 tiles have `getNumberToken() > 0`
+- **BVA note**: 18 tokens for 18 non-desert tiles. Boundaries: 17 (too few), 18 (valid), 19 (too many)
+
+### TC18 – Robber starts on the desert tile
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: The DESERT tile's `hasRobber() == true`
+- **BVA note**: Exactly 1 tile has the robber. Boundaries: 0 robbers (missing), 1 (valid), 2 (too many)
+
+### TC19 – Non-desert tiles do not have the robber
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: 0 non-DESERT tiles have `hasRobber() == true`
+- **BVA note**: Boundary between 0 non-desert robbers (valid) and 1 (invalid); complements TC18
