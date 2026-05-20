@@ -11,7 +11,7 @@ public class Tile {
         this.hasRobber = false;
     }
 
-    public TileType getResourceType() {
+    public TileType getTileType() {
         return tileType;
     }
 
