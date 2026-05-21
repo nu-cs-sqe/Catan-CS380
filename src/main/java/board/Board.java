@@ -35,6 +35,8 @@ public class Board {
 
     private final Shuffler shuffler;
     private Map<String, Tile> tiles;
+    private Map<String, Vertex> vertices;
+    private Map<String, Edge> edges;
 
     public Board(Shuffler shuffler) {
         this.shuffler = shuffler;
@@ -81,6 +83,22 @@ public class Board {
             }
         }
         return neighbors;
+    }
+
+    public Collection<Vertex> getVertices() {
+        return vertices.values();
+    }
+
+    public Vertex getVertex(String key) {
+        return vertices.get(key);
+    }
+
+    public Collection<Edge> getEdges() {
+        return edges.values();
+    }
+
+    public Edge getEdge(String key) {
+        return edges.get(key);
     }
 
     private static String key(int q, int r) {
