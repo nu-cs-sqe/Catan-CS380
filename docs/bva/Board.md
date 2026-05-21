@@ -101,3 +101,33 @@ It produces 19 terrain tiles (with correct resource numbers), assigns 18 number 
 - **State of the system**: Fresh `Board` with a stubbed `Shuffler`
 - **Expected output**: 0 non-DESERT tiles have `hasRobber() == true`
 - **BVA note**: Boundary between 0 non-desert robbers (valid) and 1 (invalid); complements TC18
+
+### TC20 – Total vertex count is exactly 54
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: `getVertices().size() == 54`
+- **BVA note**: Boundaries: 53 (too few), 54 (valid), 55 (too many)
+
+### TC21 – Interior vertex count (3 adjacent tiles) is exactly 24
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: 24 vertices have `getAdjacentTiles().size() == 3`
+- **BVA note**: Boundaries: 23 (too few), 24 (valid), 25 (too many)
+
+### TC22 – Coastal vertex count (fewer than 3 adjacent tiles) is exactly 30
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: 30 vertices have `getAdjacentTiles().size() < 3`
+- **BVA note**: Boundaries: 29 (too few), 30 (valid), 31 (too many); complements TC21
+
+### TC23 – Total edge count is exactly 72
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: `getEdges().size() == 72`
+- **BVA note**: Boundaries: 71 (too few), 72 (valid), 73 (too many)
+
+### TC24 – Interior edge count (2 adjacent tiles) is exactly 42
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: 42 edges have `getAdjacentTiles().size() == 2`
+- **BVA note**: Boundaries: 41 (too few), 42 (valid), 43 (too many)
+
+### TC25 – Coastal edge count (1 adjacent tile) is exactly 30
+- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
+- **Expected output**: 30 edges have `getAdjacentTiles().size() == 1`
+- **BVA note**: Boundaries: 29 (too few), 30 (valid), 31 (too many); complements TC24
