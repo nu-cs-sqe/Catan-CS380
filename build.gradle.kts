@@ -22,7 +22,7 @@ dependencies {
     testImplementation("org.junit.platform:junit-platform-suite")
 
     // https://mvnrepository.com/artifact/org.easymock/easymock
-    testImplementation("org.easymock:easymock:3.1")
+    testImplementation("org.mockito:mockito-core:5.11.0")
 
     testImplementation(platform("io.cucumber:cucumber-bom:7.20.1"))
     testImplementation("io.cucumber:cucumber-java")
