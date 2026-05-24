@@ -2,61 +2,58 @@ package board;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class VertexTest {
 
-    // TC1 – Key is derived from sorted tile coordinates
-    @Test
-    void constructor_derivesKeyFromTileCoordinates() {
-        List<Tile> tiles = Arrays.asList(
-                new Tile(TileType.FOREST, 1, 0),
-                new Tile(TileType.HILLS, 0, 0),
-                new Tile(TileType.PASTURE, 1, -1)
-        );
-        Vertex vertex = new Vertex(tiles);
+  // TC1 – Constructor stores id correctly
+  @Test
+  void constructor_storesId() {
+    String vertexId = "7";
+    Vertex vertex = new Vertex(vertexId);
 
-        assertEquals("0,0|1,-1|1,0", vertex.getKey());
-    }
+    assertEquals(vertexId, vertex.getId());
+  }
 
-    // TC2 – Constructor sets adjacentTiles correctly
-    @Test
-    void constructor_setsAdjacentTiles() {
-        List<Tile> tiles = Arrays.asList(
-                new Tile(TileType.FOREST, 0, 0),
-                new Tile(TileType.HILLS, 1, -1),
-                new Tile(TileType.PASTURE, 1, 0)
-        );
-        Vertex vertex = new Vertex(tiles);
+  // TC2 – Constructor initializes adjacentTiles as empty
+  @Test
+  void constructor_initializesAdjacentTilesEmpty() {
+    Vertex vertex = new Vertex("0");
 
-        assertEquals(tiles, vertex.getAdjacentTiles());
-    }
+    assertTrue(vertex.getAdjacentTiles().isEmpty());
+  }
 
-    // TC3 – Interior vertex has exactly 3 adjacent tiles
-    // BVA: 3 is the maximum adjacent tile count; boundary from below: 2
-    @Test
-    void constructor_interiorVertex_hasThreeAdjacentTiles() {
-        List<Tile> tiles = Arrays.asList(
-                new Tile(TileType.FOREST, 0, 0),
-                new Tile(TileType.HILLS, 1, -1),
-                new Tile(TileType.PASTURE, 1, 0)
-        );
-        Vertex vertex = new Vertex(tiles);
+  // TC3 – Interior vertex has exactly 3 adjacent tiles after adding three
+  // BVA: 3 is the maximum adjacent tile count; boundary from below: 2
+  @Test
+  void addTile_interiorVertex_hasThreeAdjacentTiles() {
+    Vertex vertex = new Vertex("0");
+    vertex.addTile(new Tile(TileType.FOREST, 0, 0));
+    vertex.addTile(new Tile(TileType.HILLS, 1, -1));
+    vertex.addTile(new Tile(TileType.PASTURE, 1, 0));
 
-        assertEquals(3, vertex.getAdjacentTiles().size());
-    }
+    assertEquals(3, vertex.getAdjacentTiles().size());
+  }
 
-    // TC4 – Coastal vertex has exactly 1 adjacent tile
-    // BVA: 1 is the minimum adjacent tile count; boundary from above: 2
-    @Test
-    void constructor_coastalVertex_hasOneAdjacentTile() {
-        List<Tile> tiles = Collections.singletonList(new Tile(TileType.FOREST, -2, 0));
-        Vertex vertex = new Vertex(tiles);
+  // TC4 – Coastal vertex has exactly 1 adjacent tile after adding one
+  // BVA: 1 is the minimum adjacent tile count; boundary from above: 2
+  @Test
+  void addTile_coastalVertex_hasOneAdjacentTile() {
+    Vertex vertex = new Vertex("0");
+    vertex.addTile(new Tile(TileType.FOREST, -2, 0));
 
-        assertEquals(1, vertex.getAdjacentTiles().size());
-    }
+    assertEquals(1, vertex.getAdjacentTiles().size());
+  }
+
+  // TC5 – addTile stores the correct tile reference
+  @Test
+  void addTile_storesCorrectTileReference() {
+    Vertex vertex = new Vertex("0");
+    Tile tile = new Tile(TileType.FOREST, 0, 0);
+    vertex.addTile(tile);
+
+    assertEquals(List.of(tile), vertex.getAdjacentTiles());
+  }
 }
