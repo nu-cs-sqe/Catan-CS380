@@ -162,5 +162,15 @@ public class GameTest {
         Assertions.assertEquals(1, game.getResourceCount(2, "ORE"));
         Assertions.assertEquals(1, game.getResourceCount(2, "BRICK"));
     }
+
+    // TC14 – Starting player begins main game after setup
+    @Test
+    public void testStartingPlayerBeginsAfterSetup() {
+        int[] rolls = {4, 9, 6};
+        Game game = new Game(THREE_PLAYERS, stubDiceRoller(rolls));
+        game.executeSetupRoundOne();
+        game.executeSetupRoundTwo();
+        Assertions.assertEquals(1, game.getCurrentPlayerIndex());
+    }
     
 }
