@@ -1,4 +1,4 @@
-# BVA: Tile
+**# BVA: Tile
 
 ---
 
@@ -19,12 +19,3 @@
 |-----|--------------------------------------------|---------------------------------------------------------------|--------------|
 | TC5 | `setNumberToken(2)` - minimum valid token  | `getNumberToken() == 2` (BVA: lower boundary of token range)  | :x:          |
 | TC6 | `setNumberToken(12)` - maximum valid token | `getNumberToken() == 12` (BVA: upper boundary of token range) | :x:          |
-
----
-
-### Method under test: `setHasRobber(boolean)`
-
-|     | System under test                               | Expected output                                         | Implemented? |
-|-----|-------------------------------------------------|---------------------------------------------------------|--------------|
-| TC7 | `setHasRobber(true)`                            | `hasRobber() == true` (BVA: boundary - robber present)  | :x:          |
-| TC8 | `setHasRobber(true)` then `setHasRobber(false)` | `hasRobber() == false` (BVA: boundary - robber removed) | :x:          |

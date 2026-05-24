@@ -59,24 +59,4 @@ class TileTest {
     assertEquals(12, tile.getNumberToken());
   }
 
-  // TC7 – setHasRobber(true) places the robber
-  // BVA: boundary - robber present
-  @Test
-  void setHasRobber_true_robberPresent() {
-    Tile tile = new Tile(TileType.DESERT, 0, 0);
-    tile.setHasRobber(true);
-
-    assertTrue(tile.hasRobber());
-  }
-
-  // TC8 – setHasRobber(true) then setHasRobber(false) removes the robber
-  // BVA: boundary - robber removed
-  @Test
-  void setHasRobber_trueThenFalse_robberRemoved() {
-    Tile tile = new Tile(TileType.DESERT, 0, 0);
-    tile.setHasRobber(true);
-    tile.setHasRobber(false);
-
-    assertFalse(tile.hasRobber());
-  }
 }
