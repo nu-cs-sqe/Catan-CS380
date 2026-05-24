@@ -2,7 +2,7 @@ package domain;
 
 import java.util.Random;
 
-public class RandomDiceRoller implements DiceRoller {
+public final class RandomDiceRoller implements DiceRoller {
 
     private static final int DIE_SIDES = 6;
     private final Random random = new Random();
