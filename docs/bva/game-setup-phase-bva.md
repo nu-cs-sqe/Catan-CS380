@@ -52,19 +52,19 @@ The setup phase initializes the game with 3–4 players, determines turn order v
 - **State of the system**: Game with 3 players after setup round one
 - **Expected output**: Each player has exactly 1 settlement placed
 - **BVA note**: Boundaries: 0 settlements (before), 1 (after round one), 2 (too many)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC9 – Round one: each player places 1 road in clockwise order
 - **State of the system**: Game with 3 players after setup round one
 - **Expected output**: Each player has exactly 1 road placed
 - **BVA note**: Boundaries: 0 roads (before), 1 (after round one), 2 (too many)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC10 – Round two proceeds in reverse (counterclockwise) order
 - **State of the system**: Game with 3 players; turn order [0, 1, 2]
 - **Expected output**: Round two placement order is [2, 1, 0]
 - **BVA note**: Boundary between clockwise (round one) and counterclockwise (round two)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC11 – After both rounds each player has 2 settlements
 - **State of the system**: Game with 3 players after both setup rounds

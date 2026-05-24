@@ -10,6 +10,8 @@ public final class Game {
     private final int numberOfPlayers;
     private final int firstPlayerIndex;
     private final int[] turnOrder;
+    private final int[] settlementsPerPlayer;
+    private final int[] roadsPerPlayer;
 
     public Game(int numberOfPlayers) {
         this(numberOfPlayers, new RandomDiceRoller());
@@ -25,6 +27,8 @@ public final class Game {
         this.numberOfPlayers = numberOfPlayers;
         this.firstPlayerIndex = determineFirstPlayer(diceRoller);
         this.turnOrder = buildTurnOrder();
+        this.settlementsPerPlayer = new int[numberOfPlayers];
+        this.roadsPerPlayer = new int[numberOfPlayers];
     }
 
     private int determineFirstPlayer(DiceRoller diceRoller) {
@@ -84,5 +88,31 @@ public final class Game {
 
     public int[] getTurnOrder() {
         return Arrays.copyOf(turnOrder, turnOrder.length);
+    }
+
+    public void executeSetupRoundOne() {
+        for (int i = 0; i < numberOfPlayers; i++) {
+            int playerIndex = turnOrder[i];
+            settlementsPerPlayer[playerIndex]++;
+            roadsPerPlayer[playerIndex]++;
+        }
+    }
+
+    public int[] getRoundTwoOrder() {
+        int[] reverse = new int[numberOfPlayers];
+        for (int i = 0; i < numberOfPlayers; i++) {
+            reverse[i] = turnOrder[numberOfPlayers - 1 - i];
+        }
+        return reverse;
+    }
+
+    public int[] getSettlementsPerPlayer() {
+        return Arrays.copyOf(settlementsPerPlayer,
+                settlementsPerPlayer.length);
+    }
+
+    public int[] getRoadsPerPlayer() {
+        return Arrays.copyOf(roadsPerPlayer,
+                roadsPerPlayer.length);
     }
 }
