@@ -1,6 +1,8 @@
 package domain;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class Game {
 
@@ -12,6 +14,7 @@ public final class Game {
     private final int[] turnOrder;
     private final int[] settlementsPerPlayer;
     private final int[] roadsPerPlayer;
+    private final Map<String, Integer>[] playerResources;
 
     public Game(int numberOfPlayers) {
         this(numberOfPlayers, new RandomDiceRoller());
@@ -29,6 +32,16 @@ public final class Game {
         this.turnOrder = buildTurnOrder();
         this.settlementsPerPlayer = new int[numberOfPlayers];
         this.roadsPerPlayer = new int[numberOfPlayers];
+        this.playerResources = createResourceMaps(numberOfPlayers);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Integer>[] createResourceMaps(int count) {
+        Map<String, Integer>[] maps = new HashMap[count];
+        for (int i = 0; i < count; i++) {
+            maps[i] = new HashMap<>();
+        }
+        return maps;
     }
 
     private int determineFirstPlayer(DiceRoller diceRoller) {
@@ -78,6 +91,58 @@ public final class Game {
         return order;
     }
 
+    public void executeSetupRoundOne() {
+        for (int i = 0; i < numberOfPlayers; i++) {
+            int playerIndex = turnOrder[i];
+            settlementsPerPlayer[playerIndex]++;
+            roadsPerPlayer[playerIndex]++;
+        }
+    }
+
+    public void executeSetupRoundTwo() {
+        executeSetupRoundTwo(null);
+    }
+
+    public void executeSetupRoundTwo(String[][] resources) {
+        int[] reverseOrder = getRoundTwoOrder();
+        for (int i = 0; i < numberOfPlayers; i++) {
+            int playerIndex = reverseOrder[i];
+            settlementsPerPlayer[playerIndex]++;
+            roadsPerPlayer[playerIndex]++;
+            grantResources(playerIndex, resources);
+        }
+    }
+
+    private void grantResources(int playerIndex,
+                                String[][] resources) {
+        if (resources != null && resources[playerIndex] != null) {
+            for (String resource : resources[playerIndex]) {
+                playerResources[playerIndex].merge(
+                        resource, 1, Integer::sum);
+            }
+        }
+    }
+
+    public int[] getRoundTwoOrder() {
+        int[] reverse = new int[numberOfPlayers];
+        for (int i = 0; i < numberOfPlayers; i++) {
+            reverse[i] = turnOrder[numberOfPlayers - 1 - i];
+        }
+        return reverse;
+    }
+
+    public int getTotalResources(int playerIndex) {
+        int total = 0;
+        for (int count : playerResources[playerIndex].values()) {
+            total += count;
+        }
+        return total;
+    }
+
+    public int getResourceCount(int playerIndex, String resource) {
+        return playerResources[playerIndex].getOrDefault(resource, 0);
+    }
+
     public int getNumberOfPlayers() {
         return numberOfPlayers;
     }
@@ -90,22 +155,6 @@ public final class Game {
         return Arrays.copyOf(turnOrder, turnOrder.length);
     }
 
-    public void executeSetupRoundOne() {
-        for (int i = 0; i < numberOfPlayers; i++) {
-            int playerIndex = turnOrder[i];
-            settlementsPerPlayer[playerIndex]++;
-            roadsPerPlayer[playerIndex]++;
-        }
-    }
-
-    public int[] getRoundTwoOrder() {
-        int[] reverse = new int[numberOfPlayers];
-        for (int i = 0; i < numberOfPlayers; i++) {
-            reverse[i] = turnOrder[numberOfPlayers - 1 - i];
-        }
-        return reverse;
-    }
-
     public int[] getSettlementsPerPlayer() {
         return Arrays.copyOf(settlementsPerPlayer,
                 settlementsPerPlayer.length);
@@ -114,14 +163,5 @@ public final class Game {
     public int[] getRoadsPerPlayer() {
         return Arrays.copyOf(roadsPerPlayer,
                 roadsPerPlayer.length);
-    }
-
-    public void executeSetupRoundTwo() {
-        int[] reverseOrder = getRoundTwoOrder();
-        for (int i = 0; i < numberOfPlayers; i++) {
-            int playerIndex = reverseOrder[i];
-            settlementsPerPlayer[playerIndex]++;
-            roadsPerPlayer[playerIndex]++;
-        }
     }
 }

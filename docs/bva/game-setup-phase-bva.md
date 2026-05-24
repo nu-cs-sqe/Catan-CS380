@@ -82,7 +82,7 @@ The setup phase initializes the game with 3–4 players, determines turn order v
 - **State of the system**: Game with stubbed board; player's second settlement borders ore and brick
 - **Expected output**: Player has 1 ore and 1 brick; no resources from first settlement
 - **BVA note**: Boundary between 0 resource grants (first settlement) and 1 per adjacent hex (second settlement)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC14 – Starting player begins the main game after setup
 - **State of the system**: Game after full setup phase complete
