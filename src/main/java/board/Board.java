@@ -123,7 +123,7 @@ public class Board {
 
   private void addEdgesForTile(Tile tile, int cx, int cy) {
     for (int i = 0; i < VERTICES_PER_TILE; i++) {
-      int next = (i + 1) % 6;
+      int next = (i + 1) % VERTICES_PER_TILE;
       int x1 = cx + CORNER_OFFSETS[i][0];
       int y1 = cy + CORNER_OFFSETS[i][1];
       int x2 = cx + CORNER_OFFSETS[next][0];
