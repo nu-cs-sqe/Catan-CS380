@@ -5,7 +5,6 @@ public class Tile {
   private final int q;
   private final int r;
   private int numberToken;
-  private boolean hasRobber;
 
   public Tile(TileType tileType, int q, int r) {
     this.tileType = tileType;
