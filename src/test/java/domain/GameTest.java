@@ -132,4 +132,35 @@ public class GameTest {
             Assertions.assertEquals(2, count);
         }
     }
+
+    // TC13 – Players receive resources only from second settlement
+    @Test
+    public void testPlayersReceiveResourcesFromSecondSettlementOnly() {
+        int[] rolls = {7, 5, 3};
+        Game game = new Game(THREE_PLAYERS, stubDiceRoller(rolls));
+
+        game.executeSetupRoundOne();
+        for (int i = 0; i < THREE_PLAYERS; i++) {
+            Assertions.assertEquals(0, game.getTotalResources(i));
+        }
+
+        String[][] roundTwoResources = {
+                {"WOOL", "WOOD"},
+                {"WHEAT"},
+                {"ORE", "BRICK"}
+        };
+        game.executeSetupRoundTwo(roundTwoResources);
+
+        Assertions.assertEquals(2, game.getTotalResources(0));
+        Assertions.assertEquals(1, game.getResourceCount(0, "WOOL"));
+        Assertions.assertEquals(1, game.getResourceCount(0, "WOOD"));
+
+        Assertions.assertEquals(1, game.getTotalResources(1));
+        Assertions.assertEquals(1, game.getResourceCount(1, "WHEAT"));
+
+        Assertions.assertEquals(2, game.getTotalResources(2));
+        Assertions.assertEquals(1, game.getResourceCount(2, "ORE"));
+        Assertions.assertEquals(1, game.getResourceCount(2, "BRICK"));
+    }
+    
 }
