@@ -658,6 +658,53 @@ class BoardTest {
     verify(shuffler);
   }
 
+  // TC38 – getNeighbors(0, 0) returns 6 neighbors for center tile
+  // BVA: max neighbor count
+  @Test
+  void getNeighbors_centerTile_returnsSixNeighbors() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertEquals(6, board.getNeighbors(0, 0).size());
+
+    verify(shuffler);
+  }
+
+  // TC39 – getNeighbors(-2, 0) returns 3 neighbors for corner tile
+  // BVA: min neighbor count for a valid board tile
+  @Test
+  void getNeighbors_cornerTile_returnsThreeNeighbors() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertEquals(3, board.getNeighbors(-2, 0).size());
+
+    verify(shuffler);
+  }
+
+  // TC40 – getNeighbors(5, 5) returns empty list for off-board position
+  // BVA: minimum = 0 neighbors
+  @Test
+  void getNeighbors_offBoardPosition_returnsEmpty() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertTrue(board.getNeighbors(5, 5).isEmpty());
+
+    verify(shuffler);
+  }
+
+
+
   // Helpers
 
   private long countByResource(TileType type) {
