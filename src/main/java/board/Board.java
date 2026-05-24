@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Board {
+  private static final int HEX_TO_PIXEL_Q_SCALE = 2;
+  private static final int HEX_TO_PIXEL_R_SCALE = -3;
+  private static final int VERTICES_PER_TILE = 6;
+
   private static final int[][] NEIGHBOR_OFFSETS = {
     {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, -1}, {-1, 1}
   };
@@ -93,8 +97,8 @@ public class Board {
     for (int[] pos : POSITIONS) {
       Tile tile = tiles.get(key(pos[0], pos[1]));
       tokenIndex = assignToken(tile, tokenIndex);
-      int cx = 2 * tile.getQ() + tile.getR();
-      int cy = -3 * tile.getR();
+      int cx = HEX_TO_PIXEL_Q_SCALE * tile.getQ() + tile.getR();
+      int cy = HEX_TO_PIXEL_R_SCALE * tile.getR();
       addVerticesForTile(tile, cx, cy);
       addEdgesForTile(tile, cx, cy);
     }
@@ -118,7 +122,7 @@ public class Board {
   }
 
   private void addEdgesForTile(Tile tile, int cx, int cy) {
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < VERTICES_PER_TILE; i++) {
       int next = (i + 1) % 6;
       int x1 = cx + CORNER_OFFSETS[i][0];
       int y1 = cy + CORNER_OFFSETS[i][1];
