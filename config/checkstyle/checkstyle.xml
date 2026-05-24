@@ -8,6 +8,10 @@
   <property name="severity" value="error"/>
   <property name="fileExtensions" value="java"/>
 
+  <module name="SuppressionFilter">
+    <property name="file" value="${config_loc}/suppressions.xml"/>
+  </module>
+
   <!-- No tabs -->
   <module name="FileTabCharacter">
     <property name="eachLine" value="true"/>
