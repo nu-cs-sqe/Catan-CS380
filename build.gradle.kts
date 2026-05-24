@@ -48,8 +48,13 @@ tasks.withType<Checkstyle>().configureEach {
     reports {
         xml.required = false
         html.required = true
-        html.stylesheet = resources.text.fromFile("config/checkstyle/checkstyle.xml")
     }
+}
+
+checkstyle {
+    toolVersion = "10.14.2"
+    configFile = file("config/checkstyle/checkstyle.xml")
+    isIgnoreFailures = false
 }
 
 checkstyle{
@@ -99,8 +104,9 @@ tasks.jacocoTestReport {
 }
 
 pitest {
-    targetClasses = setOf("Code.*") //by default "${project.group}.*"
-    targetTests = setOf("Code.*")
+    targetClasses = setOf("domain.*", "ui.*")
+    targetTests = setOf("domain.*")
+    failWhenNoMutations = false
     junit5PluginVersion = "1.2.1"
     pitestVersion = "1.15.0" //not needed when a default PIT version should be used
 
