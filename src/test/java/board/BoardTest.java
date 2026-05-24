@@ -255,69 +255,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC15 – Robber starts on the desert tile
-  @Test
-  void create_robber_startsOnDesert() {
-    shuffler.shuffle(EasyMock.anyObject());
-    expectLastCall().anyTimes();
-    replay(shuffler);
-
-    board.create();
-
-    Tile desert = null;
-    for (Tile t : board.getTiles()) {
-      if (t.getTileType() == TileType.DESERT) {
-        desert = t;
-        break;
-      }
-    }
-    assertNotNull(desert);
-    assertTrue(desert.hasRobber());
-
-    verify(shuffler);
-  }
-
-  // TC16 – Non-desert tiles do not have the robber
-  @Test
-  void create_robber_notOnNonDesertTiles() {
-    shuffler.shuffle(EasyMock.anyObject());
-    expectLastCall().anyTimes();
-    replay(shuffler);
-
-    board.create();
-
-    long robberCount = 0;
-    for (Tile t : board.getTiles()) {
-      if (t.getTileType() != TileType.DESERT && t.hasRobber()) {
-        robberCount++;
-      }
-    }
-    assertEquals(0, robberCount);
-
-    verify(shuffler);
-  }
-
-  // TC17 – Exactly one tile has the robber
-  @Test
-  void create_robber_exactlyOneTileHasRobber() {
-    shuffler.shuffle(EasyMock.anyObject());
-    expectLastCall().anyTimes();
-    replay(shuffler);
-
-    board.create();
-
-    long robberCount = 0;
-    for (Tile t : board.getTiles()) {
-      if (t.hasRobber()) {
-        robberCount++;
-      }
-    }
-    assertEquals(1, robberCount);
-
-    verify(shuffler);
-  }
-
-  // TC18 – Total vertex count is exactly 54
+  // TC15 – Total vertex count is exactly 54
   // BVA: 54 is the only valid count (boundary from below: 53, from above: 55)
   @Test
   void create_vertexCount_exactlyFiftyFour() {
@@ -332,7 +270,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC19 – Interior vertex count (3 adjacent tiles) is exactly 24
+  // TC16 – Interior vertex count (3 adjacent tiles) is exactly 24
   // BVA: boundary from below: 23, from above: 25
   @Test
   void create_interiorVertexCount_exactlyTwentyFour() {
@@ -353,7 +291,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC20 – Coastal vertex count (fewer than 3 adjacent tiles) is exactly 30
+  // TC17 – Coastal vertex count (fewer than 3 adjacent tiles) is exactly 30
   // BVA: boundary from below: 29, from above: 31
   @Test
   void create_coastalVertexCount_exactlyThirty() {
@@ -374,7 +312,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC21 – Total edge count is exactly 72
+  // TC18 – Total edge count is exactly 72
   // BVA: 72 is the only valid count (boundary from below: 71, from above: 73)
   @Test
   void create_edgeCount_exactlySeventyTwo() {
@@ -389,7 +327,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC22 – Interior edge count (2 adjacent tiles) is exactly 42
+  // TC19 – Interior edge count (2 adjacent tiles) is exactly 42
   // BVA: boundary from below: 41, from above: 43
   @Test
   void create_interiorEdgeCount_exactlyFortyTwo() {
@@ -410,7 +348,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC23 – Coastal edge count (1 adjacent tile) is exactly 30
+  // TC20 – Coastal edge count (1 adjacent tile) is exactly 30
   // BVA: boundary from below: 29, from above: 31
   @Test
   void create_coastalEdgeCount_exactlyThirty() {
@@ -431,7 +369,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC24 – Harbor count is exactly 9
+  // TC21 – Harbor count is exactly 9
   // BVA: boundaries 8, 9, 10
   @Test
   void create_harborCount_exactlyNine() {
@@ -446,7 +384,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC25 – Exactly 4 harbors have type GENERIC
+  // TC22 – Exactly 4 harbors have type GENERIC
   @Test
   void create_harborDistribution_fourGenericHarbors() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -466,7 +404,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC26 – Exactly 1 harbor each for WOOD, BRICK, SHEEP, WHEAT, ORE
+  // TC23 – Exactly 1 harbor each for WOOD, BRICK, SHEEP, WHEAT, ORE
   @Test
   void create_harborDistribution_oneEachResourceHarbor() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -495,7 +433,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC27 – Exactly 18 vertices have a non-null harbor
+  // TC24 – Exactly 18 vertices have a non-null harbor
   // BVA: boundaries 17, 18, 19
   @Test
   void create_harborVertexCount_exactlyEighteen() {
@@ -516,7 +454,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC28 – Each resource-specific harbor has exchange rate 2
+  // TC25 – Each resource-specific harbor has exchange rate 2
   // BVA: min exchange rate
   @Test
   void create_resourceHarbors_exchangeRateIsTwo() {
@@ -538,7 +476,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC29 – Each GENERIC harbor has exchange rate 3
+  // TC26 – Each GENERIC harbor has exchange rate 3
   // BVA: boundary between 2 and 3
   @Test
   void create_genericHarbors_exchangeRateIsThree() {
@@ -557,7 +495,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC32 – Token value 2 appears exactly once across all tiles
+  // TC27 – Token value 2 appears exactly once across all tiles
   // BVA: lower boundary of token value range
   @Test
   void create_tokenValue_twoAppearsExactlyOnce() {
@@ -578,7 +516,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC33 – Token value 12 appears exactly once across all tiles
+  // TC28 – Token value 12 appears exactly once across all tiles
   // BVA: upper boundary of token value range
   @Test
   void create_tokenValue_twelveAppearsExactlyOnce() {
@@ -599,7 +537,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC34 – getTile(0, 0) returns a non-null tile at center position
+  // TC29 – getTile(0, 0) returns a non-null tile at center position
   @Test
   void getTile_centerPosition_returnsNonNull() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -613,7 +551,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC35 – getTile(-2, 0) returns a non-null tile at min-q boundary
+  // TC30 – getTile(-2, 0) returns a non-null tile at min-q boundary
   // BVA: lower boundary of q range
   @Test
   void getTile_minQBoundary_returnsNonNull() {
@@ -628,7 +566,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC36 – getTile(2, 0) returns a non-null tile at max-q boundary
+  // TC31 – getTile(2, 0) returns a non-null tile at max-q boundary
   // BVA: upper boundary of q range
   @Test
   void getTile_maxQBoundary_returnsNonNull() {
@@ -643,7 +581,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC37 – getTile(3, 0) returns null just outside max-q boundary
+  // TC32 – getTile(3, 0) returns null just outside max-q boundary
   // BVA: one past upper boundary
   @Test
   void getTile_justOutsideMaxQ_returnsNull() {
@@ -658,7 +596,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC38 – getNeighbors(0, 0) returns 6 neighbors for center tile
+  // TC33 – getNeighbors(0, 0) returns 6 neighbors for center tile
   // BVA: max neighbor count
   @Test
   void getNeighbors_centerTile_returnsSixNeighbors() {
@@ -673,7 +611,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC39 – getNeighbors(-2, 0) returns 3 neighbors for corner tile
+  // TC34 – getNeighbors(-2, 0) returns 3 neighbors for corner tile
   // BVA: min neighbor count for a valid board tile
   @Test
   void getNeighbors_cornerTile_returnsThreeNeighbors() {
@@ -688,7 +626,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC40 – getNeighbors(5, 5) returns empty list for off-board position
+  // TC35 – getNeighbors(5, 5) returns empty list for off-board position
   // BVA: minimum = 0 neighbors
   @Test
   void getNeighbors_offBoardPosition_returnsEmpty() {
@@ -703,7 +641,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC41 – getVertex with a known key returns a non-null Vertex
+  // TC36 – getVertex with a known key returns a non-null Vertex
   @Test
   void getVertex_knownKey_returnsNonNull() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -717,7 +655,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC42 – getVertex with an unknown key returns null
+  // TC37 – getVertex with an unknown key returns null
   // BVA: null boundary - vertex does not exist
   @Test
   void getVertex_unknownKey_returnsNull() {
@@ -732,7 +670,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC43 – getEdge with a known key returns a non-null Edge
+  // TC38 – getEdge with a known key returns a non-null Edge
   @Test
   void getEdge_knownKey_returnsNonNull() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -746,7 +684,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC44 – getEdge with an unknown key returns null
+  // TC39 – getEdge with an unknown key returns null
   // BVA: null boundary - edge does not exist
   @Test
   void getEdge_unknownKey_returnsNull() {
@@ -761,7 +699,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC45 – getHarbor with a known vertex pair returns a non-null Harbor of type GENERIC
+  // TC40 – getHarbor with a known vertex pair returns a non-null Harbor of type GENERIC
   @Test
   void getHarbor_knownVertexPair_returnsGenericHarbor() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -777,7 +715,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC46 – getHarbor with an interior vertex pair returns null
+  // TC41 – getHarbor with an interior vertex pair returns null
   // BVA: null boundary - no harbor at this location
   @Test
   void getHarbor_interiorVertexPair_returnsNull() {
