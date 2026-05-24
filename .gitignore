@@ -101,6 +101,10 @@ bin/
 .DS_Store
 
 ########################
+### Project-local docs ###
+########################
+
+########################
 ### Windows ###
 ########################
 # Windows thumbnail cache files
