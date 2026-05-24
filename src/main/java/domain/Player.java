@@ -6,6 +6,10 @@ import java.util.Objects;
 
 public final class Player {
 
+    private static final int STARTING_SETTLEMENTS = 5;
+    private static final int STARTING_CITIES = 4;
+    private static final int STARTING_ROADS = 15;
+
     private final String name;
     private final PlayerColor color;
     private final Map<Resource, Integer> resources;
@@ -19,9 +23,9 @@ public final class Player {
         this.color = Objects.requireNonNull(color, "color");
         this.resources = Map.of();
         this.victoryPoints = 0;
-        this.remainingSettlements = 1;
-        this.remainingCities = 1;
-        this.remainingRoads =  1;
+        this.remainingSettlements = STARTING_SETTLEMENTS;
+        this.remainingCities = STARTING_CITIES;
+        this.remainingRoads = STARTING_ROADS;
     }
 
     public String getName() {
@@ -29,27 +33,27 @@ public final class Player {
     }
 
     public PlayerColor getColor() {
-        return PlayerColor.BLUE;
+        return color;
     }
 
     public int getVictoryPoints() {
-        return -1;
+        return victoryPoints;
     }
 
     public int getResourceCount(Resource resource) {
-        return -1;
+        return resources.get(resource);
     }
 
     public int getRemainingSettlements() {
-        return -1;
+        return remainingSettlements;
     }
 
     public int getRemainingCities() {
-        return -1;
+        return remainingCities;
     }
 
     public int getRemainingRoads() {
-        return -1;
+        return remainingRoads;
     }
 
 }
