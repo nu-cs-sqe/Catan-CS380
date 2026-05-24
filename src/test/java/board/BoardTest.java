@@ -475,9 +475,14 @@ class BoardTest {
 
     board.create();
 
-    for (ResourceType type : new ResourceType[]{
-        ResourceType.WOOD, ResourceType.BRICK, ResourceType.SHEEP,
-        ResourceType.WHEAT, ResourceType.ORE}) {
+    for (ResourceType type :
+        new ResourceType[] {
+          ResourceType.WOOD,
+          ResourceType.BRICK,
+          ResourceType.SHEEP,
+          ResourceType.WHEAT,
+          ResourceType.ORE
+        }) {
       long count = 0;
       for (Harbor h : board.getHarbors()) {
         if (h.getHarborType() == type) {
@@ -523,7 +528,9 @@ class BoardTest {
 
     for (Harbor h : board.getHarbors()) {
       if (h.getHarborType() != ResourceType.GENERIC) {
-        assertEquals(2, h.getExchangeRate(),
+        assertEquals(
+            2,
+            h.getExchangeRate(),
             "Expected exchange rate 2 for resource harbor " + h.getHarborType());
       }
     }
@@ -592,6 +599,64 @@ class BoardTest {
     verify(shuffler);
   }
 
+  // TC34 – getTile(0, 0) returns a non-null tile at center position
+  @Test
+  void getTile_centerPosition_returnsNonNull() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertNotNull(board.getTile(0, 0));
+
+    verify(shuffler);
+  }
+
+  // TC35 – getTile(-2, 0) returns a non-null tile at min-q boundary
+  // BVA: lower boundary of q range
+  @Test
+  void getTile_minQBoundary_returnsNonNull() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertNotNull(board.getTile(-2, 0));
+
+    verify(shuffler);
+  }
+
+  // TC36 – getTile(2, 0) returns a non-null tile at max-q boundary
+  // BVA: upper boundary of q range
+  @Test
+  void getTile_maxQBoundary_returnsNonNull() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertNotNull(board.getTile(2, 0));
+
+    verify(shuffler);
+  }
+
+  // TC37 – getTile(3, 0) returns null just outside max-q boundary
+  // BVA: one past upper boundary
+  @Test
+  void getTile_justOutsideMaxQ_returnsNull() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertNull(board.getTile(3, 0));
+
+    verify(shuffler);
+  }
 
   // Helpers
 
@@ -607,11 +672,8 @@ class BoardTest {
 
   private List<Integer> tokenSequence() {
     int[][] positions = {
-      {-2, 0}, {-2, 1}, {-2, 2},
-      {-1, -1}, {-1, 0}, {-1, 1}, {-1, 2},
-      {0, -2}, {0, -1}, {0, 0}, {0, 1}, {0, 2},
-      {1, -2}, {1, -1}, {1, 0}, {1, 1},
-      {2, -2}, {2, -1}, {2, 0}
+      {-2, 0}, {-2, 1}, {-2, 2}, {-1, -1}, {-1, 0}, {-1, 1}, {-1, 2}, {0, -2}, {0, -1}, {0, 0},
+      {0, 1}, {0, 2}, {1, -2}, {1, -1}, {1, 0}, {1, 1}, {2, -2}, {2, -1}, {2, 0}
     };
     List<Integer> sequence = new ArrayList<>();
     for (int[] pos : positions) {
