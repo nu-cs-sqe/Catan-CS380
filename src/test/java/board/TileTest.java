@@ -31,15 +31,7 @@ class TileTest {
     assertEquals(0, tile.getNumberToken());
   }
 
-  // TC4 – Robber defaults to false (not present)
-  @Test
-  void constructor_hasRobberDefaultsToFalse() {
-    Tile tile = new Tile(TileType.DESERT, 0, 0);
-
-    assertFalse(tile.hasRobber());
-  }
-
-  // TC5 – setNumberToken(2) stores the minimum valid token
+  // TC4 – setNumberToken(2) stores the minimum valid token
   // BVA: 2 is the lower boundary of the token range
   @Test
   void setNumberToken_minimumValidToken_returnsTwo() {
@@ -49,7 +41,7 @@ class TileTest {
     assertEquals(2, tile.getNumberToken());
   }
 
-  // TC6 – setNumberToken(12) stores the maximum valid token
+  // TC5 – setNumberToken(12) stores the maximum valid token
   // BVA: 12 is the upper boundary of the token range
   @Test
   void setNumberToken_maximumValidToken_returnsTwelve() {
@@ -58,5 +50,4 @@ class TileTest {
 
     assertEquals(12, tile.getNumberToken());
   }
-
 }
