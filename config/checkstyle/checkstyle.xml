@@ -18,6 +18,11 @@
     <property name="max" value="120"/>
     <property name="ignorePattern" value="^package.*|^import.*|https?://"/>
   </module>
+  <!-- Suppress magic numbers in test files -->
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value="MagicNumber"/>
+    <property name="files" value=".*Test\.java$"/>
+  </module>
 
   <module name="TreeWalker">
 
