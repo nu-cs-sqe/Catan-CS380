@@ -5,6 +5,8 @@ public class Game {
     private final int numberOfPlayers;
     private final int firstPlayerIndex;
     private final int[] turnOrder;
+    private final int[] settlementsPerPlayer;
+    private final int[] roadsPerPlayer;
 
     public Game(int numberOfPlayers) {
         this(numberOfPlayers, new RandomDiceRoller());
@@ -18,6 +20,8 @@ public class Game {
         this.numberOfPlayers = numberOfPlayers;
         this.firstPlayerIndex = determineFirstPlayer(diceRoller);
         this.turnOrder = buildTurnOrder();
+        this.settlementsPerPlayer = new int[numberOfPlayers];
+        this.roadsPerPlayer = new int[numberOfPlayers];
     }
 
     private int determineFirstPlayer(DiceRoller diceRoller) {
@@ -63,6 +67,35 @@ public class Game {
         return order;
     }
 
+    public void executeSetupRoundOne() {
+        for (int i = 0; i < numberOfPlayers; i++) {
+            int playerIndex = turnOrder[i];
+            settlementsPerPlayer[playerIndex]++;
+            roadsPerPlayer[playerIndex]++;
+        }
+    }
+
+    public void executeSetupRoundTwo() {
+        int[] reverseOrder = getRoundTwoOrder();
+        for (int i = 0; i < numberOfPlayers; i++) {
+            int playerIndex = reverseOrder[i];
+            settlementsPerPlayer[playerIndex]++;
+            roadsPerPlayer[playerIndex]++;
+        }
+    }
+
+    public int[] getRoundTwoOrder() {
+        int[] reverse = new int[numberOfPlayers];
+        for (int i = 0; i < numberOfPlayers; i++) {
+            reverse[i] = turnOrder[numberOfPlayers - 1 - i];
+        }
+        return reverse;
+    }
+
+    public int getCurrentPlayerIndex() {
+        return firstPlayerIndex;
+    }
+
     public int getNumberOfPlayers() {
         return numberOfPlayers;
     }
@@ -73,5 +106,13 @@ public class Game {
 
     public int[] getTurnOrder() {
         return turnOrder;
+    }
+
+    public int[] getSettlementsPerPlayer() {
+        return settlementsPerPlayer;
+    }
+
+    public int[] getRoadsPerPlayer() {
+        return roadsPerPlayer;
     }
 }
