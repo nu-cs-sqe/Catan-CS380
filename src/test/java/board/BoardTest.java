@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-
 import static org.easymock.EasyMock.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -335,7 +334,27 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC20 – Total vertex count is exactly 54
+  // TC20 – Exactly one tile has the robber
+  @Test
+  void create_robber_exactlyOneTileHasRobber() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    long robberCount = 0;
+    for (Tile t : board.getTiles()) {
+      if (t.hasRobber()) {
+        robberCount++;
+      }
+    }
+    assertEquals(1, robberCount);
+
+    verify(shuffler);
+  }
+
+  // TC21 – Total vertex count is exactly 54
   // BVA: 54 is the only valid count (boundary from below: 53, from above: 55)
   @Test
   void create_vertexCount_exactlyFiftyFour() {
@@ -350,7 +369,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC21 – Interior vertex count (3 adjacent tiles) is exactly 24
+  // TC22 – Interior vertex count (3 adjacent tiles) is exactly 24
   // BVA: boundary from below: 23, from above: 25
   @Test
   void create_interiorVertexCount_exactlyTwentyFour() {
@@ -371,7 +390,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC22 – Coastal vertex count (fewer than 3 adjacent tiles) is exactly 30
+  // TC23 – Coastal vertex count (fewer than 3 adjacent tiles) is exactly 30
   // BVA: boundary from below: 29, from above: 31
   @Test
   void create_coastalVertexCount_exactlyThirty() {
@@ -392,7 +411,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC23 – Total edge count is exactly 72
+  // TC24 – Total edge count is exactly 72
   // BVA: 72 is the only valid count (boundary from below: 71, from above: 73)
   @Test
   void create_edgeCount_exactlySeventyTwo() {
@@ -407,7 +426,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC24 – Interior edge count (2 adjacent tiles) is exactly 42
+  // TC25 – Interior edge count (2 adjacent tiles) is exactly 42
   // BVA: boundary from below: 41, from above: 43
   @Test
   void create_interiorEdgeCount_exactlyFortyTwo() {
@@ -428,7 +447,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC25 – Coastal edge count (1 adjacent tile) is exactly 30
+  // TC26 – Coastal edge count (1 adjacent tile) is exactly 30
   // BVA: boundary from below: 29, from above: 31
   @Test
   void create_coastalEdgeCount_exactlyThirty() {
