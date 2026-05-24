@@ -19,9 +19,9 @@ public final class Player {
     private int remainingRoads;
 
     public Player(String name, PlayerColor color) {
-        this.name = name;
+        this.name = requireNonBlank(name);
         this.color = Objects.requireNonNull(color, "color");
-        this.resources = Map.of();
+        this.resources = emptyResourceHand();
         this.victoryPoints = 0;
         this.remainingSettlements = STARTING_SETTLEMENTS;
         this.remainingCities = STARTING_CITIES;
@@ -41,6 +41,7 @@ public final class Player {
     }
 
     public int getResourceCount(Resource resource) {
+        Objects.requireNonNull(resource, "resource");
         return resources.get(resource);
     }
 
@@ -54,6 +55,22 @@ public final class Player {
 
     public int getRemainingRoads() {
         return remainingRoads;
+    }
+
+    private static String requireNonBlank(String name) {
+        Objects.requireNonNull(name, "name");
+        if (name.trim().isEmpty()) {
+            throw new IllegalArgumentException("name must not be blank");
+        }
+        return name;
+    }
+
+    private static Map<Resource, Integer> emptyResourceHand() {
+        Map<Resource, Integer> hand = new EnumMap<>(Resource.class);
+        for (Resource resource : Resource.values()) {
+            hand.put(resource, 0);
+        }
+        return hand;
     }
 
 }
