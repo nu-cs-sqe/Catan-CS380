@@ -12,7 +12,6 @@ public class Tile {
     this.q = q;
     this.r = r;
     this.numberToken = 0;
-    this.hasRobber = false;
   }
 
   public TileType getTileType() {
