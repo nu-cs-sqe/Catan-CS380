@@ -703,6 +703,96 @@ class BoardTest {
     verify(shuffler);
   }
 
+  // TC41 – getVertex with a known key returns a non-null Vertex
+  @Test
+  void getVertex_knownKey_returnsNonNull() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertNotNull(board.getVertex("0,0"));
+
+    verify(shuffler);
+  }
+
+  // TC42 – getVertex with an unknown key returns null
+  // BVA: null boundary — vertex does not exist
+  @Test
+  void getVertex_unknownKey_returnsNull() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertNull(board.getVertex("99,99"));
+
+    verify(shuffler);
+  }
+
+  // TC43 – getEdge with a known key returns a non-null Edge
+  @Test
+  void getEdge_knownKey_returnsNonNull() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertNotNull(board.getEdge("-1,-2|0,0"));
+
+    verify(shuffler);
+  }
+
+  // TC44 – getEdge with an unknown key returns null
+  // BVA: null boundary — edge does not exist
+  @Test
+  void getEdge_unknownKey_returnsNull() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertNull(board.getEdge("99,99|100,100"));
+
+    verify(shuffler);
+  }
+
+  // TC45 – getHarbor with a known vertex pair returns a non-null Harbor of type GENERIC
+  @Test
+  void getHarbor_knownVertexPair_returnsGenericHarbor() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    Harbor harbor = board.getHarbor("-6,0", "-5,2");
+    assertNotNull(harbor);
+    assertEquals(ResourceType.GENERIC, harbor.getHarborType());
+
+    verify(shuffler);
+  }
+
+  // TC46 – getHarbor with an interior vertex pair returns null
+  // BVA: null boundary — no harbor at this location
+  @Test
+  void getHarbor_interiorVertexPair_returnsNull() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertNull(board.getHarbor("0,0", "2,0"));
+
+    verify(shuffler);
+  }
+
+
 
 
   // Helpers
