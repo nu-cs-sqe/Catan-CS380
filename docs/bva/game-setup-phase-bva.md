@@ -70,13 +70,13 @@ The setup phase initializes the game with 3–4 players, determines turn order v
 - **State of the system**: Game with 3 players after both setup rounds
 - **Expected output**: Each player has exactly 2 settlements placed
 - **BVA note**: Boundaries: 1 (after round one), 2 (after round two), 3 (too many)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC12 – After both rounds each player has 2 roads
 - **State of the system**: Game with 3 players after both setup rounds
 - **Expected output**: Each player has exactly 2 roads placed
 - **BVA note**: Boundaries: 1 (after round one), 2 (after round two), 3 (too many)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC13 – Players receive resources only from second settlement
 - **State of the system**: Game with stubbed board; player's second settlement borders ore and brick

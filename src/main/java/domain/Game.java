@@ -115,4 +115,13 @@ public final class Game {
         return Arrays.copyOf(roadsPerPlayer,
                 roadsPerPlayer.length);
     }
+
+    public void executeSetupRoundTwo() {
+        int[] reverseOrder = getRoundTwoOrder();
+        for (int i = 0; i < numberOfPlayers; i++) {
+            int playerIndex = reverseOrder[i];
+            settlementsPerPlayer[playerIndex]++;
+            roadsPerPlayer[playerIndex]++;
+        }
+    }
 }
