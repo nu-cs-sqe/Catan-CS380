@@ -7,6 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.easymock.EasyMock.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -182,97 +186,56 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC11 – Number token 2 appears exactly once
+  // TC11 – Token sequence for non-desert tiles in board position order matches fixed distribution
   @Test
-  void create_numberToken_twoAppearsOnce() {
+  void create_tokenSequence_matchesFixedDistribution() {
     shuffler.shuffle(EasyMock.anyObject());
     expectLastCall().anyTimes();
     replay(shuffler);
 
     board.create();
 
-    long count = countByToken(2);
-    assertEquals(1, count);
+    List<Integer> expected =
+        Arrays.asList(5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11);
+    assertEquals(expected, tokenSequence());
 
     verify(shuffler);
   }
 
-  // TC12 – Number token 12 appears exactly once
+  // TC12 – First token in sequence is 5
+  // BVA: 5 is the value at position 0 of TOKEN_DISTRIBUTION; boundary from below: no token, from
+  // above: next value (2)
   @Test
-  void create_numberToken_twelveAppearsOnce() {
+  void create_tokenSequence_firstTokenIsFive() {
     shuffler.shuffle(EasyMock.anyObject());
     expectLastCall().anyTimes();
     replay(shuffler);
 
     board.create();
 
-    long count = countByToken(12);
-    assertEquals(1, count);
+    assertEquals(5, tokenSequence().get(0));
 
     verify(shuffler);
   }
 
-  // TC13 – Number token 3 appears exactly twice
+  // TC13 – Last token in sequence is 11
+  // BVA: 11 is the value at position 17 of TOKEN_DISTRIBUTION; boundary from above: no token, from
+  // below: previous value (3)
   @Test
-  void create_numberToken_threeAppearsTwice() {
+  void create_tokenSequence_lastTokenIsEleven() {
     shuffler.shuffle(EasyMock.anyObject());
     expectLastCall().anyTimes();
     replay(shuffler);
 
     board.create();
 
-    long count = countByToken(3);
-    assertEquals(2, count);
+    List<Integer> seq = tokenSequence();
+    assertEquals(11, seq.get(seq.size() - 1));
 
     verify(shuffler);
   }
 
-  // TC14 – Number token 11 appears exactly twice
-  @Test
-  void create_numberToken_elevenAppearsTwice() {
-    shuffler.shuffle(EasyMock.anyObject());
-    expectLastCall().anyTimes();
-    replay(shuffler);
-
-    board.create();
-
-    long count = countByToken(11);
-    assertEquals(2, count);
-
-    verify(shuffler);
-  }
-
-  // TC15 – Number token 6 appears exactly twice
-  @Test
-  void create_numberToken_sixAppearsTwice() {
-    shuffler.shuffle(EasyMock.anyObject());
-    expectLastCall().anyTimes();
-    replay(shuffler);
-
-    board.create();
-
-    long count = countByToken(6);
-    assertEquals(2, count);
-
-    verify(shuffler);
-  }
-
-  // TC16 – Number token 8 appears exactly twice
-  @Test
-  void create_numberToken_eightAppearsTwice() {
-    shuffler.shuffle(EasyMock.anyObject());
-    expectLastCall().anyTimes();
-    replay(shuffler);
-
-    board.create();
-
-    long count = countByToken(8);
-    assertEquals(2, count);
-
-    verify(shuffler);
-  }
-
-  // TC17 – Total number token count across all tiles is exactly 18
+  // TC14 – Total number token count across all tiles is exactly 18
   @Test
   void create_numberTokens_totalIsEighteen() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -292,7 +255,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC18 – Robber starts on the desert tile
+  // TC15 – Robber starts on the desert tile
   @Test
   void create_robber_startsOnDesert() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -314,7 +277,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC19 – Non-desert tiles do not have the robber
+  // TC16 – Non-desert tiles do not have the robber
   @Test
   void create_robber_notOnNonDesertTiles() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -334,7 +297,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC20 – Exactly one tile has the robber
+  // TC17 – Exactly one tile has the robber
   @Test
   void create_robber_exactlyOneTileHasRobber() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -354,7 +317,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC21 – Total vertex count is exactly 54
+  // TC18 – Total vertex count is exactly 54
   // BVA: 54 is the only valid count (boundary from below: 53, from above: 55)
   @Test
   void create_vertexCount_exactlyFiftyFour() {
@@ -369,7 +332,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC22 – Interior vertex count (3 adjacent tiles) is exactly 24
+  // TC19 – Interior vertex count (3 adjacent tiles) is exactly 24
   // BVA: boundary from below: 23, from above: 25
   @Test
   void create_interiorVertexCount_exactlyTwentyFour() {
@@ -390,7 +353,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC23 – Coastal vertex count (fewer than 3 adjacent tiles) is exactly 30
+  // TC20 – Coastal vertex count (fewer than 3 adjacent tiles) is exactly 30
   // BVA: boundary from below: 29, from above: 31
   @Test
   void create_coastalVertexCount_exactlyThirty() {
@@ -411,7 +374,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC24 – Total edge count is exactly 72
+  // TC21 – Total edge count is exactly 72
   // BVA: 72 is the only valid count (boundary from below: 71, from above: 73)
   @Test
   void create_edgeCount_exactlySeventyTwo() {
@@ -426,7 +389,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC25 – Interior edge count (2 adjacent tiles) is exactly 42
+  // TC22 – Interior edge count (2 adjacent tiles) is exactly 42
   // BVA: boundary from below: 41, from above: 43
   @Test
   void create_interiorEdgeCount_exactlyFortyTwo() {
@@ -447,7 +410,7 @@ class BoardTest {
     verify(shuffler);
   }
 
-  // TC26 – Coastal edge count (1 adjacent tile) is exactly 30
+  // TC23 – Coastal edge count (1 adjacent tile) is exactly 30
   // BVA: boundary from below: 29, from above: 31
   @Test
   void create_coastalEdgeCount_exactlyThirty() {
@@ -480,13 +443,21 @@ class BoardTest {
     return count;
   }
 
-  private long countByToken(int token) {
-    long count = 0;
-    for (Tile t : board.getTiles()) {
-      if (t.getNumberToken() == token) {
-        count++;
+  private List<Integer> tokenSequence() {
+    int[][] positions = {
+      {-2, 0}, {-2, 1}, {-2, 2},
+      {-1, -1}, {-1, 0}, {-1, 1}, {-1, 2},
+      {0, -2}, {0, -1}, {0, 0}, {0, 1}, {0, 2},
+      {1, -2}, {1, -1}, {1, 0}, {1, 1},
+      {2, -2}, {2, -1}, {2, 0}
+    };
+    List<Integer> sequence = new ArrayList<>();
+    for (int[] pos : positions) {
+      Tile tile = board.getTile(pos[0], pos[1]);
+      if (tile.getTileType() != TileType.DESERT) {
+        sequence.add(tile.getNumberToken());
       }
     }
-    return count;
+    return sequence;
   }
 }
