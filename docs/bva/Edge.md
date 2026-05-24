@@ -1,25 +1,29 @@
-# BVA Analysis – `Edge`
+# BVA: Edge
 
-## Method under test: `Edge(String id)` (constructor) and `addTile(Tile tile)`
+---
 
-### TC1 – Constructor stores id correctly
-- **State of the system**: New `Edge("42")`
-- **Expected output**: `getId() == "42"`
+### Method under test: `Edge(String id)`
 
-### TC2 – Constructor initializes adjacentTiles as empty
-- **State of the system**: New `Edge("0")`
-- **Expected output**: `getAdjacentTiles().isEmpty() == true`
+|     | System under test  | Expected output                                                                       | Implemented?       |
+|-----|--------------------|---------------------------------------------------------------------------------------|--------------------|
+| TC1 | `new Edge("42")`   | `getId() == "42"`                                                                     | :white_check_mark: |
+| TC2 | `new Edge("0")`    | `getAdjacentTiles().isEmpty() == true` (BVA: boundary — empty list on construction)  | :white_check_mark: |
 
-### TC3 – Interior edge has exactly 2 adjacent tiles
-- **State of the system**: New `Edge` with `addTile` called twice (both surrounding hexes present)
-- **Expected output**: `getAdjacentTiles().size() == 2`
-- **BVA note**: 2 is the maximum adjacent tile count. Boundaries: 1 (coastal), 2 (interior/valid max)
+---
 
-### TC4 – Coastal edge has exactly 1 adjacent tile
-- **State of the system**: New `Edge` with `addTile` called once (boundary of the board)
-- **Expected output**: `getAdjacentTiles().size() == 1`
-- **BVA note**: 1 is the minimum adjacent tile count. Boundaries: 1 (coastal/valid min), 2 (interior)
+### Method under test: `addTile(Tile)`
 
-### TC5 – addTile stores the correct tile reference
-- **State of the system**: New `Edge` with `addTile` called with a specific `Tile`
-- **Expected output**: `getAdjacentTiles()` contains exactly that tile
+|     | System under test                               | Expected output                                                             | Implemented?       |
+|-----|-------------------------------------------------|-----------------------------------------------------------------------------|--------------------|
+| TC3 | `addTile` called 2 times (interior edge)        | `getAdjacentTiles().size() == 2` (BVA: max; boundary from below: 1)         | :white_check_mark: |
+| TC4 | `addTile` called 1 time (coastal edge)          | `getAdjacentTiles().size() == 1` (BVA: min; boundary from above: 2)         | :white_check_mark: |
+| TC5 | `addTile` called with a specific `Tile`         | `getAdjacentTiles()` contains that exact tile reference                     | :white_check_mark: |
+
+---
+
+### Method under test: `setOwner(Player)` / `getOwner()`
+
+|     | System under test                           | Expected output                                            | Implemented? |
+|-----|---------------------------------------------|------------------------------------------------------------|--------------|
+| TC6 | `new Edge`, no `setOwner` called            | `getOwner() == null` (BVA: null boundary — unowned edge)   | :x:          |
+| TC7 | `setOwner(player)` with a non-null `Player` | `getOwner() == player`                                     | :x:          |
