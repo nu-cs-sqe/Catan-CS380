@@ -164,4 +164,8 @@ public final class Game {
         return Arrays.copyOf(roadsPerPlayer,
                 roadsPerPlayer.length);
     }
+
+    public int getCurrentPlayerIndex() {
+        return firstPlayerIndex;
+    }
 }

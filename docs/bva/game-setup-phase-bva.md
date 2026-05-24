@@ -88,4 +88,4 @@ The setup phase initializes the game with 3–4 players, determines turn order v
 - **State of the system**: Game after full setup phase complete
 - **Expected output**: `getCurrentPlayerIndex()` is the player who rolled highest
 - **BVA note**: The starting player (last to place in round two) takes the first turn
-- **Implemented**: [ ]
+- **Implemented**: [x]
