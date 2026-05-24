@@ -34,19 +34,19 @@ The setup phase initializes the game with 3–4 players, determines turn order v
 - **State of the system**: Game with stubbed dice; player 1 rolls highest
 - **Expected output**: `getFirstPlayerIndex()` is 1
 - **BVA note**: Boundary between the highest roll (first) and all other rolls (not first)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC6 – Turn order proceeds clockwise from the starting player
 - **State of the system**: Game with 3 players; player 1 rolls highest
 - **Expected output**: Turn order is [1, 2, 0]
 - **BVA note**: Boundary at the last player wrapping back to the first
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC7 – Tied dice rolls are re-rolled
 - **State of the system**: Game with stubbed dice; two players tie, then one wins re-roll
 - **Expected output**: The player who wins the re-roll goes first
 - **BVA note**: Boundary between unique highest roll (resolved) and tied highest roll (must re-roll)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC8 – Round one: each player places 1 settlement in clockwise order
 - **State of the system**: Game with 3 players after setup round one
