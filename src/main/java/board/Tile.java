@@ -33,12 +33,4 @@ public class Tile {
   public void setNumberToken(int numberToken) {
     this.numberToken = numberToken;
   }
-
-  public boolean hasRobber() {
-    return hasRobber;
-  }
-
-  public void setHasRobber(boolean hasRobber) {
-    this.hasRobber = hasRobber;
-  }
 }
