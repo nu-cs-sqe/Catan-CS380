@@ -712,7 +712,7 @@ class BoardTest {
 
     board.create();
 
-    assertNotNull(board.getVertex("0,0"));
+    assertNotNull(board.getVertex("-1,1"));
 
     verify(shuffler);
   }
@@ -741,7 +741,7 @@ class BoardTest {
 
     board.create();
 
-    assertNotNull(board.getEdge("-1,-2|0,0"));
+    assertNotNull(board.getEdge("-1,-1|-1,1"));
 
     verify(shuffler);
   }
@@ -770,7 +770,7 @@ class BoardTest {
 
     board.create();
 
-    Harbor harbor = board.getHarbor("-6,0", "-5,2");
+    Harbor harbor = board.getHarbor("-5,-1", "-5,1");
     assertNotNull(harbor);
     assertEquals(ResourceType.GENERIC, harbor.getHarborType());
 
