@@ -1,138 +1,87 @@
-# BVA Analysis – `Board`
-
-## Method under test: `create()`
-
-The `create()` method randomly assigns all Catan pieces to their board positions.  
-It produces 19 terrain tiles (with correct resource numbers), assigns 18 number tokens to the non-desert tiles, and places the robber on the desert.
+# BVA: Board
 
 ---
 
-### TC1 – Tile count is exactly 19
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler` (no-op)
-- **Expected output**: `getTiles().size() == 19`
-- **BVA note**: 19 is the only valid count. Boundaries: 18 (too few), 19 (valid), 20 (too many)
+### Method under test: `create()`
 
-### TC2 – No tile in the list is null
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: Every element of `getTiles()` is non-null
-- **BVA note**: Boundary between a populated slot and an absent (null) slot
+|      | System under test               | Expected output                                                                                                   | Implemented?       |
+|------|---------------------------------|-------------------------------------------------------------------------------------------------------------------|--------------------|
+| TC1  | Fresh `Board`, no-op `Shuffler` | `getTiles().size() == 19` (BVA: boundaries 18, 19, 20)                                                            | :white_check_mark: |
+| TC2  | Fresh `Board`, no-op `Shuffler` | No element of `getTiles()` is null                                                                                | :white_check_mark: |
+| TC3  | Fresh `Board`, no-op `Shuffler` | Count of FOREST tiles == 4 (BVA: boundaries 3, 4, 5)                                                              | :white_check_mark: |
+| TC4  | Fresh `Board`, no-op `Shuffler` | Count of PASTURE tiles == 4 (BVA: boundaries 3, 4, 5)                                                             | :white_check_mark: |
+| TC5  | Fresh `Board`, no-op `Shuffler` | Count of FIELDS tiles == 4 (BVA: boundaries 3, 4, 5)                                                              | :white_check_mark: |
+| TC6  | Fresh `Board`, no-op `Shuffler` | Count of HILLS tiles == 3 (BVA: boundaries 2, 3, 4)                                                               | :white_check_mark: |
+| TC7  | Fresh `Board`, no-op `Shuffler` | Count of MOUNTAINS tiles == 3 (BVA: boundaries 2, 3, 4)                                                           | :white_check_mark: |
+| TC8  | Fresh `Board`, no-op `Shuffler` | Count of DESERT tiles == 1 (BVA: boundaries 0, 1, 2)                                                              | :white_check_mark: |
+| TC9  | Fresh `Board`, no-op `Shuffler` | DESERT tile `getNumberToken() == 0` (BVA: boundary between 0 and minimum valid token 2)                           | :white_check_mark: |
+| TC10 | Fresh `Board`, no-op `Shuffler` | All non-DESERT tiles have `getNumberToken() >= 2` (BVA: boundary at 2, the minimum valid token)                   | :white_check_mark: |
+| TC11 | Fresh `Board`, no-op `Shuffler` | Token sequence (skipping DESERT) equals `[5,2,6,3,8,10,9,12,11,4,8,10,9,4,5,6,3,11]`                              | :white_check_mark: |
+| TC12 | Fresh `Board`, no-op `Shuffler` | First token in sequence is 5 (BVA: lower boundary — position 0 of TOKEN_DISTRIBUTION)                             | :white_check_mark: |
+| TC13 | Fresh `Board`, no-op `Shuffler` | Last token in sequence is 11 (BVA: upper boundary — position 17 of TOKEN_DISTRIBUTION)                            | :white_check_mark: |
+| TC14 | Fresh `Board`, no-op `Shuffler` | Exactly 18 tiles have `getNumberToken() > 0` (BVA: boundaries 17, 18, 19)                                         | :white_check_mark: |
+| TC15 | Fresh `Board`, no-op `Shuffler` | DESERT tile `hasRobber() == true`                                                                                 | :white_check_mark: |
+| TC16 | Fresh `Board`, no-op `Shuffler` | 0 non-DESERT tiles have `hasRobber() == true`                                                                     | :white_check_mark: |
+| TC17 | Fresh `Board`, no-op `Shuffler` | Exactly 1 tile has `hasRobber() == true` (BVA: boundaries 0, 1, 2)                                                | :white_check_mark: |
+| TC18 | Fresh `Board`, no-op `Shuffler` | `getVertices().size() == 54` (BVA: boundaries 53, 54, 55)                                                         | :white_check_mark: |
+| TC19 | Fresh `Board`, no-op `Shuffler` | 24 vertices have `getAdjacentTiles().size() == 3` (BVA: boundaries 23, 24, 25)                                    | :white_check_mark: |
+| TC20 | Fresh `Board`, no-op `Shuffler` | 30 vertices have `getAdjacentTiles().size() < 3` (BVA: boundaries 29, 30, 31)                                     | :white_check_mark: |
+| TC21 | Fresh `Board`, no-op `Shuffler` | `getEdges().size() == 72` (BVA: boundaries 71, 72, 73)                                                            | :white_check_mark: |
+| TC22 | Fresh `Board`, no-op `Shuffler` | 42 edges have `getAdjacentTiles().size() == 2` (BVA: boundaries 41, 42, 43)                                       | :white_check_mark: |
+| TC23 | Fresh `Board`, no-op `Shuffler` | 30 edges have `getAdjacentTiles().size() == 1` (BVA: boundaries 29, 30, 31)                                       | :white_check_mark: |
+| TC24 | Fresh `Board`, no-op `Shuffler` | `getHarbors().size() == 9` (BVA: boundaries 8, 9, 10)                                                             | :x:                |
+| TC25 | Fresh `Board`, no-op `Shuffler` | Exactly 4 harbors have type GENERIC                                                                               | :x:                |
+| TC26 | Fresh `Board`, no-op `Shuffler` | Exactly 1 harbor each for WOOD, BRICK, SHEEP, WHEAT, ORE                                                          | :x:                |
+| TC27 | Fresh `Board`, no-op `Shuffler` | Exactly 18 vertices have a non-null `getHarbor()` (BVA: boundaries 17, 18, 19)                                    | :x:                |
+| TC28 | Fresh `Board`, no-op `Shuffler` | Each resource-specific harbor has `getExchangeRate() == 2` (BVA: min exchange rate)                               | :x:                |
+| TC29 | Fresh `Board`, no-op `Shuffler` | Each GENERIC harbor has `getExchangeRate() == 3` (BVA: boundary between 2 and 3)                                  | :x:                |
+| TC32 | Fresh `Board`, no-op `Shuffler` | Token value 2 (min valid token) appears exactly once across all tiles (BVA: lower boundary of token value range)  | :x:                |
+| TC33 | Fresh `Board`, no-op `Shuffler` | Token value 12 (max valid token) appears exactly once across all tiles (BVA: upper boundary of token value range) | :x:                |
 
-### TC3 – FOREST tile count is exactly 4
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 4 tiles have `ResourceType.FOREST`
-- **BVA note**: Boundaries: 3 (too few), 4 (valid), 5 (too many)
+---
 
-### TC4 – PASTURE tile count is exactly 4
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 4 tiles have `ResourceType.PASTURE`
-- **BVA note**: Boundaries: 3 (too few), 4 (valid), 5 (too many)
+### Method under test: `getTile(int q, int r)`
 
-### TC5 – FIELDS tile count is exactly 4
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 4 tiles have `ResourceType.FIELDS`
-- **BVA note**: Boundaries: 3 (too few), 4 (valid), 5 (too many)
+|      | System under test                                         | Expected output                                          | Implemented? |
+|------|-----------------------------------------------------------|----------------------------------------------------------|--------------|
+| TC34 | Board created; `getTile(0, 0)` — center position          | Returns non-null `Tile`                                  | :x:          |
+| TC35 | Board created; `getTile(-2, 0)` — min-q boundary position | Returns non-null `Tile` (BVA: lower boundary of q range) | :x:          |
+| TC36 | Board created; `getTile(2, 0)` — max-q boundary position  | Returns non-null `Tile` (BVA: upper boundary of q range) | :x:          |
+| TC37 | Board created; `getTile(3, 0)` — just outside max-q       | Returns `null` (BVA: one past upper boundary)            | :x:          |
 
-### TC6 – HILLS tile count is exactly 3
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 3 tiles have `ResourceType.HILLS`
-- **BVA note**: Boundaries: 2 (too few), 3 (valid), 4 (too many)
+---
 
-### TC7 – MOUNTAINS tile count is exactly 3
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 3 tiles have `ResourceType.MOUNTAINS`
-- **BVA note**: Boundaries: 2 (too few), 3 (valid), 4 (too many)
+### Method under test: `getNeighbors(int q, int r)`
 
-### TC8 – DESERT tile count is exactly 1
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 1 tile has `ResourceType.DESERT`
-- **BVA note**: Boundaries: 0 (too few), 1 (valid), 2 (too many)
+|      | System under test                                                                           | Expected output                                                          | Implemented? |
+|------|---------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|--------------|
+| TC38 | Board created; `getNeighbors(0, 0)` — center tile, all 6 neighbors exist                    | Returns list of 6 tiles (BVA: max neighbor count)                        | :x:          |
+| TC39 | Board created; `getNeighbors(-2, 0)` — corner tile, 3 neighbors missing                     | Returns list of 3 tiles (BVA: min neighbor count for a valid board tile) | :x:          |
+| TC40 | Board created; `getNeighbors(5, 5)` — position far off the board, no neighbors in POSITIONS | Returns empty list (BVA: minimum = 0 neighbors)                          | :x:          |
 
-### TC9 – Desert tile has no number token (token = 0)
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: The DESERT tile's `getNumberToken() == 0`
-- **BVA note**: Boundary between "no token" (0) and the minimum valid token value (2)
+---
 
-### TC10 – All non-desert tiles have a number token ≥ 2
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: Every non-DESERT tile has `getNumberToken() >= 2`
-- **BVA note**: Boundary between "no token" (0) and minimum valid token (2); catches any tile left at default 0
+### Method under test: `getVertex(String key)`
 
-### TC11 – Number token 2 appears exactly once
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: Exactly 1 tile has `getNumberToken() == 2`
-- **BVA note**: Token 2 is the minimum token value; its frequency boundary is 0 (missing) → 1 (valid) → 2 (duplicate, invalid)
+|      | System under test                                                   | Expected output                                             | Implemented? |
+|------|---------------------------------------------------------------------|-------------------------------------------------------------|--------------|
+| TC41 | Board created; query a known vertex key (e.g., `"0,0"`)             | Returns non-null `Vertex`                                   | :x:          |
+| TC42 | Board created; query a key that matches no vertex (e.g., `"99,99"`) | Returns `null` (BVA: null boundary — vertex does not exist) | :x:          |
 
-### TC12 – Number token 12 appears exactly once
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: Exactly 1 tile has `getNumberToken() == 12`
-- **BVA note**: Token 12 is the maximum token value; same frequency boundaries as TC11
+---
 
-### TC13 – Number token 3 appears exactly twice
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: Exactly 2 tiles have `getNumberToken() == 3`
-- **BVA note**: Token 3 is the second-lowest token; frequency boundary between 1 (too few) and 2 (valid) and 3 (too many)
+### Method under test: `getEdge(String key)`
 
-### TC14 – Number token 11 appears exactly twice
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: Exactly 2 tiles have `getNumberToken() == 11`
-- **BVA note**: Token 11 is the second-highest token; same frequency boundaries as TC13
+|      | System under test                                              | Expected output | Implemented?                                              |
+|------|----------------------------------------------------------------|-----------------|-----------------------------------------------------------|
+| TC43 | Board created; query a known edge key (e.g., `"-1,-2           | 0,0"`)          | Returns non-null `Edge`                                   | :x: |
+| TC44 | Board created; query a key that matches no edge (e.g., `"99,99 | 100,100"`)      | Returns `null` (BVA: null boundary — edge does not exist) | :x: |
 
-### TC15 – Number token 6 appears exactly twice
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: Exactly 2 tiles have `getNumberToken() == 6`
-- **BVA note**: Token 6 is one of the two high-probability "red" tokens; validates its frequency is not inflated or missing
+---
 
-### TC16 – Number token 8 appears exactly twice
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: Exactly 2 tiles have `getNumberToken() == 8`
-- **BVA note**: Token 8 is the other high-probability "red" token; same boundary as TC15
+### Method under test: `getHarbor(String vertex1Id, String vertex2Id)`
 
-### TC17 – Total number token count is exactly 18
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: Exactly 18 tiles have `getNumberToken() > 0`
-- **BVA note**: 18 tokens for 18 non-desert tiles. Boundaries: 17 (too few), 18 (valid), 19 (too many)
-
-### TC18 – Robber starts on the desert tile
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: The DESERT tile's `hasRobber() == true`
-- **BVA note**: Exactly 1 tile has the robber. Boundaries: 0 robbers (missing), 1 (valid), 2 (too many)
-
-### TC19 – Non-desert tiles do not have the robber
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 0 non-DESERT tiles have `hasRobber() == true`
-- **BVA note**: Boundary between 0 non-desert robbers (valid) and 1 (invalid); complements TC18
-
-### TC20 – Exactly one tile has the robber
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: Exactly 1 tile across all 19 tiles has `hasRobber() == true`
-- **BVA note**: Boundaries: 0 robbers (missing), 1 (valid), 2 (too many); complements TC18 and TC19 by checking the total count directly
-
-### TC21 – Total vertex count is exactly 54
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: `getVertices().size() == 54`
-- **BVA note**: Boundaries: 53 (too few), 54 (valid), 55 (too many)
-
-### TC22 – Interior vertex count (3 adjacent tiles) is exactly 24
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 24 vertices have `getAdjacentTiles().size() == 3`
-- **BVA note**: Boundaries: 23 (too few), 24 (valid), 25 (too many)
-
-### TC23 – Coastal vertex count (fewer than 3 adjacent tiles) is exactly 30
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 30 vertices have `getAdjacentTiles().size() < 3`
-- **BVA note**: Boundaries: 29 (too few), 30 (valid), 31 (too many); complements TC21
-
-### TC24 – Total edge count is exactly 72
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: `getEdges().size() == 72`
-- **BVA note**: Boundaries: 71 (too few), 72 (valid), 73 (too many)
-
-### TC25 – Interior edge count (2 adjacent tiles) is exactly 42
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 42 edges have `getAdjacentTiles().size() == 2`
-- **BVA note**: Boundaries: 41 (too few), 42 (valid), 43 (too many)
-
-### TC26 – Coastal edge count (1 adjacent tile) is exactly 30
-- **State of the system**: Fresh `Board` with a stubbed `Shuffler`
-- **Expected output**: 30 edges have `getAdjacentTiles().size() == 1`
-- **BVA note**: Boundaries: 29 (too few), 30 (valid), 31 (too many); complements TC24
+|      | System under test                                                | Expected output                                                  | Implemented? |
+|------|------------------------------------------------------------------|------------------------------------------------------------------|--------------|
+| TC45 | Board created; query known harbor vertex pair `"-6,0"`, `"-5,2"` | Returns non-null `Harbor` with type GENERIC                      | :x:          |
+| TC46 | Board created; query an interior vertex pair that has no harbor  | Returns `null` (BVA: null boundary — no harbor at this location) | :x:          |

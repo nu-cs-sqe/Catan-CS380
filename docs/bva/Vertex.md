@@ -1,25 +1,47 @@
-# BVA Analysis – `Vertex`
+# BVA: Vertex
 
-## Method under test: `Vertex(String id)` (constructor) and `addTile(Tile tile)`
+---
 
-### TC1 – Constructor stores id correctly
-- **State of the system**: New `Vertex("7")`
-- **Expected output**: `getId() == "7"`
+### Method under test: `Vertex(String id)`
 
-### TC2 – Constructor initializes adjacentTiles as empty
-- **State of the system**: New `Vertex("0")`
-- **Expected output**: `getAdjacentTiles().isEmpty() == true`
+|     | System under test  | Expected output                                                                       | Implemented?       |
+|-----|--------------------|---------------------------------------------------------------------------------------|--------------------|
+| TC1 | `new Vertex("7")`  | `getId() == "7"`                                                                      | :white_check_mark: |
+| TC2 | `new Vertex("0")`  | `getAdjacentTiles().isEmpty() == true` (BVA: boundary — empty list on construction)  | :white_check_mark: |
 
-### TC3 – Interior vertex has exactly 3 adjacent tiles
-- **State of the system**: New `Vertex` with `addTile` called three times (all surrounding hexes present)
-- **Expected output**: `getAdjacentTiles().size() == 3`
-- **BVA note**: 3 is the maximum adjacent tile count. Boundaries: 2 (coastal), 3 (interior/valid max)
+---
 
-### TC4 – Coastal vertex has exactly 1 adjacent tile
-- **State of the system**: New `Vertex` with `addTile` called once (corner of the board)
-- **Expected output**: `getAdjacentTiles().size() == 1`
-- **BVA note**: 1 is the minimum adjacent tile count. Boundaries: 1 (corner coastal), 2 (edge coastal)
+### Method under test: `addTile(Tile)`
 
-### TC5 – addTile stores the correct tile reference
-- **State of the system**: New `Vertex` with `addTile` called with a specific `Tile`
-- **Expected output**: `getAdjacentTiles()` contains exactly that tile
+|     | System under test                               | Expected output                                                             | Implemented?       |
+|-----|-------------------------------------------------|-----------------------------------------------------------------------------|--------------------|
+| TC3 | `addTile` called 3 times (interior vertex)      | `getAdjacentTiles().size() == 3` (BVA: max; boundary from below: 2)         | :white_check_mark: |
+| TC4 | `addTile` called 1 time (corner coastal vertex) | `getAdjacentTiles().size() == 1` (BVA: min; boundary from above: 2)         | :white_check_mark: |
+| TC5 | `addTile` called with a specific `Tile`         | `getAdjacentTiles()` contains that exact tile reference                     | :white_check_mark: |
+
+---
+
+### Method under test: `setOwner(Player)` / `getOwner()`
+
+|     | System under test                             | Expected output                                              | Implemented? |
+|-----|-----------------------------------------------|--------------------------------------------------------------|--------------|
+| TC6 | `new Vertex`, no `setOwner` called            | `getOwner() == null` (BVA: null boundary — unowned vertex)   | :x:          |
+| TC7 | `setOwner(player)` with a non-null `Player`   | `getOwner() == player`                                       | :x:          |
+
+---
+
+### Method under test: `setSettlement(Settlement)` / `getSettlement()`
+
+|      | System under test                                       | Expected output                                                  | Implemented? |
+|------|---------------------------------------------------------|------------------------------------------------------------------|--------------|
+| TC8  | `new Vertex`, no `setSettlement` called                 | `getSettlement() == null` (BVA: null boundary — no settlement)   | :x:          |
+| TC9  | `setSettlement(settlement)` with a non-null `Settlement` | `getSettlement() == settlement`                                  | :x:          |
+
+---
+
+### Method under test: `setHarbor(Harbor)` / `getHarbor()`
+
+|      | System under test                             | Expected output                                                             | Implemented? |
+|------|-----------------------------------------------|-----------------------------------------------------------------------------|--------------|
+| TC10 | `new Vertex`, no `setHarbor` called           | `getHarbor() == null` (BVA: null boundary — vertex not on a harbor)         | :x:          |
+| TC11 | `setHarbor(harbor)` with a non-null `Harbor`  | `getHarbor() == harbor`                                                     | :x:          |
