@@ -106,4 +106,30 @@ public class GameTest {
         int[] roundTwoOrder = game.getRoundTwoOrder();
         Assertions.assertArrayEquals(new int[]{2, 1, 0}, roundTwoOrder);
     }
+
+    // TC11 – After both rounds each player has 2 settlements
+    @Test
+    public void testAfterBothRoundsEachPlayerHas2Settlements() {
+        int[] rolls = {7, 5, 3};
+        Game game = new Game(THREE_PLAYERS, stubDiceRoller(rolls));
+        game.executeSetupRoundOne();
+        game.executeSetupRoundTwo();
+        int[] settlements = game.getSettlementsPerPlayer();
+        for (int count : settlements) {
+            Assertions.assertEquals(2, count);
+        }
+    }
+
+    // TC12 – After both rounds each player has 2 roads
+    @Test
+    public void testAfterBothRoundsEachPlayerHas2Roads() {
+        int[] rolls = {7, 5, 3};
+        Game game = new Game(THREE_PLAYERS, stubDiceRoller(rolls));
+        game.executeSetupRoundOne();
+        game.executeSetupRoundTwo();
+        int[] roads = game.getRoadsPerPlayer();
+        for (int count : roads) {
+            Assertions.assertEquals(2, count);
+        }
+    }
 }
