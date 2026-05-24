@@ -37,4 +37,40 @@ public class GameTest {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> new Game(FIVE_PLAYERS));
     }
+
+    // TC5 – Player with highest dice roll goes first
+    @Test
+    public void testHighestRollGoesFirst() {
+        int[] rolls = {5, 10, 3};
+        Game game = new Game(THREE_PLAYERS, stubDiceRoller(rolls));
+        Assertions.assertEquals(1, game.getFirstPlayerIndex());
+    }
+
+    // TC6 – Turn order proceeds clockwise from starting player
+    @Test
+    public void testTurnOrderClockwiseFromStartingPlayer() {
+        int[] rolls = {4, 9, 6};
+        Game game = new Game(THREE_PLAYERS, stubDiceRoller(rolls));
+        Assertions.assertArrayEquals(new int[]{1, 2, 0},
+                game.getTurnOrder());
+    }
+
+    // TC7 – Tied dice rolls are re-rolled
+    @Test
+    public void testTiedRollsAreReRolled() {
+        int[] rolls = {8, 8, 5, 3, 7};
+        Game game = new Game(THREE_PLAYERS, stubDiceRoller(rolls));
+        Assertions.assertEquals(1, game.getFirstPlayerIndex());
+    }
+
+    private DiceRoller stubDiceRoller(int[] rolls) {
+        return new DiceRoller() {
+            private int index = 0;
+            @Override
+            public int roll() {
+                return rolls[index++];
+            }
+        };
+    }
+
 }
