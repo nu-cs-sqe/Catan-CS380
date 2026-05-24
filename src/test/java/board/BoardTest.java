@@ -431,6 +431,168 @@ class BoardTest {
     verify(shuffler);
   }
 
+  // TC24 – Harbor count is exactly 9
+  // BVA: boundaries 8, 9, 10
+  @Test
+  void create_harborCount_exactlyNine() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    assertEquals(9, board.getHarbors().size());
+
+    verify(shuffler);
+  }
+
+  // TC25 – Exactly 4 harbors have type GENERIC
+  @Test
+  void create_harborDistribution_fourGenericHarbors() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    long count = 0;
+    for (Harbor h : board.getHarbors()) {
+      if (h.getHarborType() == ResourceType.GENERIC) {
+        count++;
+      }
+    }
+    assertEquals(4, count);
+
+    verify(shuffler);
+  }
+
+  // TC26 – Exactly 1 harbor each for WOOD, BRICK, SHEEP, WHEAT, ORE
+  @Test
+  void create_harborDistribution_oneEachResourceHarbor() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    for (ResourceType type : new ResourceType[]{
+        ResourceType.WOOD, ResourceType.BRICK, ResourceType.SHEEP,
+        ResourceType.WHEAT, ResourceType.ORE}) {
+      long count = 0;
+      for (Harbor h : board.getHarbors()) {
+        if (h.getHarborType() == type) {
+          count++;
+        }
+      }
+      assertEquals(1, count, "Expected exactly 1 harbor of type " + type);
+    }
+
+    verify(shuffler);
+  }
+
+  // TC27 – Exactly 18 vertices have a non-null harbor
+  // BVA: boundaries 17, 18, 19
+  @Test
+  void create_harborVertexCount_exactlyEighteen() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    long count = 0;
+    for (Vertex v : board.getVertices()) {
+      if (v.getHarbor() != null) {
+        count++;
+      }
+    }
+    assertEquals(18, count);
+
+    verify(shuffler);
+  }
+
+  // TC28 – Each resource-specific harbor has exchange rate 2
+  // BVA: min exchange rate
+  @Test
+  void create_resourceHarbors_exchangeRateIsTwo() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    for (Harbor h : board.getHarbors()) {
+      if (h.getHarborType() != ResourceType.GENERIC) {
+        assertEquals(2, h.getExchangeRate(),
+            "Expected exchange rate 2 for resource harbor " + h.getHarborType());
+      }
+    }
+
+    verify(shuffler);
+  }
+
+  // TC29 – Each GENERIC harbor has exchange rate 3
+  // BVA: boundary between 2 and 3
+  @Test
+  void create_genericHarbors_exchangeRateIsThree() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    for (Harbor h : board.getHarbors()) {
+      if (h.getHarborType() == ResourceType.GENERIC) {
+        assertEquals(3, h.getExchangeRate());
+      }
+    }
+
+    verify(shuffler);
+  }
+
+  // TC32 – Token value 2 appears exactly once across all tiles
+  // BVA: lower boundary of token value range
+  @Test
+  void create_tokenValue_twoAppearsExactlyOnce() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    long count = 0;
+    for (Tile t : board.getTiles()) {
+      if (t.getNumberToken() == 2) {
+        count++;
+      }
+    }
+    assertEquals(1, count);
+
+    verify(shuffler);
+  }
+
+  // TC33 – Token value 12 appears exactly once across all tiles
+  // BVA: upper boundary of token value range
+  @Test
+  void create_tokenValue_twelveAppearsExactlyOnce() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    long count = 0;
+    for (Tile t : board.getTiles()) {
+      if (t.getNumberToken() == 12) {
+        count++;
+      }
+    }
+    assertEquals(1, count);
+
+    verify(shuffler);
+  }
+
+
   // Helpers
 
   private long countByResource(TileType type) {
