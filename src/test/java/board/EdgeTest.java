@@ -1,12 +1,19 @@
 package board;
 
+import org.easymock.EasyMockExtension;
+import org.easymock.Mock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 
+import static org.easymock.EasyMock.replay;
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(EasyMockExtension.class)
 class EdgeTest {
+
+  @Mock private Player player;
 
   // TC1 – Constructor stores id correctly
   @Test
@@ -54,5 +61,24 @@ class EdgeTest {
     edge.addTile(tile);
 
     assertEquals(List.of(tile), edge.getAdjacentTiles());
+  }
+
+  // TC6 – Unowned edge returns null for getOwner
+  // BVA: null boundary - unowned edge
+  @Test
+  void getOwner_newEdge_returnsNull() {
+    Edge edge = new Edge("0");
+
+    assertNull(edge.getOwner());
+  }
+
+  // TC7 – setOwner stores and getOwner retrieves the player
+  @Test
+  void setOwner_nonNullPlayer_returnsPlayer() {
+    replay(player);
+    Edge edge = new Edge("0");
+    edge.setOwner(player);
+
+    assertEquals(player, edge.getOwner());
   }
 }

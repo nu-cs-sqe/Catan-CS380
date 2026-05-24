@@ -17,8 +17,8 @@
 | TC9  | Fresh `Board`, no-op `Shuffler` | DESERT tile `getNumberToken() == 0` (BVA: boundary between 0 and minimum valid token 2)                           | :white_check_mark: |
 | TC10 | Fresh `Board`, no-op `Shuffler` | All non-DESERT tiles have `getNumberToken() >= 2` (BVA: boundary at 2, the minimum valid token)                   | :white_check_mark: |
 | TC11 | Fresh `Board`, no-op `Shuffler` | Token sequence (skipping DESERT) equals `[5,2,6,3,8,10,9,12,11,4,8,10,9,4,5,6,3,11]`                              | :white_check_mark: |
-| TC12 | Fresh `Board`, no-op `Shuffler` | First token in sequence is 5 (BVA: lower boundary — position 0 of TOKEN_DISTRIBUTION)                             | :white_check_mark: |
-| TC13 | Fresh `Board`, no-op `Shuffler` | Last token in sequence is 11 (BVA: upper boundary — position 17 of TOKEN_DISTRIBUTION)                            | :white_check_mark: |
+| TC12 | Fresh `Board`, no-op `Shuffler` | First token in sequence is 5 (BVA: lower boundary - position 0 of TOKEN_DISTRIBUTION)                             | :white_check_mark: |
+| TC13 | Fresh `Board`, no-op `Shuffler` | Last token in sequence is 11 (BVA: upper boundary - position 17 of TOKEN_DISTRIBUTION)                            | :white_check_mark: |
 | TC14 | Fresh `Board`, no-op `Shuffler` | Exactly 18 tiles have `getNumberToken() > 0` (BVA: boundaries 17, 18, 19)                                         | :white_check_mark: |
 | TC15 | Fresh `Board`, no-op `Shuffler` | DESERT tile `hasRobber() == true`                                                                                 | :white_check_mark: |
 | TC16 | Fresh `Board`, no-op `Shuffler` | 0 non-DESERT tiles have `hasRobber() == true`                                                                     | :white_check_mark: |
@@ -44,10 +44,10 @@
 
 |      | System under test                                         | Expected output                                          | Implemented? |
 |------|-----------------------------------------------------------|----------------------------------------------------------|--------------|
-| TC34 | Board created; `getTile(0, 0)` — center position          | Returns non-null `Tile`                                  | :x:          |
-| TC35 | Board created; `getTile(-2, 0)` — min-q boundary position | Returns non-null `Tile` (BVA: lower boundary of q range) | :x:          |
-| TC36 | Board created; `getTile(2, 0)` — max-q boundary position  | Returns non-null `Tile` (BVA: upper boundary of q range) | :x:          |
-| TC37 | Board created; `getTile(3, 0)` — just outside max-q       | Returns `null` (BVA: one past upper boundary)            | :x:          |
+| TC34 | Board created; `getTile(0, 0)` - center position          | Returns non-null `Tile`                                  | :x:          |
+| TC35 | Board created; `getTile(-2, 0)` - min-q boundary position | Returns non-null `Tile` (BVA: lower boundary of q range) | :x:          |
+| TC36 | Board created; `getTile(2, 0)` - max-q boundary position  | Returns non-null `Tile` (BVA: upper boundary of q range) | :x:          |
+| TC37 | Board created; `getTile(3, 0)` - just outside max-q       | Returns `null` (BVA: one past upper boundary)            | :x:          |
 
 ---
 
@@ -55,9 +55,9 @@
 
 |      | System under test                                                                           | Expected output                                                          | Implemented? |
 |------|---------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|--------------|
-| TC38 | Board created; `getNeighbors(0, 0)` — center tile, all 6 neighbors exist                    | Returns list of 6 tiles (BVA: max neighbor count)                        | :x:          |
-| TC39 | Board created; `getNeighbors(-2, 0)` — corner tile, 3 neighbors missing                     | Returns list of 3 tiles (BVA: min neighbor count for a valid board tile) | :x:          |
-| TC40 | Board created; `getNeighbors(5, 5)` — position far off the board, no neighbors in POSITIONS | Returns empty list (BVA: minimum = 0 neighbors)                          | :x:          |
+| TC38 | Board created; `getNeighbors(0, 0)` - center tile, all 6 neighbors exist                    | Returns list of 6 tiles (BVA: max neighbor count)                        | :x:          |
+| TC39 | Board created; `getNeighbors(-2, 0)` - corner tile, 3 neighbors missing                     | Returns list of 3 tiles (BVA: min neighbor count for a valid board tile) | :x:          |
+| TC40 | Board created; `getNeighbors(5, 5)` - position far off the board, no neighbors in POSITIONS | Returns empty list (BVA: minimum = 0 neighbors)                          | :x:          |
 
 ---
 
@@ -66,7 +66,7 @@
 |      | System under test                                                   | Expected output                                             | Implemented? |
 |------|---------------------------------------------------------------------|-------------------------------------------------------------|--------------|
 | TC41 | Board created; query a known vertex key (e.g., `"0,0"`)             | Returns non-null `Vertex`                                   | :x:          |
-| TC42 | Board created; query a key that matches no vertex (e.g., `"99,99"`) | Returns `null` (BVA: null boundary — vertex does not exist) | :x:          |
+| TC42 | Board created; query a key that matches no vertex (e.g., `"99,99"`) | Returns `null` (BVA: null boundary - vertex does not exist) | :x:          |
 
 ---
 
@@ -75,7 +75,7 @@
 |      | System under test                                              | Expected output | Implemented?                                              |
 |------|----------------------------------------------------------------|-----------------|-----------------------------------------------------------|
 | TC43 | Board created; query a known edge key (e.g., `"-1,-2           | 0,0"`)          | Returns non-null `Edge`                                   | :x: |
-| TC44 | Board created; query a key that matches no edge (e.g., `"99,99 | 100,100"`)      | Returns `null` (BVA: null boundary — edge does not exist) | :x: |
+| TC44 | Board created; query a key that matches no edge (e.g., `"99,99 | 100,100"`)      | Returns `null` (BVA: null boundary - edge does not exist) | :x: |
 
 ---
 
@@ -84,4 +84,4 @@
 |      | System under test                                                | Expected output                                                  | Implemented? |
 |------|------------------------------------------------------------------|------------------------------------------------------------------|--------------|
 | TC45 | Board created; query known harbor vertex pair `"-6,0"`, `"-5,2"` | Returns non-null `Harbor` with type GENERIC                      | :x:          |
-| TC46 | Board created; query an interior vertex pair that has no harbor  | Returns `null` (BVA: null boundary — no harbor at this location) | :x:          |
+| TC46 | Board created; query an interior vertex pair that has no harbor  | Returns `null` (BVA: null boundary - no harbor at this location) | :x:          |
