@@ -73,4 +73,37 @@ public class GameTest {
         };
     }
 
+    // TC8 – Round one: each player places 1 settlement
+    @Test
+    public void testRoundOneEachPlayerPlaces1Settlement() {
+        int[] rolls = {7, 5, 3};
+        Game game = new Game(THREE_PLAYERS, stubDiceRoller(rolls));
+        game.executeSetupRoundOne();
+        int[] settlements = game.getSettlementsPerPlayer();
+        for (int count : settlements) {
+            Assertions.assertEquals(1, count);
+        }
+    }
+
+    // TC9 – Round one: each player places 1 road
+    @Test
+    public void testRoundOneEachPlayerPlaces1Road() {
+        int[] rolls = {7, 5, 3};
+        Game game = new Game(THREE_PLAYERS, stubDiceRoller(rolls));
+        game.executeSetupRoundOne();
+        int[] roads = game.getRoadsPerPlayer();
+        for (int count : roads) {
+            Assertions.assertEquals(1, count);
+        }
+    }
+
+    // TC10 – Round two proceeds in reverse order
+    @Test
+    public void testRoundTwoOrderIsReversed() {
+        int[] rolls = {7, 5, 3};
+        Game game = new Game(THREE_PLAYERS, stubDiceRoller(rolls));
+        game.executeSetupRoundOne();
+        int[] roundTwoOrder = game.getRoundTwoOrder();
+        Assertions.assertArrayEquals(new int[]{2, 1, 0}, roundTwoOrder);
+    }
 }
