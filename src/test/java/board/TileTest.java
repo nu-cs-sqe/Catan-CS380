@@ -6,36 +6,77 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TileTest {
 
-    // TC1 – Constructor sets TileType correctly
-    @Test
-    void constructor_setsTileType() {
-        Tile tile = new Tile(TileType.FOREST, 0, 0);
+  // TC1 – Constructor sets TileType correctly
+  @Test
+  void constructor_setsTileType() {
+    Tile tile = new Tile(TileType.FOREST, 0, 0);
 
-        assertEquals(TileType.FOREST, tile.getTileType());
-    }
+    assertEquals(TileType.FOREST, tile.getTileType());
+  }
 
-    // TC2 – Constructor sets q and r coordinates correctly
-    @Test
-    void constructor_setsCoordinates() {
-        Tile tile = new Tile(TileType.HILLS, -2, 1);
+  // TC2 – Constructor sets q and r coordinates correctly
+  @Test
+  void constructor_setsCoordinates() {
+    Tile tile = new Tile(TileType.HILLS, -2, 1);
 
-        assertEquals(-2, tile.getQ());
-        assertEquals(1, tile.getR());
-    }
+    assertEquals(-2, tile.getQ());
+    assertEquals(1, tile.getR());
+  }
 
-    // TC3 – Number token defaults to 0 (no token assigned)
-    @Test
-    void constructor_numberTokenDefaultsToZero() {
-        Tile tile = new Tile(TileType.PASTURE, 0, 0);
+  // TC3 – Number token defaults to 0 (no token assigned)
+  @Test
+  void constructor_numberTokenDefaultsToZero() {
+    Tile tile = new Tile(TileType.PASTURE, 0, 0);
 
-        assertEquals(0, tile.getNumberToken());
-    }
+    assertEquals(0, tile.getNumberToken());
+  }
 
-    // TC4 – Robber defaults to false (not present)
-    @Test
-    void constructor_hasRobberDefaultsToFalse() {
-        Tile tile = new Tile(TileType.DESERT, 0, 0);
+  // TC4 – Robber defaults to false (not present)
+  @Test
+  void constructor_hasRobberDefaultsToFalse() {
+    Tile tile = new Tile(TileType.DESERT, 0, 0);
 
-        assertFalse(tile.hasRobber());
-    }
+    assertFalse(tile.hasRobber());
+  }
+
+  // TC5 – setNumberToken(2) stores the minimum valid token
+  // BVA: 2 is the lower boundary of the token range
+  @Test
+  void setNumberToken_minimumValidToken_returnsTwo() {
+    Tile tile = new Tile(TileType.FOREST, 0, 0);
+    tile.setNumberToken(2);
+
+    assertEquals(2, tile.getNumberToken());
+  }
+
+  // TC6 – setNumberToken(12) stores the maximum valid token
+  // BVA: 12 is the upper boundary of the token range
+  @Test
+  void setNumberToken_maximumValidToken_returnsTwelve() {
+    Tile tile = new Tile(TileType.FOREST, 0, 0);
+    tile.setNumberToken(12);
+
+    assertEquals(12, tile.getNumberToken());
+  }
+
+  // TC7 – setHasRobber(true) places the robber
+  // BVA: boundary - robber present
+  @Test
+  void setHasRobber_true_robberPresent() {
+    Tile tile = new Tile(TileType.DESERT, 0, 0);
+    tile.setHasRobber(true);
+
+    assertTrue(tile.hasRobber());
+  }
+
+  // TC8 – setHasRobber(true) then setHasRobber(false) removes the robber
+  // BVA: boundary - robber removed
+  @Test
+  void setHasRobber_trueThenFalse_robberRemoved() {
+    Tile tile = new Tile(TileType.DESERT, 0, 0);
+    tile.setHasRobber(true);
+    tile.setHasRobber(false);
+
+    assertFalse(tile.hasRobber());
+  }
 }

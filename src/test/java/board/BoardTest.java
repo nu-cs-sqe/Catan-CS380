@@ -718,7 +718,7 @@ class BoardTest {
   }
 
   // TC42 – getVertex with an unknown key returns null
-  // BVA: null boundary — vertex does not exist
+  // BVA: null boundary - vertex does not exist
   @Test
   void getVertex_unknownKey_returnsNull() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -747,7 +747,7 @@ class BoardTest {
   }
 
   // TC44 – getEdge with an unknown key returns null
-  // BVA: null boundary — edge does not exist
+  // BVA: null boundary - edge does not exist
   @Test
   void getEdge_unknownKey_returnsNull() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -778,7 +778,7 @@ class BoardTest {
   }
 
   // TC46 – getHarbor with an interior vertex pair returns null
-  // BVA: null boundary — no harbor at this location
+  // BVA: null boundary - no harbor at this location
   @Test
   void getHarbor_interiorVertexPair_returnsNull() {
     shuffler.shuffle(EasyMock.anyObject());
@@ -791,9 +791,6 @@ class BoardTest {
 
     verify(shuffler);
   }
-
-
-
 
   // Helpers
 

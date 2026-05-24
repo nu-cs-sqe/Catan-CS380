@@ -1,12 +1,19 @@
 package board;
 
+import org.easymock.EasyMockExtension;
+import org.easymock.Mock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 
+import static org.easymock.EasyMock.replay;
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(EasyMockExtension.class)
 class VertexTest {
+
+  @Mock private Player player;
 
   // TC1 – Constructor stores id correctly
   @Test
@@ -55,5 +62,62 @@ class VertexTest {
     vertex.addTile(tile);
 
     assertEquals(List.of(tile), vertex.getAdjacentTiles());
+  }
+
+  // TC6 – Unowned vertex returns null for getOwner
+  // BVA: null boundary - unowned vertex
+  @Test
+  void getOwner_newVertex_returnsNull() {
+    Vertex vertex = new Vertex("0");
+
+    assertNull(vertex.getOwner());
+  }
+
+  // TC7 – setOwner stores and getOwner retrieves the player
+  @Test
+  void setOwner_nonNullPlayer_returnsPlayer() {
+    replay(player);
+    Vertex vertex = new Vertex("0");
+    vertex.setOwner(player);
+
+    assertEquals(player, vertex.getOwner());
+  }
+
+  // TC8 – New vertex has no settlement
+  // BVA: null boundary - no settlement
+  @Test
+  void getSettlement_newVertex_returnsNull() {
+    Vertex vertex = new Vertex("0");
+
+    assertNull(vertex.getSettlement());
+  }
+
+  // TC9 - setSettlement stores and getSettlement retrieves the settlement
+  @Test
+  void setSettlement_nonNullSettlement_returnsSettlement() {
+    Vertex vertex = new Vertex("0");
+    Settlement settlement = new Settlement();
+    vertex.setSettlement(settlement);
+
+    assertEquals(settlement, vertex.getSettlement());
+  }
+
+  // TC10 – New vertex has no harbor
+  // BVA: null boundary - vertex not on a harbor
+  @Test
+  void getHarbor_newVertex_returnsNull() {
+    Vertex vertex = new Vertex("0");
+
+    assertNull(vertex.getHarbor());
+  }
+
+  // TC11 – setHarbor stores and getHarbor retrieves the harbor
+  @Test
+  void setHarbor_nonNullHarbor_returnsHarbor() {
+    Vertex vertex = new Vertex("0");
+    Harbor harbor = new Harbor(ResourceType.GENERIC, 3, "v1", "v2");
+    vertex.setHarbor(harbor);
+
+    assertEquals(harbor, vertex.getHarbor());
   }
 }
