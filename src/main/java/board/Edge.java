@@ -1,6 +1,7 @@
 package board;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Edge {
@@ -23,7 +24,7 @@ public class Edge {
   }
 
   public List<Tile> getAdjacentTiles() {
-    return adjacentTiles;
+    return Collections.unmodifiableList(adjacentTiles);
   }
 
   public Player getOwner() {
