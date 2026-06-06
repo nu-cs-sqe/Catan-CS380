@@ -11,11 +11,54 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(EasyMockExtension.class)
 class BoardTest {
+
+  private static final int TOTAL_TILES = 19;
+  private static final int FOREST_COUNT = 4;
+  private static final int PASTURE_COUNT = 4;
+  private static final int FIELDS_COUNT = 4;
+  private static final int HILLS_COUNT = 3;
+  private static final int MOUNTAINS_COUNT = 3;
+  private static final int TOTAL_TOKENS = 18;
+  private static final int TOTAL_VERTICES = 54;
+  private static final int INTERIOR_VERTEX_COUNT = 24;
+  private static final int COASTAL_VERTEX_COUNT = 30;
+  private static final int MAX_ADJACENT_TILES_VERTEX = 3;
+  private static final int TOTAL_EDGES = 72;
+  private static final int INTERIOR_EDGE_COUNT = 42;
+  private static final int COASTAL_EDGE_COUNT = 30;
+  private static final int MAX_ADJACENT_TILES_EDGE = 2;
+  private static final int TOTAL_HARBORS = 9;
+  private static final int GENERIC_HARBOR_COUNT = 4;
+  private static final int HARBOR_VERTEX_COUNT = 18;
+  private static final int RESOURCE_HARBOR_RATE = 2;
+  private static final int GENERIC_HARBOR_RATE = 3;
+  private static final int MIN_TOKEN = 2;
+  private static final int MAX_TOKEN = 12;
+  private static final int FIRST_TOKEN = 5;
+  private static final int LAST_TOKEN = 11;
+  private static final int CENTER_NEIGHBOR_COUNT = 6;
+  private static final int CORNER_NEIGHBOR_COUNT = 3;
+  private static final int MIN_COORD = -2;
+  private static final int MIN_Q = MIN_COORD;
+  private static final int MAX_Q = 2;
+  private static final int OUTSIDE_Q = 3;
+  private static final int OFF_BOARD_COORD = 5;
+  private static final int TOKEN_THREE = 3;
+  private static final int TOKEN_FOUR = 4;
+  private static final int TOKEN_SIX = 6;
+  private static final int TOKEN_EIGHT = 8;
+  private static final int TOKEN_NINE = 9;
+  private static final int TOKEN_TEN = 10;
 
   @Mock private Shuffler shuffler;
   private Board board;
@@ -34,7 +77,7 @@ class BoardTest {
 
     board.create();
 
-    assertEquals(19, board.getTiles().size());
+    assertEquals(TOTAL_TILES, board.getTiles().size());
 
     verify(shuffler);
   }
@@ -65,7 +108,7 @@ class BoardTest {
     board.create();
 
     long count = countByResource(TileType.FOREST);
-    assertEquals(4, count);
+    assertEquals(FOREST_COUNT, count);
 
     verify(shuffler);
   }
@@ -80,7 +123,7 @@ class BoardTest {
     board.create();
 
     long count = countByResource(TileType.PASTURE);
-    assertEquals(4, count);
+    assertEquals(PASTURE_COUNT, count);
 
     verify(shuffler);
   }
@@ -95,7 +138,7 @@ class BoardTest {
     board.create();
 
     long count = countByResource(TileType.FIELDS);
-    assertEquals(4, count);
+    assertEquals(FIELDS_COUNT, count);
 
     verify(shuffler);
   }
@@ -110,7 +153,7 @@ class BoardTest {
     board.create();
 
     long count = countByResource(TileType.HILLS);
-    assertEquals(3, count);
+    assertEquals(HILLS_COUNT, count);
 
     verify(shuffler);
   }
@@ -125,7 +168,7 @@ class BoardTest {
     board.create();
 
     long count = countByResource(TileType.MOUNTAINS);
-    assertEquals(3, count);
+    assertEquals(MOUNTAINS_COUNT, count);
 
     verify(shuffler);
   }
@@ -196,7 +239,25 @@ class BoardTest {
     board.create();
 
     List<Integer> expected =
-        Arrays.asList(5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11);
+        Arrays.asList(
+            FIRST_TOKEN,
+            MIN_TOKEN,
+            TOKEN_SIX,
+            TOKEN_THREE,
+            TOKEN_EIGHT,
+            TOKEN_TEN,
+            TOKEN_NINE,
+            MAX_TOKEN,
+            LAST_TOKEN,
+            TOKEN_FOUR,
+            TOKEN_EIGHT,
+            TOKEN_TEN,
+            TOKEN_NINE,
+            TOKEN_FOUR,
+            FIRST_TOKEN,
+            TOKEN_SIX,
+            TOKEN_THREE,
+            LAST_TOKEN);
     assertEquals(expected, tokenSequence());
 
     verify(shuffler);
@@ -213,7 +274,7 @@ class BoardTest {
 
     board.create();
 
-    assertEquals(5, tokenSequence().get(0));
+    assertEquals(FIRST_TOKEN, tokenSequence().get(0));
 
     verify(shuffler);
   }
@@ -230,7 +291,7 @@ class BoardTest {
     board.create();
 
     List<Integer> seq = tokenSequence();
-    assertEquals(11, seq.get(seq.size() - 1));
+    assertEquals(LAST_TOKEN, seq.get(seq.size() - 1));
 
     verify(shuffler);
   }
@@ -250,7 +311,7 @@ class BoardTest {
         count++;
       }
     }
-    assertEquals(18, count);
+    assertEquals(TOTAL_TOKENS, count);
 
     verify(shuffler);
   }
@@ -265,7 +326,7 @@ class BoardTest {
 
     board.create();
 
-    assertEquals(54, board.getVertices().size());
+    assertEquals(TOTAL_VERTICES, board.getVertices().size());
 
     verify(shuffler);
   }
@@ -282,11 +343,11 @@ class BoardTest {
 
     long count = 0;
     for (Vertex v : board.getVertices()) {
-      if (v.getAdjacentTiles().size() == 3) {
+      if (v.getAdjacentTiles().size() == MAX_ADJACENT_TILES_VERTEX) {
         count++;
       }
     }
-    assertEquals(24, count);
+    assertEquals(INTERIOR_VERTEX_COUNT, count);
 
     verify(shuffler);
   }
@@ -303,11 +364,11 @@ class BoardTest {
 
     long count = 0;
     for (Vertex v : board.getVertices()) {
-      if (v.getAdjacentTiles().size() < 3) {
+      if (v.getAdjacentTiles().size() < MAX_ADJACENT_TILES_VERTEX) {
         count++;
       }
     }
-    assertEquals(30, count);
+    assertEquals(COASTAL_VERTEX_COUNT, count);
 
     verify(shuffler);
   }
@@ -322,7 +383,7 @@ class BoardTest {
 
     board.create();
 
-    assertEquals(72, board.getEdges().size());
+    assertEquals(TOTAL_EDGES, board.getEdges().size());
 
     verify(shuffler);
   }
@@ -339,11 +400,11 @@ class BoardTest {
 
     long count = 0;
     for (Edge e : board.getEdges()) {
-      if (e.getAdjacentTiles().size() == 2) {
+      if (e.getAdjacentTiles().size() == MAX_ADJACENT_TILES_EDGE) {
         count++;
       }
     }
-    assertEquals(42, count);
+    assertEquals(INTERIOR_EDGE_COUNT, count);
 
     verify(shuffler);
   }
@@ -364,7 +425,7 @@ class BoardTest {
         count++;
       }
     }
-    assertEquals(30, count);
+    assertEquals(COASTAL_EDGE_COUNT, count);
 
     verify(shuffler);
   }
@@ -379,7 +440,7 @@ class BoardTest {
 
     board.create();
 
-    assertEquals(9, board.getHarbors().size());
+    assertEquals(TOTAL_HARBORS, board.getHarbors().size());
 
     verify(shuffler);
   }
@@ -399,7 +460,7 @@ class BoardTest {
         count++;
       }
     }
-    assertEquals(4, count);
+    assertEquals(GENERIC_HARBOR_COUNT, count);
 
     verify(shuffler);
   }
@@ -449,7 +510,7 @@ class BoardTest {
         count++;
       }
     }
-    assertEquals(18, count);
+    assertEquals(HARBOR_VERTEX_COUNT, count);
 
     verify(shuffler);
   }
@@ -467,7 +528,7 @@ class BoardTest {
     for (Harbor h : board.getHarbors()) {
       if (h.getHarborType() != ResourceType.GENERIC) {
         assertEquals(
-            2,
+            RESOURCE_HARBOR_RATE,
             h.getExchangeRate(),
             "Expected exchange rate 2 for resource harbor " + h.getHarborType());
       }
@@ -488,7 +549,7 @@ class BoardTest {
 
     for (Harbor h : board.getHarbors()) {
       if (h.getHarborType() == ResourceType.GENERIC) {
-        assertEquals(3, h.getExchangeRate());
+        assertEquals(GENERIC_HARBOR_RATE, h.getExchangeRate());
       }
     }
 
@@ -507,7 +568,7 @@ class BoardTest {
 
     long count = 0;
     for (Tile t : board.getTiles()) {
-      if (t.getNumberToken() == 2) {
+      if (t.getNumberToken() == MIN_TOKEN) {
         count++;
       }
     }
@@ -528,7 +589,7 @@ class BoardTest {
 
     long count = 0;
     for (Tile t : board.getTiles()) {
-      if (t.getNumberToken() == 12) {
+      if (t.getNumberToken() == MAX_TOKEN) {
         count++;
       }
     }
@@ -561,7 +622,7 @@ class BoardTest {
 
     board.create();
 
-    assertNotNull(board.getTile(-2, 0));
+    assertNotNull(board.getTile(MIN_Q, 0));
 
     verify(shuffler);
   }
@@ -576,7 +637,7 @@ class BoardTest {
 
     board.create();
 
-    assertNotNull(board.getTile(2, 0));
+    assertNotNull(board.getTile(MAX_Q, 0));
 
     verify(shuffler);
   }
@@ -591,7 +652,7 @@ class BoardTest {
 
     board.create();
 
-    assertNull(board.getTile(3, 0));
+    assertNull(board.getTile(OUTSIDE_Q, 0));
 
     verify(shuffler);
   }
@@ -606,7 +667,7 @@ class BoardTest {
 
     board.create();
 
-    assertEquals(6, board.getNeighbors(0, 0).size());
+    assertEquals(CENTER_NEIGHBOR_COUNT, board.getNeighbors(0, 0).size());
 
     verify(shuffler);
   }
@@ -621,7 +682,7 @@ class BoardTest {
 
     board.create();
 
-    assertEquals(3, board.getNeighbors(-2, 0).size());
+    assertEquals(CORNER_NEIGHBOR_COUNT, board.getNeighbors(MIN_Q, 0).size());
 
     verify(shuffler);
   }
@@ -636,7 +697,7 @@ class BoardTest {
 
     board.create();
 
-    assertTrue(board.getNeighbors(5, 5).isEmpty());
+    assertTrue(board.getNeighbors(OFF_BOARD_COORD, OFF_BOARD_COORD).isEmpty());
 
     verify(shuffler);
   }
@@ -744,8 +805,25 @@ class BoardTest {
 
   private List<Integer> tokenSequence() {
     int[][] positions = {
-      {-2, 0}, {-2, 1}, {-2, 2}, {-1, -1}, {-1, 0}, {-1, 1}, {-1, 2}, {0, -2}, {0, -1}, {0, 0},
-      {0, 1}, {0, 2}, {1, -2}, {1, -1}, {1, 0}, {1, 1}, {2, -2}, {2, -1}, {2, 0}
+      {MIN_COORD, 0},
+      {MIN_COORD, 1},
+      {MIN_COORD, MAX_Q},
+      {-1, -1},
+      {-1, 0},
+      {-1, 1},
+      {-1, MAX_Q},
+      {0, MIN_COORD},
+      {0, -1},
+      {0, 0},
+      {0, 1},
+      {0, MAX_Q},
+      {1, MIN_COORD},
+      {1, -1},
+      {1, 0},
+      {1, 1},
+      {MAX_Q, MIN_COORD},
+      {MAX_Q, -1},
+      {MAX_Q, 0}
     };
     List<Integer> sequence = new ArrayList<>();
     for (int[] pos : positions) {
