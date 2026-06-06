@@ -8,10 +8,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.List;
 
 import static org.easymock.EasyMock.replay;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(EasyMockExtension.class)
 class VertexTest {
+
+  private static final int MAX_ADJACENT_TILES = 3;
+  private static final int MIN_ADJACENT_TILES = 1;
+  private static final int GENERIC_HARBOR_RATE = 3;
+  private static final int INTERIOR_Q = -2;
 
   @Mock private Player player;
 
@@ -41,7 +48,7 @@ class VertexTest {
     vertex.addTile(new Tile(TileType.HILLS, 1, -1));
     vertex.addTile(new Tile(TileType.PASTURE, 1, 0));
 
-    assertEquals(3, vertex.getAdjacentTiles().size());
+    assertEquals(MAX_ADJACENT_TILES, vertex.getAdjacentTiles().size());
   }
 
   // TC4 – Coastal vertex has exactly 1 adjacent tile after adding one
@@ -49,9 +56,9 @@ class VertexTest {
   @Test
   void addTile_coastalVertex_hasOneAdjacentTile() {
     Vertex vertex = new Vertex("0");
-    vertex.addTile(new Tile(TileType.FOREST, -2, 0));
+    vertex.addTile(new Tile(TileType.FOREST, INTERIOR_Q, 0));
 
-    assertEquals(1, vertex.getAdjacentTiles().size());
+    assertEquals(MIN_ADJACENT_TILES, vertex.getAdjacentTiles().size());
   }
 
   // TC5 – addTile stores the correct tile reference
@@ -115,7 +122,7 @@ class VertexTest {
   @Test
   void setHarbor_nonNullHarbor_returnsHarbor() {
     Vertex vertex = new Vertex("0");
-    Harbor harbor = new Harbor(ResourceType.GENERIC, 3, "v1", "v2");
+    Harbor harbor = new Harbor(ResourceType.GENERIC, GENERIC_HARBOR_RATE, "v1", "v2");
     vertex.setHarbor(harbor);
 
     assertEquals(harbor, vertex.getHarbor());

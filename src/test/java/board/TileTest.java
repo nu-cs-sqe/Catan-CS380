@@ -2,9 +2,14 @@ package board;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TileTest {
+
+  private static final int MIN_Q = -2;
+  private static final int MIN_R = 1;
+  private static final int MIN_TOKEN = 2;
+  private static final int MAX_TOKEN = 12;
 
   // TC1 – Constructor sets TileType correctly
   @Test
@@ -17,10 +22,10 @@ class TileTest {
   // TC2 – Constructor sets q and r coordinates correctly
   @Test
   void constructor_setsCoordinates() {
-    Tile tile = new Tile(TileType.HILLS, -2, 1);
+    Tile tile = new Tile(TileType.HILLS, MIN_Q, MIN_R);
 
-    assertEquals(-2, tile.getQ());
-    assertEquals(1, tile.getR());
+    assertEquals(MIN_Q, tile.getQ());
+    assertEquals(MIN_R, tile.getR());
   }
 
   // TC3 – Number token defaults to 0 (no token assigned)
@@ -36,9 +41,9 @@ class TileTest {
   @Test
   void setNumberToken_minimumValidToken_returnsTwo() {
     Tile tile = new Tile(TileType.FOREST, 0, 0);
-    tile.setNumberToken(2);
+    tile.setNumberToken(MIN_TOKEN);
 
-    assertEquals(2, tile.getNumberToken());
+    assertEquals(MIN_TOKEN, tile.getNumberToken());
   }
 
   // TC5 – setNumberToken(12) stores the maximum valid token
@@ -46,8 +51,8 @@ class TileTest {
   @Test
   void setNumberToken_maximumValidToken_returnsTwelve() {
     Tile tile = new Tile(TileType.FOREST, 0, 0);
-    tile.setNumberToken(12);
+    tile.setNumberToken(MAX_TOKEN);
 
-    assertEquals(12, tile.getNumberToken());
+    assertEquals(MAX_TOKEN, tile.getNumberToken());
   }
 }

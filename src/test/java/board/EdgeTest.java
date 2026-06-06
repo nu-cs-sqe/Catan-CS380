@@ -8,10 +8,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.List;
 
 import static org.easymock.EasyMock.replay;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(EasyMockExtension.class)
 class EdgeTest {
+
+  private static final int MAX_ADJACENT_TILES = 2;
+  private static final int MIN_ADJACENT_TILES = 1;
+  private static final int COASTAL_Q = -2;
 
   @Mock private Player player;
 
@@ -40,7 +46,7 @@ class EdgeTest {
     edge.addTile(new Tile(TileType.FOREST, 0, 0));
     edge.addTile(new Tile(TileType.HILLS, 1, 0));
 
-    assertEquals(2, edge.getAdjacentTiles().size());
+    assertEquals(MAX_ADJACENT_TILES, edge.getAdjacentTiles().size());
   }
 
   // TC4 – Coastal edge has exactly 1 adjacent tile after adding one
@@ -48,9 +54,9 @@ class EdgeTest {
   @Test
   void addTile_coastalEdge_hasOneAdjacentTile() {
     Edge edge = new Edge("0");
-    edge.addTile(new Tile(TileType.FOREST, -2, 0));
+    edge.addTile(new Tile(TileType.FOREST, COASTAL_Q, 0));
 
-    assertEquals(1, edge.getAdjacentTiles().size());
+    assertEquals(MIN_ADJACENT_TILES, edge.getAdjacentTiles().size());
   }
 
   // TC5 – addTile stores the correct tile reference
