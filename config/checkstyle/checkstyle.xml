@@ -19,6 +19,11 @@
     <property name="ignorePattern" value="^package.*|^import.*|https?://"/>
   </module>
 
+  <module name="SuppressionSingleFilter">
+    <property name="files" value=".*Test\.java"/>
+    <property name="checks" value="MethodName"/>
+  </module>
+
   <module name="TreeWalker">
 
     <!-- Imports -->
