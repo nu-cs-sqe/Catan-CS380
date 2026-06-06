@@ -1,6 +1,7 @@
 package board;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Vertex {
@@ -26,7 +27,7 @@ public class Vertex {
   }
 
   public List<Tile> getAdjacentTiles() {
-    return adjacentTiles;
+    return Collections.unmodifiableList(adjacentTiles);
   }
 
   public Player getOwner() {
