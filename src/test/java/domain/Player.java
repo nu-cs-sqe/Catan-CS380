@@ -56,4 +56,45 @@ class PlayerTest {
                 () -> assertEquals(15, player.getRemainingRoads())
         );
     }
+
+    // BVA TC7
+    @Test
+    void shouldIncreaseBrickToOne_whenAddingOneBrickToEmptyHand() {
+        domain.Player player = new domain.Player("Alice", PlayerColor.RED);
+        player.addResource(Resource.BRICK, 1);
+        assertEquals(1, player.getResourceCount(Resource.BRICK));
+    }
+
+    // BVA TC8
+    @Test
+    void shouldLeaveResourceUnchanged_whenAddingZero() {
+        domain.Player player = new domain.Player("Alice", PlayerColor.RED);
+        player.addResource(Resource.BRICK, 0);
+        assertEquals(0, player.getResourceCount(Resource.BRICK));
+    }
+
+    // BVA TC9
+    @Test
+    void shouldThrowIllegalArgument_whenAddingNegativeAmount() {
+        domain.Player player = new domain.Player("Alice", PlayerColor.RED);
+        assertThrows(IllegalArgumentException.class,
+                () -> player.addResource(Resource.BRICK, -1));
+    }
+
+    // BVA TC10
+    @Test
+    void shouldThrowNullPointer_whenAddingNullResource() {
+        domain.Player player = new domain.Player("Alice", PlayerColor.RED);
+        assertThrows(NullPointerException.class,
+                () -> player.addResource(null, 1));
+    }
+
+    // BVA TC11
+    @Test
+    void shouldAccumulateBrick_whenAddingMultipleTimes() {
+        domain.Player player = new domain.Player("Alice", PlayerColor.RED);
+        player.addResource(Resource.BRICK, 3);
+        player.addResource(Resource.BRICK, 2);
+        assertEquals(5, player.getResourceCount(Resource.BRICK));
+    }
 }
