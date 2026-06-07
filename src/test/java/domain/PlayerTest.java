@@ -197,4 +197,98 @@ class PlayerTest {
     void shouldDiscardZero_whenHandIsEmpty() {
         assertEquals(0, player.discardOnSevenCount());
     }
+
+    // BVA TC22
+    @Test
+    void shouldHaveZeroVpAndNotWin_whenFreshlyConstructed() {
+        assertEquals(0, player.getVictoryPoints());
+        assertFalse(player.hasWon());
+    }
+
+    // BVA TC23
+    @Test
+    void shouldHaveSixVp_whenHoldingFourSettlementsAndOneCity() {
+        placeSettlements(4);
+        placeCities(1);
+        assertEquals(6, player.getVictoryPoints());
+    }
+
+    // BVA TC24
+    @Test
+    void shouldHaveNineVpAndNotWin_whenHoldingThreeSettlementsAndThreeCities() {
+        placeSettlements(3);
+        placeCities(3);
+        assertEquals(9, player.getVictoryPoints());
+        assertFalse(player.hasWon());
+    }
+
+    // BVA TC25
+    @Test
+    void shouldHaveTenVpAndWin_whenHoldingFourSettlementsAndThreeCities() {
+        placeSettlements(4);
+        placeCities(3);
+        assertEquals(10, player.getVictoryPoints());
+        assertTrue(player.hasWon());
+    }
+
+    // BVA TC26
+    @Test
+    void shouldHaveElevenVpAndWin_whenHoldingFiveSettlementsAndThreeCities() {
+        placeSettlements(5);
+        placeCities(3);
+        assertEquals(11, player.getVictoryPoints());
+        assertTrue(player.hasWon());
+    }
+
+    // BVA TC27
+    @Test
+    void shouldHaveNineVp_whenHoldingThreeSettlementsTwoCitiesAndLongestRoad() {
+        placeSettlements(3);
+        placeCities(2);
+        player.awardLongestRoad();
+        assertEquals(9, player.getVictoryPoints());
+    }
+
+    // BVA TC28
+    @Test
+    void shouldHaveElevenVpAndWin_whenHoldingPiecesPlusLongestRoadAndLargestArmy() {
+        placeSettlements(3);
+        placeCities(2);
+        player.awardLongestRoad();
+        player.awardLargestArmy();
+        assertEquals(11, player.getVictoryPoints());
+        assertTrue(player.hasWon());
+    }
+
+    // BVA TC29
+    @Test
+    void shouldRestoreVp_whenLongestRoadAwardedThenRevoked() {
+        placeSettlements(3);
+        placeCities(2);
+        int before = player.getVictoryPoints();
+        player.awardLongestRoad();
+        player.revokeLongestRoad();
+        assertEquals(before, player.getVictoryPoints());
+    }
+
+    // BVA TC30
+    @Test
+    void shouldHaveFiveVp_whenHoldingFiveVictoryPointDevCards() {
+        for (int i = 0; i < 5; i++) {
+            player.addVictoryPointDevCard();
+        }
+        assertEquals(5, player.getVictoryPoints());
+    }
+
+    private void placeSettlements(int count) {
+        for (int i = 0; i < count; i++) {
+            player.placeSettlement();
+        }
+    }
+
+    private void placeCities(int count) {
+        for (int i = 0; i < count; i++) {
+            player.placeCity();
+        }
+    }
 }
