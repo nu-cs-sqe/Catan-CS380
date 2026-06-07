@@ -64,6 +64,10 @@ public final class Player {
                 .allMatch(entry -> resources.get(entry.getKey()) >= entry.getValue());
     }
 
+    public int discardOnSevenCount() {
+        return 0;
+    }
+
     private static void requireNonNegative(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("amount must be non-negative");
