@@ -65,6 +65,28 @@ public final class Player {
                 .allMatch(entry -> resources.get(entry.getKey()) >= entry.getValue());
     }
 
+    public boolean hasWon() {
+        return false;
+    }
+
+    public void placeSettlement() {
+    }
+
+    public void placeCity() {
+    }
+
+    public void awardLongestRoad() {
+    }
+
+    public void revokeLongestRoad() {
+    }
+
+    public void awardLargestArmy() {
+    }
+
+    public void addVictoryPointDevCard() {
+    }
+
     public int discardOnSevenCount() {
         int hand = getHandSize();
         if (hand <= DISCARD_THRESHOLD) {
