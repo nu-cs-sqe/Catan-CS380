@@ -47,20 +47,22 @@ public final class Player {
 
     public void addResource(Resource resource, int amount) {
         Objects.requireNonNull(resource, "resource");
-        if (amount < 0) {
-            throw new IllegalArgumentException("amount must be non-negative");
-        }
+        requireNonNegative(amount);
         resources.merge(resource, amount, Integer::sum);
     }
 
     public void removeResource(Resource resource, int amount) {
-        if (amount < 0) {
-            throw new IllegalArgumentException();
-        }
+        requireNonNegative(amount);
         if (resources.get(resource) < amount) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("insufficient " + resource);
         }
         resources.merge(resource, -amount, Integer::sum);
+    }
+
+    private static void requireNonNegative(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("amount must be non-negative");
+        }
     }
 
     public int getRemainingSettlements() {
