@@ -110,4 +110,28 @@ class PlayerTest {
         player.addResource(Resource.BRICK, 2);
         assertEquals(5, player.getResourceCount(Resource.BRICK));
     }
+
+    // BVA TC12
+    @Test
+    void shouldReduceResourceCountToZero_whenRemovingExactHeldAmount() {
+        player.addResource(Resource.BRICK, 2);
+        player.removeResource(Resource.BRICK, 2);
+        assertEquals(0, player.getResourceCount(Resource.BRICK));
+    }
+
+    // BVA TC13
+    @Test
+    void shouldThrowIllegalStateAndLeaveCountUnchanged_whenRemovingMoreThanHeld() {
+        player.addResource(Resource.BRICK, 2);
+        assertThrows(IllegalStateException.class,
+                () -> player.removeResource(Resource.BRICK, 3));
+        assertEquals(2, player.getResourceCount(Resource.BRICK));
+    }
+
+    // BVA TC14
+    @Test
+    void shouldThrowIllegalArgument_whenRemovingNegativeAmount() {
+        assertThrows(IllegalArgumentException.class,
+                () -> player.removeResource(Resource.BRICK, -1));
+    }
 }
