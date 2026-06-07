@@ -42,8 +42,8 @@ Boundary Value Analysis for the `Player` class. Each row maps to a test in `src/
 
 |      | System under test                          | Expected output                            | Implemented? |
 |------|--------------------------------------------|--------------------------------------------|--------------|
-| TC15 | has {BRICK:1, LUMBER:1}, cost = settlement | hasResources true                          | no           |
-| TC16 | missing exactly 1 GRAIN of settlement cost | hasResources false (just-below boundary)   | no           |
+| TC15 | has {BRICK:1, LUMBER:1}, cost = settlement | hasResources true                          | yes           |
+| TC16 | missing exactly 1 GRAIN of settlement cost | hasResources false (just-below boundary)   | yes           |
 
 
 ### Method under test: `discardOnSevenCount()`
