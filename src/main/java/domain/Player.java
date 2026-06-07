@@ -9,6 +9,7 @@ public final class Player {
     private static final int STARTING_SETTLEMENTS = 5;
     private static final int STARTING_CITIES = 4;
     private static final int STARTING_ROADS = 15;
+    private static final int DISCARD_THRESHOLD = 7;
 
     private final String name;
     private final PlayerColor color;
@@ -65,7 +66,15 @@ public final class Player {
     }
 
     public int discardOnSevenCount() {
-        return resources.get(Resource.BRICK) > 7 ? 4 : 0;
+        int hand = getHandSize();
+        if (hand <= DISCARD_THRESHOLD) {
+            return 0;
+        }
+        return hand / 2;
+    }
+
+    private int getHandSize() {
+        return resources.values().stream().mapToInt(Integer::intValue).sum();
     }
 
     private static void requireNonNegative(int amount) {
