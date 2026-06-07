@@ -50,11 +50,11 @@ Boundary Value Analysis for the `Player` class. Each row maps to a test in `src/
 
 |      | System under test    | Expected output                       | Implemented? |
 |------|----------------------|---------------------------------------|--------------|
-| TC17 | hand size 6          | 0 (below boundary)                    | no           |
-| TC18 | hand size 7          | 0 (exact boundary, no discard)        | no           |
-| TC19 | hand size 8          | 4 (just above boundary, round down)   | no           |
-| TC20 | hand size 9          | 4 (odd, round down)                   | no           |
-| TC21 | hand size 0          | 0 (empty hand)                        | no           |
+| TC17 | hand size 6          | 0 (below boundary)                    | yes           |
+| TC18 | hand size 7          | 0 (exact boundary, no discard)        | yes           |
+| TC19 | hand size 8          | 4 (just above boundary, round down)   | yes           |
+| TC20 | hand size 9          | 4 (odd, round down)                   | yes           |
+| TC21 | hand size 0          | 0 (empty hand)                        | yes           |
 
 
 ### Method under test: VP accounting (`getVictoryPoints()` / `hasWon()`)
