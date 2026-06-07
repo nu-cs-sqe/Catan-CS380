@@ -45,6 +45,9 @@ public final class Player {
         return resources.get(resource);
     }
 
+    public void addResource(Resource resource, int amount) {
+    }
+
     public int getRemainingSettlements() {
         return remainingSettlements;
     }
