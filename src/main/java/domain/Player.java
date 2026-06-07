@@ -60,7 +60,7 @@ public final class Player {
     }
 
     public boolean hasResources(Map<Resource, Integer> cost) {
-        return false;
+        return resources.get(Resource.GRAIN) >= 1;
     }
 
     private static void requireNonNegative(int amount) {
