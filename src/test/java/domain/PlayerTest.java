@@ -3,9 +3,13 @@ package domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PlayerTest {
 
@@ -14,6 +18,12 @@ class PlayerTest {
     private static final int STARTING_SETTLEMENTS = 5;
     private static final int STARTING_CITIES = 4;
     private static final int STARTING_ROADS = 15;
+    private static final Map<Resource, Integer> SETTLEMENT_COST = Map.of(
+            Resource.BRICK, 1,
+            Resource.LUMBER, 1,
+            Resource.WOOL, 1,
+            Resource.GRAIN, 1
+    );
 
     private Player player;
 
@@ -133,5 +143,24 @@ class PlayerTest {
     void shouldThrowIllegalArgument_whenRemovingNegativeAmount() {
         assertThrows(IllegalArgumentException.class,
                 () -> player.removeResource(Resource.BRICK, -1));
+    }
+
+    // BVA TC15
+    @Test
+    void shouldReturnTrue_whenHoldingExactSettlementCost() {
+        player.addResource(Resource.BRICK, 1);
+        player.addResource(Resource.LUMBER, 1);
+        player.addResource(Resource.WOOL, 1);
+        player.addResource(Resource.GRAIN, 1);
+        assertTrue(player.hasResources(SETTLEMENT_COST));
+    }
+
+    // BVA TC16
+    @Test
+    void shouldReturnFalse_whenMissingOneGrainOfSettlementCost() {
+        player.addResource(Resource.BRICK, 1);
+        player.addResource(Resource.LUMBER, 1);
+        player.addResource(Resource.WOOL, 1);
+        assertFalse(player.hasResources(SETTLEMENT_COST));
     }
 }
