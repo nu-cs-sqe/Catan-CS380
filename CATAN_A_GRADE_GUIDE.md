@@ -127,7 +127,55 @@ Each feature gets a PM board column/milestone (**Week 4 §4.1**).
 
 ---
 
-## 6. BVA Template
+## 6. GitHub Project Board — **Week 4 §4.1**
+
+The professor grades the PM board directly: it must exist, show every feature, and contain a **User Story + Acceptance Criteria + Use Cases** for each feature (Week 4 §4.1). The empty Backlog view they showed in class is the target template.
+
+### One-time setup
+1. Repo → **Projects** tab → **New project** → **Team planning** template.
+2. Name it `team-<n>-<term>` (e.g. `team-15-20252603`).
+3. Open the **Backlog** view. Confirm the fields match what the professor expects:
+   `Title`, `Assignees`, `Status`, `Linked pull requests`, `Sub-issues progress`, `Iteration`, `Estimate`.
+4. Status values: `Backlog`, `Ready`, `In Progress`, `In Review`, `Done`.
+5. Create one **Iteration** per week (Week 4 – Week 7).
+
+### Per-feature workflow
+For each feature listed in §5:
+1. Create a parent Issue titled `Feature: <name>` and add it to the Project.
+2. Fill the Issue body using the format below (matches the Exploding Kittens example shown in class).
+3. Create child Issues for sub-tasks (BVA doc, failing test, implementation, refactor) and link them as **sub-issues** so the `Sub-issues progress` field populates.
+4. Assign the Iteration, an Assignee, and an Estimate.
+5. Move the card through `Status` as work progresses; link the PR through `Linked pull requests`.
+6. Close the parent Issue only when every acceptance-criteria checkbox is ticked.
+
+### Issue body template (the format the professor expects)
+
+```markdown
+## User Story
+As a <role>, I want <feature>, so that <benefit>.
+
+### Acceptance Criteria
+- [ ] <testable condition>
+- [ ] <testable condition>
+
+## Use Case <N>: <Name>
+- **Actor:** <role>
+- **Preconditions:**
+  - <state that must hold before the flow>
+- **Main Flow:**
+  1. <step>
+  2. <step>
+- **Alternate Flows:**
+  - <step#>.a <variation>
+- **Postconditions:**
+  - <state after success>
+```
+
+Keep one Use Case per scenario. Acceptance Criteria must be testable — each checkbox should map to at least one BVA row in [docs/bva/](docs/bva/) (Week 4 §4.3).
+
+---
+
+## 7. BVA Template
 
 Required by **Week 4 §4.3**, checked in PR review per **Week 5 §3**. Save as `docs/design/bva/<feature>-bva.md`.
 
@@ -194,7 +242,7 @@ Every test method should trace to a row here. Flip `no` → `yes` when the test 
 
 ---
 
-## 7. Test Quality Standards
+## 8. Test Quality Standards
 
 ### Coverage (configured in build.gradle — **Week 7 §3**)
 - **JaCoCo:** line ≥ 90%, branch ≥ 85% (build fails below threshold) — *Week 7 §3*
@@ -213,7 +261,7 @@ Every test method should trace to a row here. Flip `no` → `yes` when the test 
 
 ---
 
-## 8. Clean Code Standards
+## 9. Clean Code Standards
 
 From **Week 5 §3** (Software Design Principles + GUI Development section):
 
@@ -230,7 +278,7 @@ From **Week 5 §3** (Software Design Principles + GUI Development section):
 
 ---
 
-## 9. Build Setup (`build.gradle`)
+## 10. Build Setup (`build.gradle`)
 
 Plugins required across weeks. Refer to the **Lab 5 Code Coverage repository** (linked in Week 6 §3 and Week 7 §3) for exact versions and config.
 
@@ -280,7 +328,7 @@ spotbugs {                                           // Week 6 §3
 
 ---
 
-## 10. CI Workflow (`.github/workflows/ci.yml`)
+## 11. CI Workflow (`.github/workflows/ci.yml`)
 
 ```yaml
 name: CI
@@ -304,7 +352,7 @@ jobs:
 
 ---
 
-## 11. Checkstyle Configuration — **Week 6 §3**
+## 12. Checkstyle Configuration — **Week 6 §3**
 
 Week 6 §3 says: pick Google or Oracle style as a **starter**, then "remove, add, or change" rules to fit our team.
 
@@ -327,7 +375,7 @@ Document deviations in `docs/design/coding-standard.md`.
 
 ---
 
-## 12. i18n Plan — **Week 7 §5**
+## 13. i18n Plan — **Week 7 §5**
 
 Required: discuss and document plan in the PM board (Week 7 §5).
 
@@ -369,7 +417,7 @@ public final class Messages {
 
 ---
 
-## 13. Integration Test Plan — **Week 7 §4**
+## 14. Integration Test Plan — **Week 7 §4**
 
 Required: discuss and document in the PM board.
 
@@ -383,7 +431,7 @@ Place tests in `src/test/java/.../integration/`. Real classes, no mocks.
 
 ---
 
-## 14. Weekly Report Template — **Week 4 §1+§5, Week 5–7 §1+last item**
+## 15. Weekly Report Template — **Week 4 §1+§5, Week 5–7 §1+last item**
 
 `docs/weekly-report/report.md` — append a section each week.
 
@@ -412,7 +460,7 @@ Place tests in `src/test/java/.../integration/`. Real classes, no mocks.
 
 ---
 
-## 15. Catan Domain Quick Reference (Rulebook)
+## 16. Catan Domain Quick Reference (Rulebook)
 
 Source: `catanrulebook.pdf`. Each row is a candidate BVA case (Week 4 §4.3).
 
@@ -437,7 +485,7 @@ Source: `catanrulebook.pdf`. Each row is a candidate BVA case (Week 4 §4.3).
 
 ---
 
-## 16. Per-Week Action Map
+## 17. Per-Week Action Map
 
 Pin this somewhere visible.
 
@@ -466,7 +514,7 @@ Pin this somewhere visible.
 
 ---
 
-## 17. Pre-Submission Checklist
+## 18. Pre-Submission Checklist
 
 - [ ] `./gradlew clean check pitest` passes from fresh checkout — *Weeks 6+7*
 - [ ] Features 1–5 demoable — *Week 5 §2*
