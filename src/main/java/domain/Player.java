@@ -10,6 +10,11 @@ public final class Player {
     private static final int STARTING_CITIES = 4;
     private static final int STARTING_ROADS = 15;
     private static final int DISCARD_THRESHOLD = 7;
+    private static final int WIN_THRESHOLD = 10;
+    private static final int SETTLEMENT_VP = 1;
+    private static final int CITY_VP = 2;
+    private static final int LONGEST_ROAD_VP = 2;
+    private static final int LARGEST_ARMY_VP = 2;
 
     private final String name;
     private final PlayerColor color;
@@ -41,12 +46,14 @@ public final class Player {
     }
 
     public int getVictoryPoints() {
-        int vp = settlementsPlaced + 2 * citiesPlaced + victoryPointDevCards;
+        int vp = settlementsPlaced * SETTLEMENT_VP
+                + citiesPlaced * CITY_VP
+                + victoryPointDevCards;
         if (hasLongestRoad) {
-            vp += 2;
+            vp += LONGEST_ROAD_VP;
         }
         if (hasLargestArmy) {
-            vp += 2;
+            vp += LARGEST_ARMY_VP;
         }
         return vp;
     }
@@ -76,7 +83,7 @@ public final class Player {
     }
 
     public boolean hasWon() {
-        return getVictoryPoints() >= 10;
+        return getVictoryPoints() >= WIN_THRESHOLD;
     }
 
     public void placeSettlement() {
