@@ -54,6 +54,13 @@ public final class Player {
     }
 
     public void removeResource(Resource resource, int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (resources.get(resource) < amount) {
+            throw new IllegalStateException();
+        }
+        resources.merge(resource, -amount, Integer::sum);
     }
 
     public int getRemainingSettlements() {
