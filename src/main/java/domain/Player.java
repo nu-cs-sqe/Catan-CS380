@@ -14,16 +14,19 @@ public final class Player {
     private final String name;
     private final PlayerColor color;
     private final Map<Resource, Integer> resources;
-    private int victoryPoints;
     private int remainingSettlements;
     private int remainingCities;
     private int remainingRoads;
+    private int settlementsPlaced;
+    private int citiesPlaced;
+    private int victoryPointDevCards;
+    private boolean hasLongestRoad;
+    private boolean hasLargestArmy;
 
     public Player(String name, PlayerColor color) {
         this.name = requireNonBlank(name);
         this.color = Objects.requireNonNull(color, "color");
         this.resources = emptyResourceHand();
-        this.victoryPoints = 0;
         this.remainingSettlements = STARTING_SETTLEMENTS;
         this.remainingCities = STARTING_CITIES;
         this.remainingRoads = STARTING_ROADS;
@@ -38,7 +41,14 @@ public final class Player {
     }
 
     public int getVictoryPoints() {
-        return victoryPoints;
+        int vp = settlementsPlaced + 2 * citiesPlaced + victoryPointDevCards;
+        if (hasLongestRoad) {
+            vp += 2;
+        }
+        if (hasLargestArmy) {
+            vp += 2;
+        }
+        return vp;
     }
 
     public int getResourceCount(Resource resource) {
@@ -66,25 +76,31 @@ public final class Player {
     }
 
     public boolean hasWon() {
-        return false;
+        return getVictoryPoints() >= 10;
     }
 
     public void placeSettlement() {
+        settlementsPlaced++;
     }
 
     public void placeCity() {
+        citiesPlaced++;
     }
 
     public void awardLongestRoad() {
+        hasLongestRoad = true;
     }
 
     public void revokeLongestRoad() {
+        hasLongestRoad = false;
     }
 
     public void awardLargestArmy() {
+        hasLargestArmy = true;
     }
 
     public void addVictoryPointDevCard() {
+        victoryPointDevCards++;
     }
 
     public int discardOnSevenCount() {
