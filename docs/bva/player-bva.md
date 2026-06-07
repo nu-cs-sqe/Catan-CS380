@@ -61,15 +61,15 @@ Boundary Value Analysis for the `Player` class. Each row maps to a test in `src/
 
 |      | System under test                                              | Expected output                              | Implemented? |
 |------|----------------------------------------------------------------|----------------------------------------------|--------------|
-| TC22 | fresh player                                                   | VP = 0, hasWon = false                       | no           |
-| TC23 | 4 settlements + 1 city                                         | VP = 6                                       | no           |
-| TC24 | 3 settlements + 3 cities                                       | VP = 9, hasWon = false (just below boundary) | no           |
-| TC25 | 4 settlements + 3 cities                                       | VP = 10, hasWon = true (exact boundary)      | no           |
-| TC26 | 5 settlements + 3 cities                                       | VP = 11, hasWon = true (above boundary)      | no           |
-| TC27 | 3 settlements + 2 cities + longest road                        | VP = 9                                       | no           |
-| TC28 | 3 settlements + 2 cities + longest road + largest army         | VP = 11, hasWon = true                       | no           |
-| TC29 | award then revoke longest road                                 | VP returns to pre-award value                | no           |
-| TC30 | 5 VP dev cards held                                            | VP = 5                                       | no           |
+| TC22 | fresh player                                                   | VP = 0, hasWon = false                       | yes           |
+| TC23 | 4 settlements + 1 city                                         | VP = 6                                       | yes           |
+| TC24 | 3 settlements + 3 cities                                       | VP = 9, hasWon = false (just below boundary) | yes           |
+| TC25 | 4 settlements + 3 cities                                       | VP = 10, hasWon = true (exact boundary)      | yes           |
+| TC26 | 5 settlements + 3 cities                                       | VP = 11, hasWon = true (above boundary)      | yes           |
+| TC27 | 3 settlements + 2 cities + longest road                        | VP = 9                                       | yes           |
+| TC28 | 3 settlements + 2 cities + longest road + largest army         | VP = 11, hasWon = true                       | yes           |
+| TC29 | award then revoke longest road                                 | VP returns to pre-award value                | yes           |
+| TC30 | 5 VP dev cards held                                            | VP = 5                                       | yes           |
 
 
 ### Method under test: piece inventory boundaries
