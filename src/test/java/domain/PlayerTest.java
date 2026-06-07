@@ -163,4 +163,38 @@ class PlayerTest {
         player.addResource(Resource.WOOL, 1);
         assertFalse(player.hasResources(SETTLEMENT_COST));
     }
+
+    // BVA TC17
+    @Test
+    void shouldDiscardZero_whenHandSizeIsBelowThreshold() {
+        player.addResource(Resource.BRICK, 6);
+        assertEquals(0, player.discardOnSevenCount());
+    }
+
+    // BVA TC18
+    @Test
+    void shouldDiscardZero_whenHandSizeEqualsThreshold() {
+        player.addResource(Resource.BRICK, 7);
+        assertEquals(0, player.discardOnSevenCount());
+    }
+
+    // BVA TC19
+    @Test
+    void shouldDiscardHalf_whenHandSizeIsJustAboveThreshold() {
+        player.addResource(Resource.BRICK, 8);
+        assertEquals(4, player.discardOnSevenCount());
+    }
+
+    // BVA TC20
+    @Test
+    void shouldDiscardHalfRoundedDown_whenHandSizeIsOdd() {
+        player.addResource(Resource.BRICK, 9);
+        assertEquals(4, player.discardOnSevenCount());
+    }
+
+    // BVA TC21
+    @Test
+    void shouldDiscardZero_whenHandIsEmpty() {
+        assertEquals(0, player.discardOnSevenCount());
+    }
 }
