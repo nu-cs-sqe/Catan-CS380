@@ -53,6 +53,9 @@ public final class Player {
         resources.merge(resource, amount, Integer::sum);
     }
 
+    public void removeResource(Resource resource, int amount) {
+    }
+
     public int getRemainingSettlements() {
         return remainingSettlements;
     }
