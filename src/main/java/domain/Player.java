@@ -65,7 +65,7 @@ public final class Player {
     }
 
     public int discardOnSevenCount() {
-        return 0;
+        return resources.get(Resource.BRICK) > 7 ? 4 : 0;
     }
 
     private static void requireNonNegative(int amount) {
