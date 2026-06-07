@@ -60,7 +60,8 @@ public final class Player {
     }
 
     public boolean hasResources(Map<Resource, Integer> cost) {
-        return resources.get(Resource.GRAIN) >= 1;
+        return cost.entrySet().stream()
+                .allMatch(entry -> resources.get(entry.getKey()) >= entry.getValue());
     }
 
     private static void requireNonNegative(int amount) {
