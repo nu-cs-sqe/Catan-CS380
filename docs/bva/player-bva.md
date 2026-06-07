@@ -22,20 +22,20 @@ Boundary Value Analysis for the `Player` class. Each row maps to a test in `src/
 
 |      | System under test                | Expected output                  | Implemented? |
 |------|----------------------------------|----------------------------------|--------------|
-| TC7  | amount = 1, BRICK count = 0      | BRICK = 1                        | no           |
-| TC8  | amount = 0                       | no change (boundary lower-valid) | no           |
-| TC9  | amount = -1                      | IllegalArgumentException         | no           |
-| TC10 | r = null, amount = 1             | NullPointerException             | no           |
-| TC11 | add 3 BRICK then add 2 BRICK     | BRICK = 5 (accumulates)          | no           |
+| TC7  | amount = 1, BRICK count = 0      | BRICK = 1                        | yess           |
+| TC8  | amount = 0                       | no change (boundary lower-valid) | yes          |
+| TC9  | amount = -1                      | IllegalArgumentException         | yes           |
+| TC10 | r = null, amount = 1             | NullPointerException             | yes          |
+| TC11 | add 3 BRICK then add 2 BRICK     | BRICK = 5 (accumulates)          | yes           |
 
 
 ### Method under test: `removeResource(Resource r, int amount)`
 
 |      | System under test              | Expected output                          | Implemented? |
 |------|--------------------------------|------------------------------------------|--------------|
-| TC12 | BRICK = 2, remove 2 BRICK      | BRICK = 0 (exact boundary)               | no           |
-| TC13 | BRICK = 2, remove 3 BRICK      | IllegalStateException, BRICK unchanged   | no           |
-| TC14 | amount = -1                    | IllegalArgumentException                 | no           |
+| TC12 | BRICK = 2, remove 2 BRICK      | BRICK = 0 (exact boundary)               | yes           |
+| TC13 | BRICK = 2, remove 3 BRICK      | IllegalStateException, BRICK unchanged   | yes           |
+| TC14 | amount = -1                    | IllegalArgumentException                 | yes           |
 
 
 ### Method under test: `hasResources(Map cost)`
