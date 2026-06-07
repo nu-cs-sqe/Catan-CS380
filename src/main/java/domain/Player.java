@@ -59,6 +59,10 @@ public final class Player {
         resources.merge(resource, -amount, Integer::sum);
     }
 
+    public boolean hasResources(Map<Resource, Integer> cost) {
+        return false;
+    }
+
     private static void requireNonNegative(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("amount must be non-negative");
