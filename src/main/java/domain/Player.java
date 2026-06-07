@@ -46,6 +46,11 @@ public final class Player {
     }
 
     public void addResource(Resource resource, int amount) {
+        Objects.requireNonNull(resource, "resource");
+        if (amount < 0) {
+            throw new IllegalArgumentException("amount must be non-negative");
+        }
+        resources.merge(resource, amount, Integer::sum);
     }
 
     public int getRemainingSettlements() {
