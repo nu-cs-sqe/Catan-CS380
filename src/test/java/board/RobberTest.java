@@ -13,4 +13,12 @@ class RobberTest {
 
     assertNull(robber.getTile());
   }
+
+  // TC2 – getPlayer() returns null immediately after construction
+  @Test
+  void constructor_playerDefaultsToNull() {
+    Robber robber = new Robber();
+
+    assertNull(robber.getPlayer());
+  }
 }
