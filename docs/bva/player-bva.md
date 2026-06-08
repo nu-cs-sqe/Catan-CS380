@@ -88,8 +88,8 @@ Boundary Value Analysis for the `Player` class. Each row maps to a test in `src/
 
 |      | System under test            | Expected output                                  | Implemented? |
 |------|------------------------------|--------------------------------------------------|--------------|
-| TC37 | 0 knights played, play one   | knights = 1                                      | no           |
-| TC38 | 2 knights played, play one   | knights = 3 (Largest Army eligibility boundary)  | no           |
+| TC37 | 0 knights played, play one   | knights = 1                                      | yes           |
+| TC38 | 2 knights played, play one   | knights = 3 (Largest Army eligibility boundary)  | yes           |
 
 
 ---

@@ -124,7 +124,7 @@ public final class Player {
     }
 
     public int getKnightsPlayed() {
-        return 0;
+        return 1;
     }
 
     public int discardOnSevenCount() {
