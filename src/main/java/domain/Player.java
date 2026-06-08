@@ -23,6 +23,7 @@ public final class Player {
     private int citiesPlaced;
     private int roadsPlaced;
     private int victoryPointDevCards;
+    private int knightsPlayed;
     private boolean hasLongestRoad;
     private boolean hasLargestArmy;
 
@@ -121,10 +122,11 @@ public final class Player {
     }
 
     public void playKnight() {
+        knightsPlayed++;
     }
 
     public int getKnightsPlayed() {
-        return 1;
+        return knightsPlayed;
     }
 
     public int discardOnSevenCount() {
