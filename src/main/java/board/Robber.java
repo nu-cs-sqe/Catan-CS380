@@ -5,11 +5,11 @@ public class Robber {
   private Player player;
 
   public Tile getTile() {
-    return tile;
+    return (tile != null) ? new Tile(tile) : null;
   }
 
   public void setTile(Tile tile) {
-    this.tile = tile;
+    this.tile = (tile != null) ? new Tile(tile) : null;
   }
 
   public Player getPlayer() {

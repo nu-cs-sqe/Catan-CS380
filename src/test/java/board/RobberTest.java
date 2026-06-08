@@ -23,7 +23,7 @@ class RobberTest {
     assertNull(robber.getPlayer());
   }
 
-  // TC3 – setTile() stores the tile and getTile() returns it
+  // TC3 – setTile() stores the tile and getTile() returns an equal-valued copy
   @Test
   void setTile_validTile_getTileReturnsSameTile() {
     Robber robber = new Robber();
@@ -31,7 +31,9 @@ class RobberTest {
 
     robber.setTile(tile);
 
-    assertEquals(tile, robber.getTile());
+    assertEquals(tile.getTileType(), robber.getTile().getTileType());
+    assertEquals(tile.getQ(), robber.getTile().getQ());
+    assertEquals(tile.getR(), robber.getTile().getR());
   }
 
   // TC4 – setTile(null) after a prior assignment clears the tile
