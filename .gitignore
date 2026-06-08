@@ -101,6 +101,10 @@ bin/
 .DS_Store
 
 ########################
+.claude/
+CATAN_A_GRADE_GUIDE.md
+
+########################
 ### Windows ###
 ########################
 # Windows thumbnail cache files
