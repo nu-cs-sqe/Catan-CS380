@@ -94,6 +94,12 @@ public final class Player {
         citiesPlaced++;
     }
 
+    public void placeRoad() {
+    }
+
+    public void upgradeSettlementToCity() {
+    }
+
     public void awardLongestRoad() {
         hasLongestRoad = true;
     }
