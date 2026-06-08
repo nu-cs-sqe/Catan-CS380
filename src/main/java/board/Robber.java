@@ -8,6 +8,10 @@ public class Robber {
     return tile;
   }
 
+  public void setTile(Tile tile) {
+    this.tile = tile;
+  }
+
   public Player getPlayer() {
     return player;
   }
