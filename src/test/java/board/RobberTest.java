@@ -33,4 +33,16 @@ class RobberTest {
 
     assertEquals(tile, robber.getTile());
   }
+
+  // TC4 – setTile(null) after a prior assignment clears the tile
+  // BVA: null boundary - robber returned to unplaced state
+  @Test
+  void setTile_null_afterPriorAssignment_getTileReturnsNull() {
+    Robber robber = new Robber();
+    robber.setTile(new Tile(TileType.FOREST, 0, 0));
+
+    robber.setTile(null);
+
+    assertNull(robber.getTile());
+  }
 }
