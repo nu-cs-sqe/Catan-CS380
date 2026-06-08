@@ -56,4 +56,15 @@ class RobberTest {
 
     assertEquals(player, robber.getPlayer());
   }
+
+  // TC6 – setPlayer(null) after a prior assignment clears the player
+  @Test
+  void setPlayer_null_afterPriorAssignment_getPlayerReturnsNull() {
+    Robber robber = new Robber();
+    robber.setPlayer(new Player());
+
+    robber.setPlayer(null);
+
+    assertNull(robber.getPlayer());
+  }
 }
