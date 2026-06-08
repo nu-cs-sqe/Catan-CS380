@@ -87,17 +87,36 @@ public final class Player {
     }
 
     public void placeSettlement() {
+        if (remainingSettlements == 0) {
+            throw new IllegalStateException();
+        }
         settlementsPlaced++;
+        remainingSettlements--;
     }
 
     public void placeCity() {
+        if (remainingCities == 0) {
+            throw new IllegalStateException();
+        }
         citiesPlaced++;
+        remainingCities--;
     }
 
     public void placeRoad() {
+        if (remainingRoads == 0) {
+            throw new IllegalStateException();
+        }
+        remainingRoads--;
     }
 
     public void upgradeSettlementToCity() {
+        if (settlementsPlaced == 0) {
+            throw new IllegalStateException();
+        }
+        settlementsPlaced--;
+        remainingSettlements++;
+        citiesPlaced++;
+        remainingCities--;
     }
 
     public void awardLongestRoad() {
