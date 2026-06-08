@@ -45,4 +45,15 @@ class RobberTest {
 
     assertNull(robber.getTile());
   }
+
+  // TC5 – setPlayer() stores the player and getPlayer() returns it
+  @Test
+  void setPlayer_validPlayer_getPlayerReturnsSamePlayer() {
+    Robber robber = new Robber();
+    Player player = new Player();
+
+    robber.setPlayer(player);
+
+    assertEquals(player, robber.getPlayer());
+  }
 }
