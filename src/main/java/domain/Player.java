@@ -19,11 +19,9 @@ public final class Player {
     private final String name;
     private final PlayerColor color;
     private final Map<Resource, Integer> resources;
-    private int remainingSettlements;
-    private int remainingCities;
-    private int remainingRoads;
     private int settlementsPlaced;
     private int citiesPlaced;
+    private int roadsPlaced;
     private int victoryPointDevCards;
     private boolean hasLongestRoad;
     private boolean hasLargestArmy;
@@ -32,9 +30,6 @@ public final class Player {
         this.name = requireNonBlank(name);
         this.color = Objects.requireNonNull(color, "color");
         this.resources = emptyResourceHand();
-        this.remainingSettlements = STARTING_SETTLEMENTS;
-        this.remainingCities = STARTING_CITIES;
-        this.remainingRoads = STARTING_ROADS;
     }
 
     public String getName() {
@@ -87,26 +82,18 @@ public final class Player {
     }
 
     public void placeSettlement() {
-        if (remainingSettlements == 0) {
-            throw new IllegalStateException();
-        }
+        requireBelowCap(settlementsPlaced, STARTING_SETTLEMENTS);
         settlementsPlaced++;
-        remainingSettlements--;
     }
 
     public void placeCity() {
-        if (remainingCities == 0) {
-            throw new IllegalStateException();
-        }
+        requireBelowCap(citiesPlaced, STARTING_CITIES);
         citiesPlaced++;
-        remainingCities--;
     }
 
     public void placeRoad() {
-        if (remainingRoads == 0) {
-            throw new IllegalStateException();
-        }
-        remainingRoads--;
+        requireBelowCap(roadsPlaced, STARTING_ROADS);
+        roadsPlaced++;
     }
 
     public void upgradeSettlementToCity() {
@@ -114,9 +101,7 @@ public final class Player {
             throw new IllegalStateException();
         }
         settlementsPlaced--;
-        remainingSettlements++;
-        citiesPlaced++;
-        remainingCities--;
+        placeCity();
     }
 
     public void awardLongestRoad() {
@@ -153,16 +138,22 @@ public final class Player {
         }
     }
 
+    private static void requireBelowCap(int placed, int cap) {
+        if (placed >= cap) {
+            throw new IllegalStateException();
+        }
+    }
+
     public int getRemainingSettlements() {
-        return remainingSettlements;
+        return STARTING_SETTLEMENTS - settlementsPlaced;
     }
 
     public int getRemainingCities() {
-        return remainingCities;
+        return STARTING_CITIES - citiesPlaced;
     }
 
     public int getRemainingRoads() {
-        return remainingRoads;
+        return STARTING_ROADS - roadsPlaced;
     }
 
     private static String requireNonBlank(String name) {
