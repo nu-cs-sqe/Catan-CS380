@@ -120,6 +120,13 @@ public final class Player {
         victoryPointDevCards++;
     }
 
+    public void playKnight() {
+    }
+
+    public int getKnightsPlayed() {
+        return 0;
+    }
+
     public int discardOnSevenCount() {
         int hand = getHandSize();
         if (hand <= DISCARD_THRESHOLD) {

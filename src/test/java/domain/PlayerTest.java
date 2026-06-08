@@ -332,6 +332,22 @@ class PlayerTest {
         assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity());
     }
 
+    // BVA TC37
+    @Test
+    void shouldHaveOneKnightPlayed_whenPlayingFirstKnight() {
+        player.playKnight();
+        assertEquals(1, player.getKnightsPlayed());
+    }
+
+    // BVA TC38
+    @Test
+    void shouldHaveThreeKnightsPlayed_whenPlayingThirdKnight() {
+        player.playKnight();
+        player.playKnight();
+        player.playKnight();
+        assertEquals(3, player.getKnightsPlayed());
+    }
+
     private void placeSettlements(int count) {
         for (int i = 0; i < count; i++) {
             player.placeSettlement();
