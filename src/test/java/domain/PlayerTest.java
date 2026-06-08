@@ -280,6 +280,58 @@ class PlayerTest {
         assertEquals(5, player.getVictoryPoints());
     }
 
+    // BVA TC31
+    @Test
+    void shouldStartWithFullPieceInventory_whenFreshlyConstructed() {
+        assertAll(
+                () -> assertEquals(STARTING_SETTLEMENTS, player.getRemainingSettlements()),
+                () -> assertEquals(STARTING_CITIES, player.getRemainingCities()),
+                () -> assertEquals(STARTING_ROADS, player.getRemainingRoads())
+        );
+    }
+
+    // BVA TC32
+    @Test
+    void shouldThrowIllegalState_whenPlacingMoreSettlementsThanCap() {
+        placeSettlements(STARTING_SETTLEMENTS);
+        assertThrows(IllegalStateException.class, () -> player.placeSettlement());
+    }
+
+    // BVA TC33
+    @Test
+    void shouldThrowIllegalState_whenPlacingMoreCitiesThanCap() {
+        placeCities(STARTING_CITIES);
+        assertThrows(IllegalStateException.class, () -> player.placeCity());
+    }
+
+    // BVA TC34
+    @Test
+    void shouldThrowIllegalState_whenPlacingMoreRoadsThanCap() {
+        for (int i = 0; i < STARTING_ROADS; i++) {
+            player.placeRoad();
+        }
+        assertThrows(IllegalStateException.class, () -> player.placeRoad());
+    }
+
+    // BVA TC35
+    @Test
+    void shouldRestoreSettlementAndConsumeCity_whenUpgradingSettlementToCity() {
+        player.placeSettlement();
+        int settlementsBefore = player.getRemainingSettlements();
+        int citiesBefore = player.getRemainingCities();
+        player.upgradeSettlementToCity();
+        assertAll(
+                () -> assertEquals(settlementsBefore + 1, player.getRemainingSettlements()),
+                () -> assertEquals(citiesBefore - 1, player.getRemainingCities())
+        );
+    }
+
+    // BVA TC36
+    @Test
+    void shouldThrowIllegalState_whenUpgradingWithNoSettlementsOnBoard() {
+        assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity());
+    }
+
     private void placeSettlements(int count) {
         for (int i = 0; i < count; i++) {
             player.placeSettlement();
