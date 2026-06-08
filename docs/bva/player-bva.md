@@ -76,12 +76,12 @@ Boundary Value Analysis for the `Player` class. Each row maps to a test in `src/
 
 |      | System under test                       | Expected output                                | Implemented? |
 |------|-----------------------------------------|------------------------------------------------|--------------|
-| TC31 | fresh player                            | 5 settlements / 4 cities / 15 roads remaining  | no           |
-| TC32 | placed 5 settlements, place a 6th       | IllegalStateException (cap boundary)           | no           |
-| TC33 | placed 4 cities, place a 5th            | IllegalStateException                          | no           |
-| TC34 | placed 15 roads, place a 16th           | IllegalStateException                          | no           |
-| TC35 | upgrade settlement → city               | settlements +1 back, cities -1 from remaining  | no           |
-| TC36 | upgrade with 0 settlements on board     | IllegalStateException                          | no           |
+| TC31 | fresh player                            | 5 settlements / 4 cities / 15 roads remaining  | yes           |
+| TC32 | placed 5 settlements, place a 6th       | IllegalStateException (cap boundary)           | yes           |
+| TC33 | placed 4 cities, place a 5th            | IllegalStateException                          | yes           |
+| TC34 | placed 15 roads, place a 16th           | IllegalStateException                          | yes           |
+| TC35 | upgrade settlement → city               | settlements +1 back, cities -1 from remaining  | yes           |
+| TC36 | upgrade with 0 settlements on board     | IllegalStateException                          | yes           |
 
 
 ### Method under test: `playKnight()` / `getKnightsPlayed()`
