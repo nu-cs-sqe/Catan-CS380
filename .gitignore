@@ -101,7 +101,8 @@ bin/
 .DS_Store
 
 ########################
-.claude/settings.json
+.claude/
+CATAN_A_GRADE_GUIDE.md
 
 ########################
 ### Windows ###
