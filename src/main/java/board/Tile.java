@@ -1,5 +1,7 @@
 package board;
 
+import java.util.Objects;
+
 public class Tile {
   private final TileType tileType;
   private final int q;
@@ -11,6 +13,13 @@ public class Tile {
     this.q = q;
     this.r = r;
     this.numberToken = 0;
+  }
+
+  public Tile(Tile other) {
+    this.tileType = other.tileType;
+    this.q = other.q;
+    this.r = other.r;
+    this.numberToken = other.numberToken;
   }
 
   public TileType getTileType() {
@@ -31,5 +40,22 @@ public class Tile {
 
   public void setNumberToken(int numberToken) {
     this.numberToken = numberToken;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Tile)) {
+      return false;
+    }
+    Tile other = (Tile) o;
+    return q == other.q && r == other.r && numberToken == other.numberToken && tileType == other.tileType;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(tileType, q, r, numberToken);
   }
 }

@@ -1,5 +1,10 @@
 package domain;
 
 public enum Resource {
-    BRICK, LUMBER, WOOL, GRAIN, ORE
+  GENERIC,
+  WOOD,
+  BRICK,
+  SHEEP,
+  WHEAT,
+  ORE
 }
