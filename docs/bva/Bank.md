@@ -23,7 +23,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Freshly constructed Bank with no-op shuffler
 - **Expected output**: Drawing all 25 cards yields exactly 14 KNIGHT, 5 VICTORY_POINT, 2 ROAD_BUILDING, 2 YEAR_OF_PLENTY, 2 MONOPOLY
 - **BVA note**: Verifies each card type count; composition is independent of shuffle order
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC4 – Null shuffler throws NullPointerException
 - **State of the system**: Constructing Bank with null shuffler

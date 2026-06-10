@@ -2,12 +2,19 @@ package domain;
 
 import board.ResourceType;
 import org.junit.jupiter.api.Test;
+
+import java.util.EnumMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BankTest {
 
     private static final int INITIAL_STOCK = 19;
     private static final int INITIAL_DEV_CARD_COUNT = 25;
+    private static final int KNIGHT_COUNT = 14;
+    private static final int VICTORY_POINT_COUNT = 5;
+    private static final int ACTION_CARD_COUNT = 2;
 
     // TC1 - Initial resource stock is 19 per resource
     @Test
@@ -25,5 +32,21 @@ public class BankTest {
     public void initialDevCardCountIs25() {
         Bank bank = new Bank(list -> { });
         assertEquals(INITIAL_DEV_CARD_COUNT, bank.getDevCardCount());
+    }
+
+    // TC3 - Initial deck composition is correct
+    @Test
+    public void initialDeckCompositionIsCorrect() {
+        Bank bank = new Bank(list -> { });
+        Map<DevelopmentCardType, Integer> counts = new EnumMap<>(DevelopmentCardType.class);
+        for (int i = 0; i < INITIAL_DEV_CARD_COUNT; i++) {
+            DevelopmentCardType type = bank.drawDevelopmentCard().getType();
+            counts.merge(type, 1, Integer::sum);
+        }
+        assertEquals(KNIGHT_COUNT, counts.get(DevelopmentCardType.KNIGHT));
+        assertEquals(VICTORY_POINT_COUNT, counts.get(DevelopmentCardType.VICTORY_POINT));
+        assertEquals(ACTION_CARD_COUNT, counts.get(DevelopmentCardType.ROAD_BUILDING));
+        assertEquals(ACTION_CARD_COUNT, counts.get(DevelopmentCardType.YEAR_OF_PLENTY));
+        assertEquals(ACTION_CARD_COUNT, counts.get(DevelopmentCardType.MONOPOLY));
     }
 }
