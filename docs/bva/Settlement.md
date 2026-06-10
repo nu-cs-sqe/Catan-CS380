@@ -13,7 +13,7 @@
 
 |     | System under test                   | Expected output | Implemented? |
 |-----|-------------------------------------|-----------------|--------------|
-| TC3 | freshly constructed Settlement      | false           | no           |
+| TC3 | freshly constructed Settlement      | false           | yes          |
 | TC4 | Settlement after `upgrade()` called | true            | no           |
 
 ### Method under test: `upgrade()`
