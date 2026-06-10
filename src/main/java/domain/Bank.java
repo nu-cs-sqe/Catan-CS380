@@ -79,6 +79,7 @@ public class Bank {
   }
 
   public void returnDevelopmentCard(DevelopmentCard card) {
+    Objects.requireNonNull(card);
     if (card.getType() == DevelopmentCardType.VICTORY_POINT) {
       throw new IllegalArgumentException();
     }

@@ -240,4 +240,12 @@ public class BankTest {
     assertThrows(IllegalArgumentException.class,
         () -> bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.VICTORY_POINT)));
   }
+
+  // TC27 - Null card in returnDevelopmentCard throws NullPointerException
+  @Test
+  public void nullCardInReturnDevelopmentCardThrowsNullPointerException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(NullPointerException.class,
+        () -> bank.returnDevelopmentCard(null));
+  }
 }

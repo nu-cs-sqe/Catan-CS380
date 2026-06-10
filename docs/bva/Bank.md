@@ -186,7 +186,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 ### TC27 – Null card throws NullPointerException
 - **State of the system**: Any bank
 - **Expected output**: `NullPointerException`
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 
