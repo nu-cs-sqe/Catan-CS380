@@ -281,6 +281,14 @@ class PlayerTest {
     assertThrows(NullPointerException.class, () -> player.placeSettlement(null));
   }
 
+  // BVA TC40
+  @Test
+  void shouldThrowIllegalState_whenPlacingSettlementOnOccupiedVertex() {
+    Vertex v = nextVertex();
+    player.placeSettlement(v);
+    assertThrows(IllegalStateException.class, () -> player.placeSettlement(v));
+  }
+
   // BVA TC32
   @Test
   void shouldThrowIllegalState_whenPlacingMoreSettlementsThanCap() {
