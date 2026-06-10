@@ -116,6 +116,9 @@ public final class Player {
     if (s == null || !settlements.contains(s)) {
       throw new IllegalStateException("no player settlement at vertex");
     }
+    if (getRemainingCities() == 0) {
+      throw new IllegalStateException("no city pieces remaining");
+    }
     s.upgrade();
   }
 
