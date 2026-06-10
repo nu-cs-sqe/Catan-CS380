@@ -91,7 +91,7 @@
 
 |      | System under test                | Expected output       | Implemented? |
 |------|----------------------------------|-----------------------|--------------|
-| TC34 | placed 15 roads, place a 16th    | IllegalStateException | no           |
+| TC34 | placed 15 roads, place a 16th    | IllegalStateException | yes          |
 | TC43 | edge = null                      | NullPointerException  | no           |
 
 

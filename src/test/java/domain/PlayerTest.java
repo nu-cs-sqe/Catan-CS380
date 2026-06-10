@@ -1,5 +1,6 @@
 package domain;
 
+import board.Edge;
 import board.Vertex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -338,6 +339,15 @@ class PlayerTest {
   @Test
   void shouldThrowIllegalState_whenUpgradingVertexWithNoPlayerSettlement() {
     assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity(nextVertex()));
+  }
+
+  // BVA TC34
+  @Test
+  void shouldThrowIllegalState_whenPlacingMoreRoadsThanCap() {
+    for (int i = 0; i < STARTING_ROADS; i++) {
+      player.placeRoad(new Edge("e" + i));
+    }
+    assertThrows(IllegalStateException.class, () -> player.placeRoad(new Edge("overflow")));
   }
 
   // BVA TC41
