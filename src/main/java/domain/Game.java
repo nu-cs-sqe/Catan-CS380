@@ -1,0 +1,135 @@
+package domain;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public final class Game {
+
+    private static final int MIN_PLAYERS = 3;
+    private static final int MAX_PLAYERS = 4;
+
+    private final List<Player> players;
+    private final int firstPlayerIndex;
+    private final int[] turnOrder;
+
+    public Game(List<Player> players) {
+        this(players, new RandomDiceRoller());
+    }
+
+    public Game(List<Player> players, DiceRoller diceRoller) {
+        if (players.size() < MIN_PLAYERS
+                || players.size() > MAX_PLAYERS) {
+            throw new IllegalArgumentException(
+                    "Player count must be between "
+                            + MIN_PLAYERS + " and " + MAX_PLAYERS);
+        }
+        this.players = new ArrayList<>(players);
+        this.firstPlayerIndex = determineFirstPlayer(diceRoller);
+        this.turnOrder = buildTurnOrder();
+    }
+
+    private int determineFirstPlayer(DiceRoller diceRoller) {
+        int[] rolls = new int[players.size()];
+        for (int i = 0; i < players.size(); i++) {
+            rolls[i] = diceRoller.roll();
+        }
+        return resolveHighestRoller(rolls, diceRoller);
+    }
+
+    private int resolveHighestRoller(int[] rolls,
+                                     DiceRoller diceRoller) {
+        while (true) {
+            int maxRoll = -1;
+            int maxIndex = -1;
+            boolean tied = false;
+
+            for (int i = 0; i < rolls.length; i++) {
+                if (rolls[i] > maxRoll) {
+                    maxRoll = rolls[i];
+                    maxIndex = i;
+                    tied = false;
+                } else if (rolls[i] == maxRoll) {
+                    tied = true;
+                }
+            }
+
+            if (!tied) {
+                return maxIndex;
+            }
+
+            for (int i = 0; i < rolls.length; i++) {
+                if (rolls[i] == maxRoll) {
+                    rolls[i] = diceRoller.roll();
+                } else {
+                    rolls[i] = -1;
+                }
+            }
+        }
+    }
+
+    private int[] buildTurnOrder() {
+        int[] order = new int[players.size()];
+        for (int i = 0; i < players.size(); i++) {
+            order[i] = (firstPlayerIndex + i) % players.size();
+        }
+        return order;
+    }
+
+    public void executeSetupRoundOne() {
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(turnOrder[i]);
+            player.placeSettlement();
+            player.placeRoad();
+        }
+    }
+
+    public void executeSetupRoundTwo() {
+        executeSetupRoundTwo(null);
+    }
+
+    public void executeSetupRoundTwo(Resource[][] resources) {
+        int[] reverseOrder = getRoundTwoOrder();
+        for (int i = 0; i < players.size(); i++) {
+            int playerIndex = reverseOrder[i];
+            Player player = players.get(playerIndex);
+            player.placeSettlement();
+            player.placeRoad();
+            grantResources(player, playerIndex, resources);
+        }
+    }
+
+    private void grantResources(Player player, int playerIndex,
+                                Resource[][] resources) {
+        if (resources != null && resources[playerIndex] != null) {
+            for (Resource resource : resources[playerIndex]) {
+                player.addResource(resource, 1);
+            }
+        }
+    }
+
+    public int[] getRoundTwoOrder() {
+        int[] reverse = new int[players.size()];
+        for (int i = 0; i < players.size(); i++) {
+            reverse[i] = turnOrder[players.size() - 1 - i];
+        }
+        return reverse;
+    }
+
+    public List<Player> getPlayers() {
+        return Collections.unmodifiableList(players);
+    }
+
+    public int getFirstPlayerIndex() {
+        return firstPlayerIndex;
+    }
+
+    public int getCurrentPlayerIndex() {
+        return firstPlayerIndex;
+    }
+
+    public int[] getTurnOrder() {
+        return Arrays.copyOf(turnOrder, turnOrder.length);
+    }
+}
