@@ -8,6 +8,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BankTest {
@@ -125,5 +126,12 @@ public class BankTest {
   public void canDistributeReturnsTrueWhenAmountEqualsStock() {
     Bank bank = new Bank(list -> {});
     assertTrue(bank.canDistribute(ResourceType.WOOD, INITIAL_STOCK));
+  }
+
+  // TC14 - canDistribute returns false when amount exceeds stock by 1 (boundary)
+  @Test
+  public void canDistributeReturnsFalseWhenAmountExceedsStock() {
+    Bank bank = new Bank(list -> {});
+    assertFalse(bank.canDistribute(ResourceType.WOOD, INITIAL_STOCK + 1));
   }
 }

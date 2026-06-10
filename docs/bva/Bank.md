@@ -100,7 +100,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Stock = 19, amount = 20
 - **Expected output**: `false`
 - **BVA note**: One past boundary — not enough
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC15 – Zero amount throws IllegalArgumentException
 - **State of the system**: Any bank, amount = 0
