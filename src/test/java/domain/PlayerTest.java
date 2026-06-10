@@ -341,6 +341,12 @@ class PlayerTest {
     assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity(nextVertex()));
   }
 
+  // BVA TC43
+  @Test
+  void shouldThrowNullPointer_whenPlaceRoadEdgeIsNull() {
+    assertThrows(NullPointerException.class, () -> player.placeRoad(null));
+  }
+
   // BVA TC34
   @Test
   void shouldThrowIllegalState_whenPlacingMoreRoadsThanCap() {

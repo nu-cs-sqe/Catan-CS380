@@ -123,6 +123,7 @@ public final class Player {
   }
 
   public void placeRoad(Edge e) {
+    Objects.requireNonNull(e, "edge");
     if (getRemainingRoads() == 0) {
       throw new IllegalStateException("no road pieces remaining");
     }
