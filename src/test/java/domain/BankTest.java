@@ -175,4 +175,15 @@ public class BankTest {
     bank.drawDevelopmentCard();
     assertEquals(INITIAL_DEV_CARD_COUNT - 1, bank.getDevCardCount());
   }
+
+  // TC20 - Drawing last card succeeds and deck count becomes 0 (boundary)
+  @Test
+  public void drawingLastCardSucceedsAndDeckBecomesEmpty() {
+    Bank bank = new Bank(list -> {});
+    for (int i = 0; i < INITIAL_DEV_CARD_COUNT - 1; i++) {
+      bank.drawDevelopmentCard();
+    }
+    bank.drawDevelopmentCard();
+    assertEquals(0, bank.getDevCardCount());
+  }
 }

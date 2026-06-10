@@ -144,7 +144,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Deck has exactly 1 card remaining
 - **Expected output**: Card returned, deck count becomes 0
 - **BVA note**: Boundary — last valid draw
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC21 – Drawing from empty deck throws IllegalStateException (boundary)
 - **State of the system**: Deck has 0 cards
