@@ -170,7 +170,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 ### TC24 – Returning a YEAR_OF_PLENTY card increases deck count
 - **State of the system**: Any bank
 - **Expected output**: `getDevCardCount()` increases by 1
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC25 – Returning a MONOPOLY card increases deck count
 - **State of the system**: Any bank

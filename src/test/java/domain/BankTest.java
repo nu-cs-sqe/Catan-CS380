@@ -214,4 +214,13 @@ public class BankTest {
     bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.ROAD_BUILDING));
     assertEquals(before + 1, bank.getDevCardCount());
   }
+
+  // TC24 - Returning a YEAR_OF_PLENTY card increases deck count
+  @Test
+  public void returningYearOfPlentyCardIncreasesDeckCount() {
+    Bank bank = new Bank(list -> {});
+    int before = bank.getDevCardCount();
+    bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.YEAR_OF_PLENTY));
+    assertEquals(before + 1, bank.getDevCardCount());
+  }
 }
