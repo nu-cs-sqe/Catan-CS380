@@ -202,7 +202,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Bank has receive resource in stock
 - **Expected output**: Bank stock of give increases by 2, receive decreases by 1
 - **BVA note**: 2:1 specific harbor rate — minimum valid trade rate
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC30 – Rate 3 succeeds
 - **State of the system**: Bank has receive resource in stock

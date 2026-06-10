@@ -251,4 +251,15 @@ public class BankTest {
         IllegalArgumentException.class,
         () -> bank.maritimeTrade(Resource.WOOD, 1, Resource.BRICK));
   }
+
+  // TC29 - Rate 2 succeeds (boundary — minimum valid)
+  @Test
+  public void maritimeTradeRateTwoSucceeds() {
+    Bank bank = new Bank(list -> {});
+    int giveBefore = bank.getStock(Resource.WOOD);
+    int receiveBefore = bank.getStock(Resource.BRICK);
+    bank.maritimeTrade(Resource.WOOD, 2, Resource.BRICK);
+    assertEquals(giveBefore + 2, bank.getStock(Resource.WOOD));
+    assertEquals(receiveBefore - 1, bank.getStock(Resource.BRICK));
+  }
 }
