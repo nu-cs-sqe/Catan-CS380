@@ -32,4 +32,12 @@ class SettlementTest {
         Settlement settlement = new Settlement();
         assertFalse(settlement.isCity());
     }
+
+    // TC4 – isCity() returns true after upgrade()
+    @Test
+    void isCity_afterUpgrade_returnsTrue() {
+        Settlement settlement = new Settlement();
+        settlement.upgrade();
+        assertTrue(settlement.isCity());
+    }
 }
