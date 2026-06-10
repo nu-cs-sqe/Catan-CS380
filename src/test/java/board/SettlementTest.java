@@ -17,4 +17,12 @@ class SettlementTest {
         assertFalse(settlement.isCity());
         assertEquals(1, settlement.getVictoryPoints());
     }
+
+    // TC2 – two constructions produce independent instances
+    @Test
+    void constructor_twoInstances_areIndependent() {
+        Settlement s1 = new Settlement();
+        Settlement s2 = new Settlement();
+        assertNotSame(s1, s2);
+    }
 }
