@@ -75,6 +75,30 @@ public class LongestRoadTest {
         Assertions.assertEquals(1, game.getLongestRoadHolder());
     }
 
+    // TC8 – Tied road length does not change Longest Road holder
+    @Test
+    public void testTiedRoadLengthKeepsCurrentHolder() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        Board board = createBoard();
+
+        setEdgeOwner(board, EDGE_1, players.get(0));
+        setEdgeOwner(board, EDGE_2, players.get(0));
+        setEdgeOwner(board, EDGE_3, players.get(0));
+        setEdgeOwner(board, EDGE_4, players.get(0));
+        setEdgeOwner(board, EDGE_5, players.get(0));
+        game.updateLongestRoad(board);
+        Assertions.assertEquals(0, game.getLongestRoadHolder());
+
+        setEdgeOwner(board, "3,-1|3,1", players.get(1));
+        setEdgeOwner(board, "2,2|3,1", players.get(1));
+        setEdgeOwner(board, "2,2|2,4", players.get(1));
+        setEdgeOwner(board, "2,4|3,5", players.get(1));
+        setEdgeOwner(board, "3,5|3,7", players.get(1));
+        game.updateLongestRoad(board);
+        Assertions.assertEquals(0, game.getLongestRoadHolder());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
