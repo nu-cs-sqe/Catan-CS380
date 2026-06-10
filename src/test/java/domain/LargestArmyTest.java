@@ -59,4 +59,22 @@ public class LargestArmyTest {
         Assertions.assertEquals(LARGEST_ARMY_VP,
                 game.getVictoryPoints(0) - players.get(0).getVictoryPoints());
     }
+    // TC3 – Another player with more knights takes Largest Army
+    @Test
+    public void testPlayerWithMoreKnightsTakesLargestArmy() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        game.updateLargestArmy();
+        Assertions.assertEquals(0, game.getLargestArmyHolder());
+
+        players.get(1).playKnight();
+        players.get(1).playKnight();
+        players.get(1).playKnight();
+        players.get(1).playKnight();
+        game.updateLargestArmy();
+        Assertions.assertEquals(1, game.getLargestArmyHolder());
+    }
 }
