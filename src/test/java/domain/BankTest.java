@@ -223,4 +223,13 @@ public class BankTest {
     bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.YEAR_OF_PLENTY));
     assertEquals(before + 1, bank.getDevCardCount());
   }
+
+  // TC25 - Returning a MONOPOLY card increases deck count
+  @Test
+  public void returningMonopolyCardIncreasesDeckCount() {
+    Bank bank = new Bank(list -> {});
+    int before = bank.getDevCardCount();
+    bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.MONOPOLY));
+    assertEquals(before + 1, bank.getDevCardCount());
+  }
 }

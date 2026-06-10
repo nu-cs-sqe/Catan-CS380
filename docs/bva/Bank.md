@@ -175,7 +175,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 ### TC25 – Returning a MONOPOLY card increases deck count
 - **State of the system**: Any bank
 - **Expected output**: `getDevCardCount()` increases by 1
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC26 – Returning a VICTORY_POINT card throws IllegalArgumentException
 - **State of the system**: Any bank
