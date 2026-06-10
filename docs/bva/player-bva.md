@@ -83,7 +83,7 @@
 | TC33 | 4 cities already on board, attempt a 5th       | IllegalStateException                                                              | no           |
 | TC35 | player has a settlement at vertex, upgrade it  | Settlement.isCity() = true; getRemainingCities() −1; getRemainingSettlements() +1  | no           |
 | TC36 | vertex has no player settlement on it          | IllegalStateException                                                              | no           |
-| TC41 | vertex = null                                  | NullPointerException                                                               | no           |
+| TC41 | vertex = null                                  | NullPointerException                                                               | yes          |
 | TC42 | settlement at vertex is already a city         | IllegalStateException                                                              | no           |
 
 

@@ -298,6 +298,12 @@ class PlayerTest {
     assertThrows(IllegalStateException.class, () -> player.placeSettlement(nextVertex()));
   }
 
+  // BVA TC41
+  @Test
+  void shouldThrowNullPointer_whenUpgradeSettlementToCityVertexIsNull() {
+    assertThrows(NullPointerException.class, () -> player.upgradeSettlementToCity(null));
+  }
+
   // BVA TC37
   @Test
   void shouldHaveOneKnightPlayed_whenPlayingFirstKnight() {

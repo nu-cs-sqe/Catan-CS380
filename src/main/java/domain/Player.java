@@ -111,6 +111,7 @@ public final class Player {
   }
 
   public void upgradeSettlementToCity(Vertex v) {
+    Objects.requireNonNull(v, "vertex");
     Settlement s = v.getSettlement();
     s.upgrade();
   }
