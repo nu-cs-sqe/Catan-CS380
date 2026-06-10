@@ -48,4 +48,12 @@ class SettlementTest {
         settlement.upgrade();
         assertTrue(settlement.isCity());
     }
+
+    // TC6 – upgrade() on an already-upgraded city throws IllegalStateException
+    @Test
+    void upgrade_onCity_throwsIllegalStateException() {
+        Settlement settlement = new Settlement();
+        settlement.upgrade();
+        assertThrows(IllegalStateException.class, settlement::upgrade);
+    }
 }
