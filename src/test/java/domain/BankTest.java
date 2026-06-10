@@ -35,6 +35,14 @@ public class BankTest {
         assertEquals(INITIAL_DEV_CARD_COUNT, bank.getDevCardCount());
     }
 
+    // TC6 - Distributing 1 reduces stock by 1
+    @Test
+    public void distributingOneReducesStockByOne() {
+        Bank bank = new Bank(list -> { });
+        bank.distributeResource(ResourceType.WOOD, 1);
+        assertEquals(INITIAL_STOCK - 1, bank.getStock(ResourceType.WOOD));
+    }
+
     // TC5 - Null resource in getStock throws NullPointerException
     @Test
     public void nullResourceInGetStockThrowsNullPointerException() {

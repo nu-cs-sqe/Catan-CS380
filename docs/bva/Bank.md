@@ -49,7 +49,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Stock = 19, distribute 1
 - **Expected output**: Stock becomes 18
 - **BVA note**: Normal case; stock decreases
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC7 – Distributing exactly all stock succeeds (boundary)
 - **State of the system**: Stock = 19, distribute 19

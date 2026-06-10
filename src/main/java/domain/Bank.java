@@ -49,6 +49,10 @@ public class Bank {
     return stock.getOrDefault(type, 0);
   }
 
+  public void distributeResource(ResourceType type, int amount) {
+    stock.put(type, stock.get(type) - amount);
+  }
+
   public int getDevCardCount() {
     return deck.size();
   }
