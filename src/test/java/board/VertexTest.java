@@ -1,5 +1,7 @@
 package board;
 
+import domain.Player;
+import domain.Resource;
 import org.easymock.EasyMockExtension;
 import org.easymock.Mock;
 import org.junit.jupiter.api.Test;
@@ -122,7 +124,7 @@ class VertexTest {
   @Test
   void setHarbor_nonNullHarbor_returnsHarbor() {
     Vertex vertex = new Vertex("0");
-    Harbor harbor = new Harbor(ResourceType.GENERIC, GENERIC_HARBOR_RATE, "v1", "v2");
+    Harbor harbor = new Harbor(Resource.GENERIC, GENERIC_HARBOR_RATE, "v1", "v2");
     vertex.setHarbor(harbor);
 
     assertEquals(harbor, vertex.getHarbor());

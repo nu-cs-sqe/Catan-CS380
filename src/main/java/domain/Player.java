@@ -27,6 +27,10 @@ public final class Player {
     private boolean hasLongestRoad;
     private boolean hasLargestArmy;
 
+    public Player() {
+        this("Player", PlayerColor.RED);
+    }
+
     public Player(String name, PlayerColor color) {
         this.name = requireNonBlank(name);
         this.color = Objects.requireNonNull(color, "color");
