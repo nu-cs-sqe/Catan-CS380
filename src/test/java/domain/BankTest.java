@@ -35,6 +35,13 @@ public class BankTest {
         assertEquals(INITIAL_DEV_CARD_COUNT, bank.getDevCardCount());
     }
 
+    // TC5 - Null resource in getStock throws NullPointerException
+    @Test
+    public void nullResourceInGetStockThrowsNullPointerException() {
+        Bank bank = new Bank(list -> { });
+        assertThrows(NullPointerException.class, () -> bank.getStock(null));
+    }
+
     // TC4 - Null shuffler throws NullPointerException
     @Test
     public void nullShufflerThrowsNullPointerException() {

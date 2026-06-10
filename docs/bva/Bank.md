@@ -39,7 +39,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Freshly constructed Bank
 - **Expected output**: `NullPointerException`
 - **BVA note**: Null boundary for required parameter
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 

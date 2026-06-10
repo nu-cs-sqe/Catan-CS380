@@ -45,6 +45,7 @@ public class Bank {
   }
 
   public int getStock(ResourceType type) {
+    Objects.requireNonNull(type);
     return stock.getOrDefault(type, 0);
   }
 
