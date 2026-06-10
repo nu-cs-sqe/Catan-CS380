@@ -99,6 +99,9 @@ public final class Player {
 
   public void placeSettlement(Vertex v) {
     Objects.requireNonNull(v, "vertex");
+    if (v.getSettlement() != null) {
+      throw new IllegalStateException("vertex already occupied");
+    }
     if (getRemainingSettlements() == 0) {
       throw new IllegalStateException("no settlement pieces remaining");
     }
