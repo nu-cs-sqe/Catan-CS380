@@ -1,11 +1,15 @@
 package board;
 
+import domain.Player;
+import domain.PlayerColor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class RobberTest {
+
+  private final Player player = new Player("Alice", PlayerColor.RED);
 
   // TC1 – getTile() returns null immediately after construction
   @Test
@@ -52,7 +56,6 @@ class RobberTest {
   @Test
   void setPlayer_validPlayer_getPlayerReturnsSamePlayer() {
     Robber robber = new Robber();
-    Player player = new Player();
 
     robber.setPlayer(player);
 
@@ -63,7 +66,7 @@ class RobberTest {
   @Test
   void setPlayer_null_afterPriorAssignment_getPlayerReturnsNull() {
     Robber robber = new Robber();
-    robber.setPlayer(new Player());
+    robber.setPlayer(new Player("Alice", PlayerColor.RED));
 
     robber.setPlayer(null);
 

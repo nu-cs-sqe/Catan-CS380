@@ -71,6 +71,14 @@ These model each action card's **effect**. They involve collaborators (Robber, B
 Board, other players), so they are sociable rather than solitary. Victory Point cards
 have no playable effect (they only add VP) and are covered above.
 
+After the main-merge there is a single `domain.Player` (the old `board.Player` stub and
+`board.ResourceType` were deleted), so these effects operate on `domain.Player` directly.
+Note: `Vertex`/`Edge`/`Robber` return **defensive copies** of their `Player` (e.g.
+`Vertex.getOwner()` yields `new Player(owner)`), so an effect must mutate the canonical
+`Player` objects held by `Game`, never a board/robber copy. Resource names follow the
+merged `domain.Resource`: `GENERIC, WOOD, BRICK, SHEEP, WHEAT, ORE` (`GENERIC` is not a
+tradeable resource and is rejected by the resource-taking effects).
+
 ### Method under test: `playKnight(targetTile, victim)` — move robber, steal, Largest Army (collaborators: Robber, Player)
 
 |      | System under test                                              | Expected output                                                  | Implemented? |
@@ -89,18 +97,20 @@ have no playable effect (they only add VP) and are covered above.
 |------|----------------------------------------------------------------|-----------------------------------------------------------------|--------------|
 | TC30 | resource = null                                                | NullPointerException                                             | no           |
 | TC31 | opponents hold 0 of the named resource                         | player gains 0; opponents unchanged (lower boundary)            | no           |
-| TC32 | two opponents hold 3 and 2 WOOL                                | player gains 5 WOOL; both opponents' WOOL = 0                    | no           |
-| TC33 | opponents hold mixed resources; player names WOOL              | only WOOL is taken; all other resource counts unchanged         | no           |
+| TC32 | two opponents hold 3 and 2 SHEEP                               | player gains 5 SHEEP; both opponents' SHEEP = 0                  | no           |
+| TC33 | opponents hold mixed resources; player names SHEEP             | only SHEEP is taken; all other resource counts unchanged        | no           |
+| TC42 | resource = GENERIC (non-tradeable)                            | IllegalArgumentException; no state changes                       | no           |
 
 
 ### Method under test: `playYearOfPlenty(first, second)` — draw 2 resources from the bank (collaborator: Bank)
 
 |      | System under test                                              | Expected output                                                  | Implemented? |
 |------|----------------------------------------------------------------|-----------------------------------------------------------------|--------------|
-| TC34 | first = ORE, second = GRAIN, bank stocks both                  | player gains 1 ORE + 1 GRAIN; bank stock each −1                 | no           |
+| TC34 | first = ORE, second = WHEAT, bank stocks both                  | player gains 1 ORE + 1 WHEAT; bank stock each −1                 | no           |
 | TC35 | first = ORE, second = ORE, bank has ≥2 ORE                     | player gains 2 ORE; bank ORE −2 (same resource twice)           | no           |
 | TC36 | bank holds exactly 1 of a requested resource                   | IllegalStateException; no resources moved (insufficient stock)  | no           |
 | TC37 | first or second = null                                         | NullPointerException                                            | no           |
+| TC43 | first or second = GENERIC (non-tradeable)                     | IllegalArgumentException; no resources moved                     | no           |
 
 
 ### Method under test: `playRoadBuilding()` — place up to 2 free roads (collaborators: Board, Player)

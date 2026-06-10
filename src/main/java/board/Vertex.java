@@ -1,7 +1,8 @@
 package board;
 
+import domain.Player;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Vertex {
@@ -13,13 +14,13 @@ public class Vertex {
 
   public Vertex(String id) {
     this.id = id;
-    this.adjacentTiles = new ArrayList<Tile>(0);
+    this.adjacentTiles = new ArrayList<>(0);
     this.settlement = null;
     this.owner = null;
   }
 
   public void addTile(Tile tile) {
-    this.adjacentTiles.add(tile);
+    this.adjacentTiles.add(new Tile(tile));
   }
 
   public String getId() {
@@ -27,15 +28,15 @@ public class Vertex {
   }
 
   public List<Tile> getAdjacentTiles() {
-    return Collections.unmodifiableList(adjacentTiles);
+    return new ArrayList<>(adjacentTiles);
   }
 
   public Player getOwner() {
-    return owner;
+    return (owner != null) ? new Player(owner) : null;
   }
 
   public void setOwner(Player owner) {
-    this.owner = owner;
+    this.owner = (owner != null) ? new Player(owner) : null;
   }
 
   public Settlement getSettlement() {

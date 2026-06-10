@@ -131,6 +131,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-# Metals (Scala/Java language server) local cache
+# Metals (language server) local cache
 .metals/
 .bloop/
