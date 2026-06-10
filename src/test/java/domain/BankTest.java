@@ -262,4 +262,15 @@ public class BankTest {
     assertEquals(giveBefore + 2, bank.getStock(Resource.WOOD));
     assertEquals(receiveBefore - 1, bank.getStock(Resource.BRICK));
   }
+
+  // TC30 - Rate 3 succeeds
+  @Test
+  public void maritimeTradeRateThreeSucceeds() {
+    Bank bank = new Bank(list -> {});
+    int giveBefore = bank.getStock(Resource.WOOD);
+    int receiveBefore = bank.getStock(Resource.BRICK);
+    bank.maritimeTrade(Resource.WOOD, 3, Resource.BRICK);
+    assertEquals(giveBefore + 3, bank.getStock(Resource.WOOD));
+    assertEquals(receiveBefore - 1, bank.getStock(Resource.BRICK));
+  }
 }

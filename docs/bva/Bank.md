@@ -208,7 +208,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Bank has receive resource in stock
 - **Expected output**: Bank stock of give increases by 3, receive decreases by 1
 - **BVA note**: 3:1 generic harbor rate
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC31 – Rate 4 succeeds (boundary — maximum valid)
 - **State of the system**: Bank has receive resource in stock
