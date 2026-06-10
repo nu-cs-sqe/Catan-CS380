@@ -1,5 +1,6 @@
 package domain;
 
+import board.Board;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +19,7 @@ public final class Game {
     private final int[] turnOrder;
     private int largestArmyHolder;
     private int longestRoadHolder;
+    private static final int MIN_ROAD_LENGTH = 5;
 
     public Game(List<Player> players) {
         this(players, new RandomDiceRoller());
@@ -114,6 +116,14 @@ public final class Game {
                 player.addResource(resource, 1);
             }
         }
+    }
+
+    public void updateLongestRoad(Board board) {
+        // TODO: implement
+    }
+
+    public int getLongestRoadHolder() {
+        return longestRoadHolder;
     }
 
     public int[] getRoundTwoOrder() {
