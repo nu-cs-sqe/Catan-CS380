@@ -46,4 +46,17 @@ public class LargestArmyTest {
             }
         };
     }
+    // TC2 – First player to play 3 knights gets Largest Army
+    @Test
+    public void testFirstPlayerWith3KnightsGetsLargestArmy() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        game.updateLargestArmy();
+        Assertions.assertEquals(0, game.getLargestArmyHolder());
+        Assertions.assertEquals(LARGEST_ARMY_VP,
+                game.getVictoryPoints(0) - players.get(0).getVictoryPoints());
+    }
 }
