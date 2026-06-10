@@ -72,7 +72,7 @@
 |------|-------------------------------------------------------|-----------------------------------------------|--------------|
 | TC31 | fresh player                                          | 5 settlements / 4 cities / 15 roads remaining | yes          |
 | TC32 | placed 5 settlements, place a 6th                     | IllegalStateException (cap boundary)          | yes          |
-| TC39 | vertex = null                                         | NullPointerException                          | no           |
+| TC39 | vertex = null                                         | NullPointerException                          | yes          |
 | TC40 | vertex already has a settlement owned by this player  | IllegalStateException                         | no           |
 
 
