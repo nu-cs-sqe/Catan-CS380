@@ -128,7 +128,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Any bank, amount = -1
 - **Expected output**: `IllegalArgumentException`
 - **BVA note**: Negative boundary
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 

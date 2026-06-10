@@ -159,4 +159,12 @@ public class BankTest {
     assertThrows(IllegalArgumentException.class,
         () -> bank.returnResource(ResourceType.WOOD, 0));
   }
+
+  // TC18 - Negative amount in returnResource throws IllegalArgumentException
+  @Test
+  public void negativeAmountInReturnResourceThrowsIllegalArgumentException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(IllegalArgumentException.class,
+        () -> bank.returnResource(ResourceType.WOOD, -1));
+  }
 }
