@@ -123,6 +123,9 @@ public final class Player {
   }
 
   public void placeRoad(Edge e) {
+    if (getRemainingRoads() == 0) {
+      throw new IllegalStateException("no road pieces remaining");
+    }
     roads.add(e);
     e.setOwner(this);
   }
