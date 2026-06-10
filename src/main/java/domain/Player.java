@@ -98,6 +98,7 @@ public final class Player {
   }
 
   public void placeSettlement(Vertex v) {
+    Objects.requireNonNull(v, "vertex");
     if (getRemainingSettlements() == 0) {
       throw new IllegalStateException("no settlement pieces remaining");
     }

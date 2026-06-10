@@ -275,6 +275,12 @@ class PlayerTest {
         () -> assertEquals(STARTING_ROADS, player.getRemainingRoads()));
   }
 
+  // BVA TC39
+  @Test
+  void shouldThrowNullPointer_whenPlaceSettlementVertexIsNull() {
+    assertThrows(NullPointerException.class, () -> player.placeSettlement(null));
+  }
+
   // BVA TC32
   @Test
   void shouldThrowIllegalState_whenPlacingMoreSettlementsThanCap() {
