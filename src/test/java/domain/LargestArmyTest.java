@@ -95,4 +95,5 @@ public class LargestArmyTest {
         game.updateLargestArmy();
         Assertions.assertEquals(0, game.getLargestArmyHolder());
     }
+
 }

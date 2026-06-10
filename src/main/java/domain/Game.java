@@ -119,7 +119,19 @@ public final class Game {
     }
 
     public void updateLongestRoad(Board board) {
-        // TODO: implement
+        int maxLength = MIN_ROAD_LENGTH - 1;
+        if (longestRoadHolder >= 0) {
+            maxLength = LongestRoadCalculator.calculateForPlayer(
+                    board, players.get(longestRoadHolder));
+        }
+        for (int i = 0; i < players.size(); i++) {
+            int length = LongestRoadCalculator.calculateForPlayer(
+                    board, players.get(i));
+            if (length > maxLength) {
+                maxLength = length;
+                longestRoadHolder = i;
+            }
+        }
     }
 
     public int getLongestRoadHolder() {

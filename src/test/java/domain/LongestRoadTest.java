@@ -32,6 +32,23 @@ public class LongestRoadTest {
         Assertions.assertEquals(-1, game.getLongestRoadHolder());
     }
 
+    // TC6 – First player to build 5 continuous roads gets Longest Road
+    @Test
+    public void testFirstPlayerWith5RoadsGetsLongestRoad() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        Board board = createBoard();
+
+        setEdgeOwner(board, EDGE_1, players.get(0));
+        setEdgeOwner(board, EDGE_2, players.get(0));
+        setEdgeOwner(board, EDGE_3, players.get(0));
+        setEdgeOwner(board, EDGE_4, players.get(0));
+        setEdgeOwner(board, EDGE_5, players.get(0));
+
+        game.updateLongestRoad(board);
+        Assertions.assertEquals(0, game.getLongestRoadHolder());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
