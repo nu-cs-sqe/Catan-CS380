@@ -56,4 +56,11 @@ class SettlementTest {
         settlement.upgrade();
         assertThrows(IllegalStateException.class, settlement::upgrade);
     }
+
+    // TC7 – getVictoryPoints() returns 1 before upgrade
+    @Test
+    void getVictoryPoints_notUpgraded_returnsOne() {
+        Settlement settlement = new Settlement();
+        assertEquals(1, settlement.getVictoryPoints());
+    }
 }
