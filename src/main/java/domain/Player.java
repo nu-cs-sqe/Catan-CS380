@@ -113,6 +113,9 @@ public final class Player {
   public void upgradeSettlementToCity(Vertex v) {
     Objects.requireNonNull(v, "vertex");
     Settlement s = v.getSettlement();
+    if (s == null || !settlements.contains(s)) {
+      throw new IllegalStateException("no player settlement at vertex");
+    }
     s.upgrade();
   }
 
