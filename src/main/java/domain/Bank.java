@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class Bank {
@@ -19,6 +20,7 @@ public class Bank {
   private final List<DevelopmentCard> deck = new ArrayList<>();
 
   public Bank(Consumer<List<DevelopmentCard>> shuffler) {
+    Objects.requireNonNull(shuffler);
     for (ResourceType type : ResourceType.values()) {
       if (type != ResourceType.GENERIC) {
         stock.put(type, INITIAL_STOCK);

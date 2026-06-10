@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BankTest {
 
@@ -32,6 +33,12 @@ public class BankTest {
     public void initialDevCardCountIs25() {
         Bank bank = new Bank(list -> { });
         assertEquals(INITIAL_DEV_CARD_COUNT, bank.getDevCardCount());
+    }
+
+    // TC4 - Null shuffler throws NullPointerException
+    @Test
+    public void nullShufflerThrowsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new Bank(null));
     }
 
     // TC3 - Initial deck composition is correct
