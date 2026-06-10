@@ -307,6 +307,19 @@ class PlayerTest {
     assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity(v));
   }
 
+  // BVA TC33
+  @Test
+  void shouldThrowIllegalState_whenUpgradingMoreCitiesThanCap() {
+    for (int i = 0; i < STARTING_CITIES; i++) {
+      Vertex v = nextVertex();
+      player.placeSettlement(v);
+      player.upgradeSettlementToCity(v);
+    }
+    Vertex overflow = nextVertex();
+    player.placeSettlement(overflow);
+    assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity(overflow));
+  }
+
   // BVA TC36
   @Test
   void shouldThrowIllegalState_whenUpgradingVertexWithNoPlayerSettlement() {
