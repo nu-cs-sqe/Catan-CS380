@@ -1,5 +1,7 @@
 package board;
 
+import domain.Player;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
