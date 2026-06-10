@@ -293,4 +293,13 @@ public class BankTest {
         IllegalArgumentException.class,
         () -> bank.maritimeTrade(Resource.WOOD, 5, Resource.BRICK));
   }
+
+  // TC33 - Same resource for give and receive throws IllegalArgumentException
+  @Test
+  public void maritimeTradeSameResourceThrowsIllegalArgumentException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> bank.maritimeTrade(Resource.WOOD, 4, Resource.WOOD));
+  }
 }

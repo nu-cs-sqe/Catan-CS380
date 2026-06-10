@@ -226,7 +226,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Any bank
 - **Expected output**: `IllegalArgumentException`
 - **BVA note**: Cannot trade a resource for itself
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC34 – Bank out of receive resource throws IllegalStateException
 - **State of the system**: Bank stock of receive = 0
