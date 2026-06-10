@@ -232,7 +232,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Bank stock of receive = 0
 - **Expected output**: `IllegalStateException`
 - **BVA note**: Boundary — bank cannot fulfill the trade
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC35 – Null give resource throws NullPointerException
 - **State of the system**: Any bank

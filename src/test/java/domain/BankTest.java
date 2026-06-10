@@ -302,4 +302,14 @@ public class BankTest {
         IllegalArgumentException.class,
         () -> bank.maritimeTrade(Resource.WOOD, 4, Resource.WOOD));
   }
+
+  // TC34 - Bank out of receive resource throws IllegalStateException
+  @Test
+  public void maritimeTradeOutOfReceiveResourceThrowsIllegalStateException() {
+    Bank bank = new Bank(list -> {});
+    bank.distributeResource(Resource.BRICK, INITIAL_STOCK);
+    assertThrows(
+        IllegalStateException.class,
+        () -> bank.maritimeTrade(Resource.WOOD, 4, Resource.BRICK));
+  }
 }
