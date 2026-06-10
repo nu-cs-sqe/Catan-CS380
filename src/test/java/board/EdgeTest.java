@@ -1,5 +1,6 @@
 package board;
 
+import domain.Player;
 import org.easymock.EasyMockExtension;
 import org.easymock.Mock;
 import org.junit.jupiter.api.Test;

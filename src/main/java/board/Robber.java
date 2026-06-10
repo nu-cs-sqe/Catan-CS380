@@ -1,5 +1,7 @@
 package board;
 
+import domain.Player;
+
 public class Robber {
   private Tile tile;
   private Player player;
