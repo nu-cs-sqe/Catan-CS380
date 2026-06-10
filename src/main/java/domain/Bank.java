@@ -90,4 +90,20 @@ public class Bank {
     }
     return deck.remove(deck.size() - 1);
   }
+
+  public void maritimeTrade(Resource give, int giveCount, Resource receive) {
+    Objects.requireNonNull(give);
+    Objects.requireNonNull(receive);
+    if (giveCount < 2 || giveCount > 4) {
+      throw new IllegalArgumentException();
+    }
+    if (give == receive) {
+      throw new IllegalArgumentException();
+    }
+    if (!canDistribute(receive, 1)) {
+      throw new IllegalStateException();
+    }
+    stock.put(give, stock.get(give) + giveCount);
+    stock.put(receive, stock.get(receive) - 1);
+  }
 }

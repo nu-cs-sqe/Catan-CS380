@@ -242,4 +242,13 @@ public class BankTest {
     Bank bank = new Bank(list -> {});
     assertThrows(NullPointerException.class, () -> bank.returnDevelopmentCard(null));
   }
+
+  // TC28 - Rate 1 throws IllegalArgumentException (boundary below valid)
+  @Test
+  public void maritimeTradeRateOneBelowMinThrowsIllegalArgumentException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> bank.maritimeTrade(Resource.WOOD, 1, Resource.BRICK));
+  }
 }

@@ -196,7 +196,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Any bank with stock
 - **Expected output**: `IllegalArgumentException`
 - **BVA note**: 1 is one below minimum valid rate of 2
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC29 – Rate 2 succeeds (boundary — minimum valid)
 - **State of the system**: Bank has receive resource in stock
