@@ -77,4 +77,22 @@ public class LargestArmyTest {
         game.updateLargestArmy();
         Assertions.assertEquals(1, game.getLargestArmyHolder());
     }
+
+    // TC4 – Tied knight count does not change Largest Army holder
+    @Test
+    public void testTiedKnightCountDoesNotChangeLargestArmy() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        game.updateLargestArmy();
+        Assertions.assertEquals(0, game.getLargestArmyHolder());
+
+        players.get(1).playKnight();
+        players.get(1).playKnight();
+        players.get(1).playKnight();
+        game.updateLargestArmy();
+        Assertions.assertEquals(0, game.getLargestArmyHolder());
+    }
 }
