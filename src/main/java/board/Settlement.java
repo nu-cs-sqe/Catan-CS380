@@ -2,8 +2,14 @@ package board;
 
 public class Settlement {
 
+    private boolean city = false;
+
+    public void upgrade() {
+        city = true;
+    }
+
     public boolean isCity() {
-        return false;
+        return city;
     }
 
     public int getVictoryPoints() {
