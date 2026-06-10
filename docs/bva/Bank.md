@@ -11,13 +11,13 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Freshly constructed Bank
 - **Expected output**: `getStock(r) == 19` for each of BRICK, LUMBER, WOOL, GRAIN, ORE
 - **BVA note**: 19 is the fixed starting supply per resource per Catan rules
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC2 – Initial development card count is 25
 - **State of the system**: Freshly constructed Bank
 - **Expected output**: `getDevCardCount() == 25`
 - **BVA note**: 14 Knights + 5 VP + 2 Road Building + 2 Year of Plenty + 2 Monopoly = 25
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC3 – Initial deck composition is correct
 - **State of the system**: Freshly constructed Bank with no-op shuffler

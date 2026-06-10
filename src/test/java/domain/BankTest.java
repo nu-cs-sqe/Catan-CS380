@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BankTest {
 
     private static final int INITIAL_STOCK = 19;
+    private static final int INITIAL_DEV_CARD_COUNT = 25;
 
     // TC1 - Initial resource stock is 19 per resource
     @Test
@@ -17,5 +18,12 @@ public class BankTest {
         assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.SHEEP));
         assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.WHEAT));
         assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.ORE));
+    }
+
+    // TC2 - Initial development card count is 25
+    @Test
+    public void initialDevCardCountIs25() {
+        Bank bank = new Bank(list -> { });
+        assertEquals(INITIAL_DEV_CARD_COUNT, bank.getDevCardCount());
     }
 }
