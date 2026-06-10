@@ -321,4 +321,13 @@ public class BankTest {
         NullPointerException.class,
         () -> bank.maritimeTrade(null, 4, Resource.BRICK));
   }
+
+  // TC36 - Null receive resource throws NullPointerException
+  @Test
+  public void maritimeTradeNullReceiveResourceThrowsNullPointerException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(
+        NullPointerException.class,
+        () -> bank.maritimeTrade(Resource.WOOD, 4, null));
+  }
 }
