@@ -79,6 +79,9 @@ public class Bank {
   }
 
   public void returnDevelopmentCard(DevelopmentCard card) {
+    if (card.getType() == DevelopmentCardType.VICTORY_POINT) {
+      throw new IllegalArgumentException();
+    }
     deck.add(card);
   }
 

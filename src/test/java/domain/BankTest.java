@@ -232,4 +232,12 @@ public class BankTest {
     bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.MONOPOLY));
     assertEquals(before + 1, bank.getDevCardCount());
   }
+
+  // TC26 - Returning a VICTORY_POINT card throws IllegalArgumentException
+  @Test
+  public void returningVictoryPointCardThrowsIllegalArgumentException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(IllegalArgumentException.class,
+        () -> bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.VICTORY_POINT)));
+  }
 }

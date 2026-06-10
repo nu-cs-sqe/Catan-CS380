@@ -181,7 +181,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Any bank
 - **Expected output**: `IllegalArgumentException`
 - **BVA note**: VP cards are kept by the player permanently — returning one is a programming error
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC27 – Null card throws NullPointerException
 - **State of the system**: Any bank
