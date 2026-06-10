@@ -55,7 +55,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Stock = 19, distribute 19
 - **Expected output**: Stock becomes 0
 - **BVA note**: Exact boundary — last available card distributed
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC8 – Distributing one more than stock throws IllegalStateException (boundary)
 - **State of the system**: Stock = 19, distribute 20
