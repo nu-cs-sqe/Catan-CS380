@@ -220,7 +220,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Any bank
 - **Expected output**: `IllegalArgumentException`
 - **BVA note**: 5 is one above maximum valid rate of 4
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC33 – Same resource for give and receive throws IllegalArgumentException
 - **State of the system**: Any bank

@@ -284,4 +284,13 @@ public class BankTest {
     assertEquals(giveBefore + 4, bank.getStock(Resource.WOOD));
     assertEquals(receiveBefore - 1, bank.getStock(Resource.BRICK));
   }
+
+  // TC32 - Rate 5 throws IllegalArgumentException (boundary above valid)
+  @Test
+  public void maritimeTradeRateFiveAboveMaxThrowsIllegalArgumentException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> bank.maritimeTrade(Resource.WOOD, 5, Resource.BRICK));
+  }
 }
