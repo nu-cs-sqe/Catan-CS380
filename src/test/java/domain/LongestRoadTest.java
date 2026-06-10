@@ -99,6 +99,29 @@ public class LongestRoadTest {
         Assertions.assertEquals(0, game.getLongestRoadHolder());
     }
 
+    // TC9 – Only the longest branch counts, not total roads
+    @Test
+    public void testOnlyLongestBranchCounts() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        Board board = createBoard();
+
+        // 3-edge branch: -1,-1 → 0,-2 → 1,-1 → 1,1
+        setEdgeOwner(board, EDGE_4, players.get(0));  // -1,-1|0,-2
+        setEdgeOwner(board, EDGE_3, players.get(0));  // 0,-2|1,-1
+        setEdgeOwner(board, EDGE_2, players.get(0));  // 1,-1|1,1
+
+        // Fork from 1,1: two 1-edge branches
+        setEdgeOwner(board, EDGE_1, players.get(0));  // 0,2|1,1
+        setEdgeOwner(board, "1,1|2,2", players.get(0));
+
+        // Player has 5 edges total, but longest path is 4
+        // (-1,-1 → 0,-2 → 1,-1 → 1,1 → 0,2 or → 2,2)
+        // Not 5, because the fork splits
+        game.updateLongestRoad(board);
+        Assertions.assertEquals(-1, game.getLongestRoadHolder());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
