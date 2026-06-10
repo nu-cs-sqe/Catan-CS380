@@ -78,6 +78,10 @@ public class Bank {
     return deck.size();
   }
 
+  public void returnDevelopmentCard(DevelopmentCard card) {
+    deck.add(card);
+  }
+
   public DevelopmentCard drawDevelopmentCard() {
     if (deck.isEmpty()) {
       throw new IllegalStateException();

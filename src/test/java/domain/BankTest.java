@@ -196,4 +196,13 @@ public class BankTest {
     }
     assertThrows(IllegalStateException.class, bank::drawDevelopmentCard);
   }
+
+  // TC22 - Returning a KNIGHT card increases deck count
+  @Test
+  public void returningKnightCardIncreasesDeckCount() {
+    Bank bank = new Bank(list -> {});
+    int before = bank.getDevCardCount();
+    bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.KNIGHT));
+    assertEquals(before + 1, bank.getDevCardCount());
+  }
 }

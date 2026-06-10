@@ -160,7 +160,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Any bank
 - **Expected output**: `getDevCardCount()` increases by 1
 - **BVA note**: Action card — valid to return
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC23 – Returning a ROAD_BUILDING card increases deck count
 - **State of the system**: Any bank
