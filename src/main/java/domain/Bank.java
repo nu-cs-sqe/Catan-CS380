@@ -79,6 +79,9 @@ public class Bank {
   }
 
   public DevelopmentCard drawDevelopmentCard() {
+    if (deck.isEmpty()) {
+      throw new IllegalStateException();
+    }
     return deck.remove(deck.size() - 1);
   }
 }

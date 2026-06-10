@@ -186,4 +186,14 @@ public class BankTest {
     bank.drawDevelopmentCard();
     assertEquals(0, bank.getDevCardCount());
   }
+
+  // TC21 - Drawing from empty deck throws IllegalStateException (boundary)
+  @Test
+  public void drawingFromEmptyDeckThrowsIllegalStateException() {
+    Bank bank = new Bank(list -> {});
+    for (int i = 0; i < INITIAL_DEV_CARD_COUNT; i++) {
+      bank.drawDevelopmentCard();
+    }
+    assertThrows(IllegalStateException.class, bank::drawDevelopmentCard);
+  }
 }

@@ -150,7 +150,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Deck has 0 cards
 - **Expected output**: `IllegalStateException`
 - **BVA note**: One past boundary — deck exhausted
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 
