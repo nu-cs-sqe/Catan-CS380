@@ -1,6 +1,11 @@
 package domain;
 
+import board.Edge;
+import board.Settlement;
+import board.Vertex;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -11,17 +16,14 @@ public final class Player {
   private static final int STARTING_ROADS = 15;
   private static final int DISCARD_THRESHOLD = 7;
   private static final int WIN_THRESHOLD = 10;
-  private static final int SETTLEMENT_VP = 1;
-  private static final int CITY_VP = 2;
   private static final int LONGEST_ROAD_VP = 2;
   private static final int LARGEST_ARMY_VP = 2;
 
   private final String name;
   private final PlayerColor color;
   private final Map<Resource, Integer> resources;
-  private int settlementsPlaced;
-  private int citiesPlaced;
-  private int roadsPlaced;
+  private final List<Settlement> settlements;
+  private final List<Edge> roads;
   private int victoryPointDevCards;
   private int knightsPlayed;
   private boolean hasLongestRoad;
@@ -31,15 +33,16 @@ public final class Player {
     this.name = requireNonBlank(name);
     this.color = Objects.requireNonNull(color, "color");
     this.resources = emptyResourceHand();
+    this.settlements = new ArrayList<>();
+    this.roads = new ArrayList<>();
   }
 
   public Player(Player other) {
     this.name = other.name;
     this.color = other.color;
     this.resources = new EnumMap<>(other.resources);
-    this.settlementsPlaced = other.settlementsPlaced;
-    this.citiesPlaced = other.citiesPlaced;
-    this.roadsPlaced = other.roadsPlaced;
+    this.settlements = new ArrayList<>(other.settlements);
+    this.roads = new ArrayList<>(other.roads);
     this.victoryPointDevCards = other.victoryPointDevCards;
     this.knightsPlayed = other.knightsPlayed;
     this.hasLongestRoad = other.hasLongestRoad;
@@ -55,7 +58,8 @@ public final class Player {
   }
 
   public int getVictoryPoints() {
-    int vp = settlementsPlaced * SETTLEMENT_VP + citiesPlaced * CITY_VP + victoryPointDevCards;
+    int vp = settlements.stream().mapToInt(Settlement::getVictoryPoints).sum()
+        + victoryPointDevCards;
     if (hasLongestRoad) {
       vp += LONGEST_ROAD_VP;
     }
@@ -93,27 +97,38 @@ public final class Player {
     return getVictoryPoints() >= WIN_THRESHOLD;
   }
 
-  public void placeSettlement() {
-    requireBelowCap(settlementsPlaced, STARTING_SETTLEMENTS);
-    settlementsPlaced++;
-  }
-
-  public void placeCity() {
-    requireBelowCap(citiesPlaced, STARTING_CITIES);
-    citiesPlaced++;
-  }
-
-  public void placeRoad() {
-    requireBelowCap(roadsPlaced, STARTING_ROADS);
-    roadsPlaced++;
-  }
-
-  public void upgradeSettlementToCity() {
-    if (settlementsPlaced == 0) {
-      throw new IllegalStateException();
+  public void placeSettlement(Vertex v) {
+    Objects.requireNonNull(v, "vertex");
+    if (v.getSettlement() != null) {
+      throw new IllegalStateException("vertex already occupied");
     }
-    settlementsPlaced--;
-    placeCity();
+    if (getRemainingSettlements() == 0) {
+      throw new IllegalStateException("no settlement pieces remaining");
+    }
+    Settlement s = new Settlement();
+    settlements.add(s);
+    v.setSettlement(s);
+  }
+
+  public void upgradeSettlementToCity(Vertex v) {
+    Objects.requireNonNull(v, "vertex");
+    Settlement s = v.getSettlement();
+    if (s == null || !settlements.contains(s)) {
+      throw new IllegalStateException("no player settlement at vertex");
+    }
+    if (getRemainingCities() == 0) {
+      throw new IllegalStateException("no city pieces remaining");
+    }
+    s.upgrade();
+  }
+
+  public void placeRoad(Edge e) {
+    Objects.requireNonNull(e, "edge");
+    if (getRemainingRoads() == 0) {
+      throw new IllegalStateException("no road pieces remaining");
+    }
+    roads.add(e);
+    e.setOwner(this);
   }
 
   public void awardLongestRoad() {
@@ -148,6 +163,20 @@ public final class Player {
     return hand / 2;
   }
 
+  public int getRemainingSettlements() {
+    long placed = settlements.stream().filter(s -> !s.isCity()).count();
+    return STARTING_SETTLEMENTS - (int) placed;
+  }
+
+  public int getRemainingCities() {
+    long placed = settlements.stream().filter(Settlement::isCity).count();
+    return STARTING_CITIES - (int) placed;
+  }
+
+  public int getRemainingRoads() {
+    return STARTING_ROADS - roads.size();
+  }
+
   private int getHandSize() {
     return resources.values().stream().mapToInt(Integer::intValue).sum();
   }
@@ -156,24 +185,6 @@ public final class Player {
     if (amount < 0) {
       throw new IllegalArgumentException("amount must be non-negative");
     }
-  }
-
-  private static void requireBelowCap(int placed, int cap) {
-    if (placed >= cap) {
-      throw new IllegalStateException();
-    }
-  }
-
-  public int getRemainingSettlements() {
-    return STARTING_SETTLEMENTS - settlementsPlaced;
-  }
-
-  public int getRemainingCities() {
-    return STARTING_CITIES - citiesPlaced;
-  }
-
-  public int getRemainingRoads() {
-    return STARTING_ROADS - roadsPlaced;
   }
 
   private static String requireNonBlank(String name) {
