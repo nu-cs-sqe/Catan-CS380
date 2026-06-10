@@ -79,4 +79,12 @@ public class BankTest {
     bank.distributeResource(ResourceType.WOOD, INITIAL_STOCK);
     assertEquals(0, bank.getStock(ResourceType.WOOD));
   }
+
+  // TC8 - Distributing one more than stock throws IllegalStateException (boundary)
+  @Test
+  public void distributingMoreThanStockThrowsIllegalStateException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(IllegalStateException.class,
+        () -> bank.distributeResource(ResourceType.WOOD, INITIAL_STOCK + 1));
+  }
 }

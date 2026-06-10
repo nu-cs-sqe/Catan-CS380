@@ -61,7 +61,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Stock = 19, distribute 20
 - **Expected output**: `IllegalStateException`
 - **BVA note**: One past the boundary — insufficient stock
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC9 – Zero amount throws IllegalArgumentException
 - **State of the system**: Any bank, amount = 0
