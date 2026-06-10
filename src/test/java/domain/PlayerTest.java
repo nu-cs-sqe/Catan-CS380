@@ -307,6 +307,20 @@ class PlayerTest {
     assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity(v));
   }
 
+  // BVA TC35
+  @Test
+  void shouldUpgradeSettlementToCity_restoreSettlementPieceAndConsumeCity() {
+    Vertex v = nextVertex();
+    player.placeSettlement(v);
+    int settlementsBefore = player.getRemainingSettlements();
+    int citiesBefore = player.getRemainingCities();
+    player.upgradeSettlementToCity(v);
+    assertAll(
+        () -> assertTrue(v.getSettlement().isCity()),
+        () -> assertEquals(settlementsBefore + 1, player.getRemainingSettlements()),
+        () -> assertEquals(citiesBefore - 1, player.getRemainingCities()));
+  }
+
   // BVA TC33
   @Test
   void shouldThrowIllegalState_whenUpgradingMoreCitiesThanCap() {
