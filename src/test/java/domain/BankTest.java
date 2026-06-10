@@ -95,4 +95,12 @@ public class BankTest {
     assertThrows(IllegalArgumentException.class,
         () -> bank.distributeResource(ResourceType.WOOD, 0));
   }
+
+  // TC10 - Negative amount in distributeResource throws IllegalArgumentException
+  @Test
+  public void negativeAmountInDistributeThrowsIllegalArgumentException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(IllegalArgumentException.class,
+        () -> bank.distributeResource(ResourceType.WOOD, -1));
+  }
 }

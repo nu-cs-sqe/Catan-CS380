@@ -73,7 +73,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Any bank, amount = -1
 - **Expected output**: `IllegalArgumentException`
 - **BVA note**: Negative boundary below valid range
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC11 – Null resource throws NullPointerException
 - **State of the system**: Any bank, null resource
