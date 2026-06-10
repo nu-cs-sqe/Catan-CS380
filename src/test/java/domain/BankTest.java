@@ -205,4 +205,13 @@ public class BankTest {
     bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.KNIGHT));
     assertEquals(before + 1, bank.getDevCardCount());
   }
+
+  // TC23 - Returning a ROAD_BUILDING card increases deck count
+  @Test
+  public void returningRoadBuildingCardIncreasesDeckCount() {
+    Bank bank = new Bank(list -> {});
+    int before = bank.getDevCardCount();
+    bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.ROAD_BUILDING));
+    assertEquals(before + 1, bank.getDevCardCount());
+  }
 }
