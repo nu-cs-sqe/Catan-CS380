@@ -142,4 +142,13 @@ public class BankTest {
     assertThrows(IllegalArgumentException.class,
         () -> bank.canDistribute(ResourceType.WOOD, 0));
   }
+
+  // TC16 - Returning 1 increases stock by 1
+  @Test
+  public void returningOneIncreasesStockByOne() {
+    Bank bank = new Bank(list -> {});
+    bank.distributeResource(ResourceType.WOOD, 1);
+    bank.returnResource(ResourceType.WOOD, 1);
+    assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.WOOD));
+  }
 }

@@ -116,7 +116,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Stock = 18 (after 1 distributed), return 1
 - **Expected output**: Stock becomes 19
 - **BVA note**: Normal return case; stock increases
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC17 – Zero amount throws IllegalArgumentException
 - **State of the system**: Any bank, amount = 0
