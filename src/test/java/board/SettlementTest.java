@@ -40,4 +40,12 @@ class SettlementTest {
         settlement.upgrade();
         assertTrue(settlement.isCity());
     }
+
+    // TC5 – upgrade() on a non-city sets isCity to true
+    @Test
+    void upgrade_onNonCity_setsIsCity() {
+        Settlement settlement = new Settlement();
+        settlement.upgrade();
+        assertTrue(settlement.isCity());
+    }
 }
