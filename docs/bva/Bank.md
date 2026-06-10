@@ -106,7 +106,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Any bank, amount = 0
 - **Expected output**: `IllegalArgumentException`
 - **BVA note**: Amount must be positive
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 

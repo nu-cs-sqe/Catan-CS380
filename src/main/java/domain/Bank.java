@@ -61,6 +61,9 @@ public class Bank {
   }
 
   public boolean canDistribute(ResourceType type, int amount) {
+    if (amount <= 0) {
+      throw new IllegalArgumentException();
+    }
     return amount <= stock.get(type);
   }
 

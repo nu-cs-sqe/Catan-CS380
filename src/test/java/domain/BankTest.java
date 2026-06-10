@@ -134,4 +134,12 @@ public class BankTest {
     Bank bank = new Bank(list -> {});
     assertFalse(bank.canDistribute(ResourceType.WOOD, INITIAL_STOCK + 1));
   }
+
+  // TC15 - Zero amount in canDistribute throws IllegalArgumentException
+  @Test
+  public void zeroAmountInCanDistributeThrowsIllegalArgumentException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(IllegalArgumentException.class,
+        () -> bank.canDistribute(ResourceType.WOOD, 0));
+  }
 }
