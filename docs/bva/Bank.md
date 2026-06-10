@@ -94,7 +94,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Stock = 19, amount = 19
 - **Expected output**: `true`
 - **BVA note**: Exact boundary — just enough
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC14 – Returns false when amount exceeds stock by 1 (boundary)
 - **State of the system**: Stock = 19, amount = 20

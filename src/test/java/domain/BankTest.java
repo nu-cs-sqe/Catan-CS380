@@ -119,4 +119,11 @@ public class BankTest {
     Bank bank = new Bank(list -> {});
     assertTrue(bank.canDistribute(ResourceType.WOOD, 1));
   }
+
+  // TC13 - canDistribute returns true when amount equals stock exactly (boundary)
+  @Test
+  public void canDistributeReturnsTrueWhenAmountEqualsStock() {
+    Bank bank = new Bank(list -> {});
+    assertTrue(bank.canDistribute(ResourceType.WOOD, INITIAL_STOCK));
+  }
 }
