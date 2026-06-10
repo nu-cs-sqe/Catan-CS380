@@ -275,6 +275,15 @@ class PlayerTest {
         () -> assertEquals(STARTING_ROADS, player.getRemainingRoads()));
   }
 
+  // BVA TC32
+  @Test
+  void shouldThrowIllegalState_whenPlacingMoreSettlementsThanCap() {
+    for (int i = 0; i < STARTING_SETTLEMENTS; i++) {
+      player.placeSettlement(nextVertex());
+    }
+    assertThrows(IllegalStateException.class, () -> player.placeSettlement(nextVertex()));
+  }
+
   // BVA TC37
   @Test
   void shouldHaveOneKnightPlayed_whenPlayingFirstKnight() {
