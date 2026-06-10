@@ -1,6 +1,5 @@
 package domain;
 
-import board.ResourceType;
 import org.junit.jupiter.api.Test;
 
 import java.util.EnumMap;
@@ -23,11 +22,11 @@ public class BankTest {
   @Test
   public void initialStockIs19ForEachResource() {
     Bank bank = new Bank(list -> {});
-    assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.WOOD));
-    assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.BRICK));
-    assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.SHEEP));
-    assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.WHEAT));
-    assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.ORE));
+    assertEquals(INITIAL_STOCK, bank.getStock(Resource.WOOD));
+    assertEquals(INITIAL_STOCK, bank.getStock(Resource.BRICK));
+    assertEquals(INITIAL_STOCK, bank.getStock(Resource.SHEEP));
+    assertEquals(INITIAL_STOCK, bank.getStock(Resource.WHEAT));
+    assertEquals(INITIAL_STOCK, bank.getStock(Resource.ORE));
   }
 
   // TC2 - Initial development card count is 25
@@ -70,102 +69,97 @@ public class BankTest {
   @Test
   public void distributingOneReducesStockByOne() {
     Bank bank = new Bank(list -> {});
-    bank.distributeResource(ResourceType.WOOD, 1);
-    assertEquals(INITIAL_STOCK - 1, bank.getStock(ResourceType.WOOD));
+    bank.distributeResource(Resource.WOOD, 1);
+    assertEquals(INITIAL_STOCK - 1, bank.getStock(Resource.WOOD));
   }
 
   // TC7 - Distributing exactly all stock reduces stock to zero (boundary)
   @Test
   public void distributingAllStockReducesStockToZero() {
     Bank bank = new Bank(list -> {});
-    bank.distributeResource(ResourceType.WOOD, INITIAL_STOCK);
-    assertEquals(0, bank.getStock(ResourceType.WOOD));
+    bank.distributeResource(Resource.WOOD, INITIAL_STOCK);
+    assertEquals(0, bank.getStock(Resource.WOOD));
   }
 
   // TC8 - Distributing one more than stock throws IllegalStateException (boundary)
   @Test
   public void distributingMoreThanStockThrowsIllegalStateException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(IllegalStateException.class,
-        () -> bank.distributeResource(ResourceType.WOOD, INITIAL_STOCK + 1));
+    assertThrows(
+        IllegalStateException.class,
+        () -> bank.distributeResource(Resource.WOOD, INITIAL_STOCK + 1));
   }
 
   // TC9 - Zero amount in distributeResource throws IllegalArgumentException
   @Test
   public void zeroAmountInDistributeThrowsIllegalArgumentException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(IllegalArgumentException.class,
-        () -> bank.distributeResource(ResourceType.WOOD, 0));
+    assertThrows(IllegalArgumentException.class, () -> bank.distributeResource(Resource.WOOD, 0));
   }
 
   // TC10 - Negative amount in distributeResource throws IllegalArgumentException
   @Test
   public void negativeAmountInDistributeThrowsIllegalArgumentException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(IllegalArgumentException.class,
-        () -> bank.distributeResource(ResourceType.WOOD, -1));
+    assertThrows(IllegalArgumentException.class, () -> bank.distributeResource(Resource.WOOD, -1));
   }
 
   // TC11 - Null resource in distributeResource throws NullPointerException
   @Test
   public void nullResourceInDistributeThrowsNullPointerException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(NullPointerException.class,
-        () -> bank.distributeResource(null, 1));
+    assertThrows(NullPointerException.class, () -> bank.distributeResource(null, 1));
   }
 
   // TC12 - canDistribute returns true when stock is sufficient
   @Test
   public void canDistributeReturnsTrueWhenStockIsSufficient() {
     Bank bank = new Bank(list -> {});
-    assertTrue(bank.canDistribute(ResourceType.WOOD, 1));
+    assertTrue(bank.canDistribute(Resource.WOOD, 1));
   }
 
   // TC13 - canDistribute returns true when amount equals stock exactly (boundary)
   @Test
   public void canDistributeReturnsTrueWhenAmountEqualsStock() {
     Bank bank = new Bank(list -> {});
-    assertTrue(bank.canDistribute(ResourceType.WOOD, INITIAL_STOCK));
+    assertTrue(bank.canDistribute(Resource.WOOD, INITIAL_STOCK));
   }
 
   // TC14 - canDistribute returns false when amount exceeds stock by 1 (boundary)
   @Test
   public void canDistributeReturnsFalseWhenAmountExceedsStock() {
     Bank bank = new Bank(list -> {});
-    assertFalse(bank.canDistribute(ResourceType.WOOD, INITIAL_STOCK + 1));
+    assertFalse(bank.canDistribute(Resource.WOOD, INITIAL_STOCK + 1));
   }
 
   // TC15 - Zero amount in canDistribute throws IllegalArgumentException
   @Test
   public void zeroAmountInCanDistributeThrowsIllegalArgumentException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(IllegalArgumentException.class,
-        () -> bank.canDistribute(ResourceType.WOOD, 0));
+    assertThrows(IllegalArgumentException.class, () -> bank.canDistribute(Resource.WOOD, 0));
   }
 
   // TC16 - Returning 1 increases stock by 1
   @Test
   public void returningOneIncreasesStockByOne() {
     Bank bank = new Bank(list -> {});
-    bank.distributeResource(ResourceType.WOOD, 1);
-    bank.returnResource(ResourceType.WOOD, 1);
-    assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.WOOD));
+    bank.distributeResource(Resource.WOOD, 1);
+    bank.returnResource(Resource.WOOD, 1);
+    assertEquals(INITIAL_STOCK, bank.getStock(Resource.WOOD));
   }
 
   // TC17 - Zero amount in returnResource throws IllegalArgumentException
   @Test
   public void zeroAmountInReturnResourceThrowsIllegalArgumentException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(IllegalArgumentException.class,
-        () -> bank.returnResource(ResourceType.WOOD, 0));
+    assertThrows(IllegalArgumentException.class, () -> bank.returnResource(Resource.WOOD, 0));
   }
 
   // TC18 - Negative amount in returnResource throws IllegalArgumentException
   @Test
   public void negativeAmountInReturnResourceThrowsIllegalArgumentException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(IllegalArgumentException.class,
-        () -> bank.returnResource(ResourceType.WOOD, -1));
+    assertThrows(IllegalArgumentException.class, () -> bank.returnResource(Resource.WOOD, -1));
   }
 
   // TC19 - Drawing a card reduces deck count by 1
@@ -237,7 +231,8 @@ public class BankTest {
   @Test
   public void returningVictoryPointCardThrowsIllegalArgumentException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.VICTORY_POINT)));
   }
 
@@ -245,7 +240,6 @@ public class BankTest {
   @Test
   public void nullCardInReturnDevelopmentCardThrowsNullPointerException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(NullPointerException.class,
-        () -> bank.returnDevelopmentCard(null));
+    assertThrows(NullPointerException.class, () -> bank.returnDevelopmentCard(null));
   }
 }

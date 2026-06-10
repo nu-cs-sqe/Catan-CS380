@@ -1,7 +1,5 @@
 package domain;
 
-import board.ResourceType;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -16,13 +14,13 @@ public class Bank {
   private static final int VICTORY_POINT_COUNT = 5;
   private static final int ACTION_CARD_COUNT = 2;
 
-  private final Map<ResourceType, Integer> stock = new EnumMap<>(ResourceType.class);
+  private final Map<Resource, Integer> stock = new EnumMap<>(Resource.class);
   private final List<DevelopmentCard> deck = new ArrayList<>();
 
   public Bank(Consumer<List<DevelopmentCard>> shuffler) {
     Objects.requireNonNull(shuffler);
-    for (ResourceType type : ResourceType.values()) {
-      if (type != ResourceType.GENERIC) {
+    for (Resource type : Resource.values()) {
+      if (type != Resource.GENERIC) {
         stock.put(type, INITIAL_STOCK);
       }
     }
@@ -44,12 +42,12 @@ public class Bank {
     }
   }
 
-  public int getStock(ResourceType type) {
+  public int getStock(Resource type) {
     Objects.requireNonNull(type);
     return stock.getOrDefault(type, 0);
   }
 
-  public void distributeResource(ResourceType type, int amount) {
+  public void distributeResource(Resource type, int amount) {
     Objects.requireNonNull(type);
     if (amount <= 0) {
       throw new IllegalArgumentException();
@@ -60,14 +58,14 @@ public class Bank {
     stock.put(type, stock.get(type) - amount);
   }
 
-  public void returnResource(ResourceType type, int amount) {
+  public void returnResource(Resource type, int amount) {
     if (amount <= 0) {
       throw new IllegalArgumentException();
     }
     stock.put(type, stock.get(type) + amount);
   }
 
-  public boolean canDistribute(ResourceType type, int amount) {
+  public boolean canDistribute(Resource type, int amount) {
     if (amount <= 0) {
       throw new IllegalArgumentException();
     }
