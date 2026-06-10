@@ -138,7 +138,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Deck has 25 cards
 - **Expected output**: `getDevCardCount() == 24` after one draw
 - **BVA note**: Normal draw case
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC20 – Drawing last card succeeds (boundary)
 - **State of the system**: Deck has exactly 1 card remaining

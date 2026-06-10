@@ -167,4 +167,12 @@ public class BankTest {
     assertThrows(IllegalArgumentException.class,
         () -> bank.returnResource(ResourceType.WOOD, -1));
   }
+
+  // TC19 - Drawing a card reduces deck count by 1
+  @Test
+  public void drawingCardReducesDeckCountByOne() {
+    Bank bank = new Bank(list -> {});
+    bank.drawDevelopmentCard();
+    assertEquals(INITIAL_DEV_CARD_COUNT - 1, bank.getDevCardCount());
+  }
 }
