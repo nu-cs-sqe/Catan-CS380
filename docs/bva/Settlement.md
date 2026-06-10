@@ -28,4 +28,4 @@
 |     | System under test                   | Expected output | Implemented? |
 |-----|-------------------------------------|-----------------|--------------|
 | TC7 | Settlement not yet upgraded         | 1               | yes          |
-| TC8 | Settlement after `upgrade()` called | 2               | no           |
+| TC8 | Settlement after `upgrade()` called | 2               | yes          |

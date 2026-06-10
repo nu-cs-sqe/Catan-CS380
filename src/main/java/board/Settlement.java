@@ -16,6 +16,6 @@ public class Settlement {
     }
 
     public int getVictoryPoints() {
-        return 1;
+        return city ? 2 : 1;
     }
 }

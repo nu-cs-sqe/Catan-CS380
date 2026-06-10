@@ -63,4 +63,12 @@ class SettlementTest {
         Settlement settlement = new Settlement();
         assertEquals(1, settlement.getVictoryPoints());
     }
+
+    // TC8 – getVictoryPoints() returns 2 after upgrade()
+    @Test
+    void getVictoryPoints_afterUpgrade_returnsTwo() {
+        Settlement settlement = new Settlement();
+        settlement.upgrade();
+        assertEquals(2, settlement.getVictoryPoints());
+    }
 }
