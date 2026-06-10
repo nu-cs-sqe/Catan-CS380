@@ -1,9 +1,12 @@
 package domain;
 
+import board.Edge;
+import board.Vertex;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class Game {
 
@@ -13,6 +16,7 @@ public final class Game {
     private final List<Player> players;
     private final int firstPlayerIndex;
     private final int[] turnOrder;
+    private final AtomicInteger placementCounter = new AtomicInteger();
 
     public Game(List<Player> players) {
         this(players, new RandomDiceRoller());
@@ -80,8 +84,9 @@ public final class Game {
     public void executeSetupRoundOne() {
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(turnOrder[i]);
-            player.placeSettlement();
-            player.placeRoad();
+            Vertex v = new Vertex("setup-v" + placementCounter.getAndIncrement());
+            player.placeSettlement(v);
+            player.placeRoad(new Edge("setup-e" + placementCounter.getAndIncrement()));
         }
     }
 
@@ -94,8 +99,9 @@ public final class Game {
         for (int i = 0; i < players.size(); i++) {
             int playerIndex = reverseOrder[i];
             Player player = players.get(playerIndex);
-            player.placeSettlement();
-            player.placeRoad();
+            Vertex v = new Vertex("setup-v" + placementCounter.getAndIncrement());
+            player.placeSettlement(v);
+            player.placeRoad(new Edge("setup-e" + placementCounter.getAndIncrement()));
             grantResources(player, playerIndex, resources);
         }
     }
