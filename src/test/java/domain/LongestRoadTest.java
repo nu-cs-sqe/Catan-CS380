@@ -15,6 +15,7 @@ public class LongestRoadTest {
     private static final String EDGE_3 = "0,-2|1,-1";
     private static final String EDGE_4 = "-1,-1|0,-2";
     private static final String EDGE_5 = "-1,-1|-1,1";
+    private static final String EDGE_6 = "-2,2|-1,1";
 
     // TC5 – No player has Longest Road with fewer than 5 segments
     @Test
@@ -118,6 +119,27 @@ public class LongestRoadTest {
         // Player has 5 edges total, but longest path is 4
         // (-1,-1 → 0,-2 → 1,-1 → 1,1 → 0,2 or → 2,2)
         // Not 5, because the fork splits
+        game.updateLongestRoad(board);
+        Assertions.assertEquals(-1, game.getLongestRoadHolder());
+    }
+    // TC10 – Opponent settlement breaks a road
+    @Test
+    public void testOpponentSettlementBreaksRoad() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        Board board = createBoard();
+
+        setEdgeOwner(board, EDGE_1, players.get(0));
+        setEdgeOwner(board, EDGE_2, players.get(0));
+        setEdgeOwner(board, EDGE_3, players.get(0));
+        setEdgeOwner(board, EDGE_4, players.get(0));
+        setEdgeOwner(board, EDGE_5, players.get(0));
+        setEdgeOwner(board, EDGE_6, players.get(0));
+        game.updateLongestRoad(board);
+        Assertions.assertEquals(0, game.getLongestRoadHolder());
+
+        // Opponent builds settlement on vertex 0,-2, breaking the road
+        board.getVertex("0,-2").setOwner(players.get(1));
         game.updateLongestRoad(board);
         Assertions.assertEquals(-1, game.getLongestRoadHolder());
     }
