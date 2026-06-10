@@ -1,52 +1,38 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
 public final class Game {
 
     private static final int MIN_PLAYERS = 3;
     private static final int MAX_PLAYERS = 4;
 
-    private final int numberOfPlayers;
+    private final List<Player> players;
     private final int firstPlayerIndex;
     private final int[] turnOrder;
-    private final int[] settlementsPerPlayer;
-    private final int[] roadsPerPlayer;
-    private final Map<String, Integer>[] playerResources;
 
-    public Game(int numberOfPlayers) {
-        this(numberOfPlayers, new RandomDiceRoller());
+    public Game(List<Player> players) {
+        this(players, new RandomDiceRoller());
     }
 
-    public Game(int numberOfPlayers, DiceRoller diceRoller) {
-        if (numberOfPlayers < MIN_PLAYERS
-                || numberOfPlayers > MAX_PLAYERS) {
+    public Game(List<Player> players, DiceRoller diceRoller) {
+        if (players.size() < MIN_PLAYERS
+                || players.size() > MAX_PLAYERS) {
             throw new IllegalArgumentException(
                     "Player count must be between "
                             + MIN_PLAYERS + " and " + MAX_PLAYERS);
         }
-        this.numberOfPlayers = numberOfPlayers;
+        this.players = new ArrayList<>(players);
         this.firstPlayerIndex = determineFirstPlayer(diceRoller);
         this.turnOrder = buildTurnOrder();
-        this.settlementsPerPlayer = new int[numberOfPlayers];
-        this.roadsPerPlayer = new int[numberOfPlayers];
-        this.playerResources = createResourceMaps(numberOfPlayers);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Integer>[] createResourceMaps(int count) {
-        Map<String, Integer>[] maps = new HashMap[count];
-        for (int i = 0; i < count; i++) {
-            maps[i] = new HashMap<>();
-        }
-        return maps;
     }
 
     private int determineFirstPlayer(DiceRoller diceRoller) {
-        int[] rolls = new int[numberOfPlayers];
-        for (int i = 0; i < numberOfPlayers; i++) {
+        int[] rolls = new int[players.size()];
+        for (int i = 0; i < players.size(); i++) {
             rolls[i] = diceRoller.roll();
         }
         return resolveHighestRoller(rolls, diceRoller);
@@ -84,18 +70,18 @@ public final class Game {
     }
 
     private int[] buildTurnOrder() {
-        int[] order = new int[numberOfPlayers];
-        for (int i = 0; i < numberOfPlayers; i++) {
-            order[i] = (firstPlayerIndex + i) % numberOfPlayers;
+        int[] order = new int[players.size()];
+        for (int i = 0; i < players.size(); i++) {
+            order[i] = (firstPlayerIndex + i) % players.size();
         }
         return order;
     }
 
     public void executeSetupRoundOne() {
-        for (int i = 0; i < numberOfPlayers; i++) {
-            int playerIndex = turnOrder[i];
-            settlementsPerPlayer[playerIndex]++;
-            roadsPerPlayer[playerIndex]++;
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(turnOrder[i]);
+            player.placeSettlement();
+            player.placeRoad();
         }
     }
 
@@ -103,69 +89,47 @@ public final class Game {
         executeSetupRoundTwo(null);
     }
 
-    public void executeSetupRoundTwo(String[][] resources) {
+    public void executeSetupRoundTwo(Resource[][] resources) {
         int[] reverseOrder = getRoundTwoOrder();
-        for (int i = 0; i < numberOfPlayers; i++) {
+        for (int i = 0; i < players.size(); i++) {
             int playerIndex = reverseOrder[i];
-            settlementsPerPlayer[playerIndex]++;
-            roadsPerPlayer[playerIndex]++;
-            grantResources(playerIndex, resources);
+            Player player = players.get(playerIndex);
+            player.placeSettlement();
+            player.placeRoad();
+            grantResources(player, playerIndex, resources);
         }
     }
 
-    private void grantResources(int playerIndex,
-                                String[][] resources) {
+    private void grantResources(Player player, int playerIndex,
+                                Resource[][] resources) {
         if (resources != null && resources[playerIndex] != null) {
-            for (String resource : resources[playerIndex]) {
-                playerResources[playerIndex].merge(
-                        resource, 1, Integer::sum);
+            for (Resource resource : resources[playerIndex]) {
+                player.addResource(resource, 1);
             }
         }
     }
 
     public int[] getRoundTwoOrder() {
-        int[] reverse = new int[numberOfPlayers];
-        for (int i = 0; i < numberOfPlayers; i++) {
-            reverse[i] = turnOrder[numberOfPlayers - 1 - i];
+        int[] reverse = new int[players.size()];
+        for (int i = 0; i < players.size(); i++) {
+            reverse[i] = turnOrder[players.size() - 1 - i];
         }
         return reverse;
     }
 
-    public int getTotalResources(int playerIndex) {
-        int total = 0;
-        for (int count : playerResources[playerIndex].values()) {
-            total += count;
-        }
-        return total;
-    }
-
-    public int getResourceCount(int playerIndex, String resource) {
-        return playerResources[playerIndex].getOrDefault(resource, 0);
-    }
-
-    public int getNumberOfPlayers() {
-        return numberOfPlayers;
+    public List<Player> getPlayers() {
+        return Collections.unmodifiableList(players);
     }
 
     public int getFirstPlayerIndex() {
         return firstPlayerIndex;
     }
 
-    public int[] getTurnOrder() {
-        return Arrays.copyOf(turnOrder, turnOrder.length);
-    }
-
-    public int[] getSettlementsPerPlayer() {
-        return Arrays.copyOf(settlementsPerPlayer,
-                settlementsPerPlayer.length);
-    }
-
-    public int[] getRoadsPerPlayer() {
-        return Arrays.copyOf(roadsPerPlayer,
-                roadsPerPlayer.length);
-    }
-
     public int getCurrentPlayerIndex() {
         return firstPlayerIndex;
+    }
+
+    public int[] getTurnOrder() {
+        return Arrays.copyOf(turnOrder, turnOrder.length);
     }
 }
