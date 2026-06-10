@@ -312,4 +312,13 @@ public class BankTest {
         IllegalStateException.class,
         () -> bank.maritimeTrade(Resource.WOOD, 4, Resource.BRICK));
   }
+
+  // TC35 - Null give resource throws NullPointerException
+  @Test
+  public void maritimeTradeNullGiveResourceThrowsNullPointerException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(
+        NullPointerException.class,
+        () -> bank.maritimeTrade(null, 4, Resource.BRICK));
+  }
 }

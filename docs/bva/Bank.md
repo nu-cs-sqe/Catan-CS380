@@ -237,7 +237,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 ### TC35 – Null give resource throws NullPointerException
 - **State of the system**: Any bank
 - **Expected output**: `NullPointerException`
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC36 – Null receive resource throws NullPointerException
 - **State of the system**: Any bank
