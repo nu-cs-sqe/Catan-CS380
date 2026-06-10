@@ -78,7 +78,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 ### TC11 – Null resource throws NullPointerException
 - **State of the system**: Any bank, null resource
 - **Expected output**: `NullPointerException`
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 

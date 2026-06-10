@@ -50,6 +50,7 @@ public class Bank {
   }
 
   public void distributeResource(ResourceType type, int amount) {
+    Objects.requireNonNull(type);
     if (amount <= 0) {
       throw new IllegalArgumentException();
     }

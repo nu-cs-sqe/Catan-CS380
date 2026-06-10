@@ -103,4 +103,12 @@ public class BankTest {
     assertThrows(IllegalArgumentException.class,
         () -> bank.distributeResource(ResourceType.WOOD, -1));
   }
+
+  // TC11 - Null resource in distributeResource throws NullPointerException
+  @Test
+  public void nullResourceInDistributeThrowsNullPointerException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(NullPointerException.class,
+        () -> bank.distributeResource(null, 1));
+  }
 }
