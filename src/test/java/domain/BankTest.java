@@ -151,4 +151,12 @@ public class BankTest {
     bank.returnResource(ResourceType.WOOD, 1);
     assertEquals(INITIAL_STOCK, bank.getStock(ResourceType.WOOD));
   }
+
+  // TC17 - Zero amount in returnResource throws IllegalArgumentException
+  @Test
+  public void zeroAmountInReturnResourceThrowsIllegalArgumentException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(IllegalArgumentException.class,
+        () -> bank.returnResource(ResourceType.WOOD, 0));
+  }
 }

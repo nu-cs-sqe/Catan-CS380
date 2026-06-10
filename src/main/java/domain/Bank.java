@@ -61,6 +61,9 @@ public class Bank {
   }
 
   public void returnResource(ResourceType type, int amount) {
+    if (amount <= 0) {
+      throw new IllegalArgumentException();
+    }
     stock.put(type, stock.get(type) + amount);
   }
 
