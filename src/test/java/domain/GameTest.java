@@ -184,7 +184,8 @@ public class GameTest {
         PlayerColor[] colors = PlayerColor.values();
         Player[] players = new Player[count];
         for (int i = 0; i < count; i++) {
-            players[i] = new Player("Player" + i, colors[i]);
+            players[i] = new Player("Player" + i,
+                    colors[i % colors.length]);
         }
         return Arrays.asList(players);
     }
