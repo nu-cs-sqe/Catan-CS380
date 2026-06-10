@@ -21,7 +21,7 @@
 |     | System under test                                  | Expected output                | Implemented? |
 |-----|----------------------------------------------------|--------------------------------|--------------|
 | TC5 | settlement not yet a city → call `upgrade()`       | `isCity()` becomes true        | yes          |
-| TC6 | settlement already a city → call `upgrade()` again | `IllegalStateException` thrown | no           |
+| TC6 | settlement already a city → call `upgrade()` again | `IllegalStateException` thrown | yes          |
 
 ### Method under test: `getVictoryPoints()`
 
