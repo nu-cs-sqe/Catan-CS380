@@ -1,7 +1,8 @@
 package board;
 
+import domain.Player;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Edge {
@@ -16,7 +17,7 @@ public class Edge {
   }
 
   public void addTile(Tile tile) {
-    this.adjacentTiles.add(tile);
+    this.adjacentTiles.add(new Tile(tile));
   }
 
   public String getId() {
@@ -24,14 +25,14 @@ public class Edge {
   }
 
   public List<Tile> getAdjacentTiles() {
-    return Collections.unmodifiableList(adjacentTiles);
+    return new ArrayList<>(adjacentTiles);
   }
 
   public Player getOwner() {
-    return owner;
+    return (owner != null) ? new Player(owner) : null;
   }
 
   public void setOwner(Player owner) {
-    this.owner = owner;
+    this.owner = (owner != null) ? new Player(owner) : null;
   }
 }
