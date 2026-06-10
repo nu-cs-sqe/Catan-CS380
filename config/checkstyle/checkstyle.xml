@@ -8,6 +8,10 @@
   <property name="severity" value="error"/>
   <property name="fileExtensions" value="java"/>
 
+  <module name="SuppressionFilter">
+    <property name="file" value="${config_loc}/suppressions.xml"/>
+  </module>
+
   <!-- No tabs -->
   <module name="FileTabCharacter">
     <property name="eachLine" value="true"/>
@@ -22,6 +26,11 @@
   <module name="SuppressionSingleFilter">
     <property name="checks" value="MagicNumber"/>
     <property name="files" value=".*Test\.java$"/>
+  </module>
+
+  <module name="SuppressionSingleFilter">
+    <property name="files" value=".*Test\.java"/>
+    <property name="checks" value="MethodName"/>
   </module>
 
   <module name="TreeWalker">
