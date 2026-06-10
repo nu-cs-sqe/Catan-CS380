@@ -13,6 +13,13 @@ public class Tile {
     this.numberToken = 0;
   }
 
+  public Tile(Tile other) {
+    this.tileType = other.tileType;
+    this.q = other.q;
+    this.r = other.r;
+    this.numberToken = other.numberToken;
+  }
+
   public TileType getTileType() {
     return tileType;
   }
