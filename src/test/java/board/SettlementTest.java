@@ -25,4 +25,11 @@ class SettlementTest {
         Settlement s2 = new Settlement();
         assertNotSame(s1, s2);
     }
+
+    // TC3 – isCity() returns false on a fresh Settlement
+    @Test
+    void isCity_freshSettlement_returnsFalse() {
+        Settlement settlement = new Settlement();
+        assertFalse(settlement.isCity());
+    }
 }
