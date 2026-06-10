@@ -298,6 +298,12 @@ class PlayerTest {
     assertThrows(IllegalStateException.class, () -> player.placeSettlement(nextVertex()));
   }
 
+  // BVA TC36
+  @Test
+  void shouldThrowIllegalState_whenUpgradingVertexWithNoPlayerSettlement() {
+    assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity(nextVertex()));
+  }
+
   // BVA TC41
   @Test
   void shouldThrowNullPointer_whenUpgradeSettlementToCityVertexIsNull() {
