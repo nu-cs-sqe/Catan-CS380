@@ -84,7 +84,7 @@
 | TC35 | player has a settlement at vertex, upgrade it  | Settlement.isCity() = true; getRemainingCities() −1; getRemainingSettlements() +1  | no           |
 | TC36 | vertex has no player settlement on it          | IllegalStateException                                                              | yes          |
 | TC41 | vertex = null                                  | NullPointerException                                                               | yes          |
-| TC42 | settlement at vertex is already a city         | IllegalStateException                                                              | no           |
+| TC42 | settlement at vertex is already a city         | IllegalStateException                                                              | yes          |
 
 
 ### Method under test: `placeRoad(Edge e)`
