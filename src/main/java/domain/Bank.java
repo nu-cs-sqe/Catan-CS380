@@ -13,6 +13,8 @@ public class Bank {
   private static final int KNIGHT_COUNT = 14;
   private static final int VICTORY_POINT_COUNT = 5;
   private static final int ACTION_CARD_COUNT = 2;
+  private static final int MIN_TRADE_RATE = 2;
+  private static final int MAX_TRADE_RATE = 4;
 
   private final Map<Resource, Integer> stock = new EnumMap<>(Resource.class);
   private final List<DevelopmentCard> deck = new ArrayList<>();
@@ -94,7 +96,7 @@ public class Bank {
   public void maritimeTrade(Resource give, int giveCount, Resource receive) {
     Objects.requireNonNull(give);
     Objects.requireNonNull(receive);
-    if (giveCount < 2 || giveCount > 4) {
+    if (giveCount < MIN_TRADE_RATE || giveCount > MAX_TRADE_RATE) {
       throw new IllegalArgumentException();
     }
     if (give == receive) {
