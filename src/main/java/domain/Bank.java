@@ -60,6 +60,10 @@ public class Bank {
     stock.put(type, stock.get(type) - amount);
   }
 
+  public boolean canDistribute(ResourceType type, int amount) {
+    return amount <= stock.get(type);
+  }
+
   public int getDevCardCount() {
     return deck.size();
   }

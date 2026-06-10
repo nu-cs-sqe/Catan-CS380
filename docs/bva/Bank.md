@@ -88,7 +88,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Stock = 19, amount = 1
 - **Expected output**: `true`
 - **BVA note**: Normal within-bounds case
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC13 – Returns true when amount equals stock exactly (boundary)
 - **State of the system**: Stock = 19, amount = 19

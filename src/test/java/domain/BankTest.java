@@ -8,6 +8,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BankTest {
 
@@ -110,5 +111,12 @@ public class BankTest {
     Bank bank = new Bank(list -> {});
     assertThrows(NullPointerException.class,
         () -> bank.distributeResource(null, 1));
+  }
+
+  // TC12 - canDistribute returns true when stock is sufficient
+  @Test
+  public void canDistributeReturnsTrueWhenStockIsSufficient() {
+    Bank bank = new Bank(list -> {});
+    assertTrue(bank.canDistribute(ResourceType.WOOD, 1));
   }
 }
