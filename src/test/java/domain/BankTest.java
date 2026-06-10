@@ -87,4 +87,12 @@ public class BankTest {
     assertThrows(IllegalStateException.class,
         () -> bank.distributeResource(ResourceType.WOOD, INITIAL_STOCK + 1));
   }
+
+  // TC9 - Zero amount in distributeResource throws IllegalArgumentException
+  @Test
+  public void zeroAmountInDistributeThrowsIllegalArgumentException() {
+    Bank bank = new Bank(list -> {});
+    assertThrows(IllegalArgumentException.class,
+        () -> bank.distributeResource(ResourceType.WOOD, 0));
+  }
 }

@@ -67,7 +67,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Any bank, amount = 0
 - **Expected output**: `IllegalArgumentException`
 - **BVA note**: Amount must be positive; 0 is the boundary below valid range
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC10 – Negative amount throws IllegalArgumentException
 - **State of the system**: Any bank, amount = -1

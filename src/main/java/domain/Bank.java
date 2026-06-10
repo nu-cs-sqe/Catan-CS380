@@ -50,6 +50,9 @@ public class Bank {
   }
 
   public void distributeResource(ResourceType type, int amount) {
+    if (amount <= 0) {
+      throw new IllegalArgumentException();
+    }
     if (amount > stock.get(type)) {
       throw new IllegalStateException();
     }
