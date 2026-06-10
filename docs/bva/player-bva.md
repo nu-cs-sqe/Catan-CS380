@@ -66,16 +66,33 @@
 | TC30 | 5 VP dev cards held                                            | VP = 5                                       | yes           |
 
 
-### Method under test: piece inventory boundaries
+### Method under test: `placeSettlement(Vertex v)`
 
-|      | System under test                       | Expected output                                | Implemented? |
-|------|-----------------------------------------|------------------------------------------------|--------------|
-| TC31 | fresh player                            | 5 settlements / 4 cities / 15 roads remaining  | yes           |
-| TC32 | placed 5 settlements, place a 6th       | IllegalStateException (cap boundary)           | yes           |
-| TC33 | placed 4 cities, place a 5th            | IllegalStateException                          | yes           |
-| TC34 | placed 15 roads, place a 16th           | IllegalStateException                          | yes           |
-| TC35 | upgrade settlement → city               | settlements +1 back, cities -1 from remaining  | yes           |
-| TC36 | upgrade with 0 settlements on board     | IllegalStateException                          | yes           |
+|      | System under test                                     | Expected output                               | Implemented? |
+|------|-------------------------------------------------------|-----------------------------------------------|--------------|
+| TC31 | fresh player                                          | 5 settlements / 4 cities / 15 roads remaining | yes          |
+| TC32 | placed 5 settlements, place a 6th                     | IllegalStateException (cap boundary)          | yes          |
+| TC39 | vertex = null                                         | NullPointerException                          | yes          |
+| TC40 | vertex already has a settlement owned by this player  | IllegalStateException                         | yes          |
+
+
+### Method under test: `upgradeSettlementToCity(Vertex v)`
+
+|      | System under test                              | Expected output                                                                    | Implemented? |
+|------|------------------------------------------------|------------------------------------------------------------------------------------|--------------|
+| TC33 | 4 cities already on board, attempt a 5th       | IllegalStateException                                                              | yes          |
+| TC35 | player has a settlement at vertex, upgrade it  | Settlement.isCity() = true; getRemainingCities() −1; getRemainingSettlements() +1  | yes          |
+| TC36 | vertex has no player settlement on it          | IllegalStateException                                                              | yes          |
+| TC41 | vertex = null                                  | NullPointerException                                                               | yes          |
+| TC42 | settlement at vertex is already a city         | IllegalStateException                                                              | yes          |
+
+
+### Method under test: `placeRoad(Edge e)`
+
+|      | System under test                | Expected output       | Implemented? |
+|------|----------------------------------|-----------------------|--------------|
+| TC34 | placed 15 roads, place a 16th    | IllegalStateException | yes          |
+| TC43 | edge = null                      | NullPointerException  | yes          |
 
 
 ### Method under test: `playKnight()` / `getKnightsPlayed()`

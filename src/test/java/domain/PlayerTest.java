@@ -1,5 +1,7 @@
 package domain;
 
+import board.Edge;
+import board.Vertex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,10 +28,12 @@ class PlayerTest {
           Resource.WHEAT, 1);
 
   private Player player;
+  private int vertexCounter;
 
   @BeforeEach
   void setUp() {
     player = new Player(DEFAULT_NAME, DEFAULT_COLOR);
+    vertexCounter = 0;
   }
 
   // BVA TC1
@@ -198,16 +202,14 @@ class PlayerTest {
   // BVA TC23
   @Test
   void shouldHaveSixVp_whenHoldingFourSettlementsAndOneCity() {
-    placeSettlements(4);
-    placeCities(1);
+    placeSettlementsAndCities(4, 1);
     assertEquals(6, player.getVictoryPoints());
   }
 
   // BVA TC24
   @Test
   void shouldHaveNineVpAndNotWin_whenHoldingThreeSettlementsAndThreeCities() {
-    placeSettlements(3);
-    placeCities(3);
+    placeSettlementsAndCities(3, 3);
     assertEquals(9, player.getVictoryPoints());
     assertFalse(player.hasWon());
   }
@@ -215,8 +217,7 @@ class PlayerTest {
   // BVA TC25
   @Test
   void shouldHaveTenVpAndWin_whenHoldingFourSettlementsAndThreeCities() {
-    placeSettlements(4);
-    placeCities(3);
+    placeSettlementsAndCities(4, 3);
     assertEquals(10, player.getVictoryPoints());
     assertTrue(player.hasWon());
   }
@@ -224,8 +225,7 @@ class PlayerTest {
   // BVA TC26
   @Test
   void shouldHaveElevenVpAndWin_whenHoldingFiveSettlementsAndThreeCities() {
-    placeSettlements(5);
-    placeCities(3);
+    placeSettlementsAndCities(5, 3);
     assertEquals(11, player.getVictoryPoints());
     assertTrue(player.hasWon());
   }
@@ -233,8 +233,7 @@ class PlayerTest {
   // BVA TC27
   @Test
   void shouldHaveNineVp_whenHoldingThreeSettlementsTwoCitiesAndLongestRoad() {
-    placeSettlements(3);
-    placeCities(2);
+    placeSettlementsAndCities(3, 2);
     player.awardLongestRoad();
     assertEquals(9, player.getVictoryPoints());
   }
@@ -242,8 +241,7 @@ class PlayerTest {
   // BVA TC28
   @Test
   void shouldHaveElevenVpAndWin_whenHoldingPiecesPlusLongestRoadAndLargestArmy() {
-    placeSettlements(3);
-    placeCities(2);
+    placeSettlementsAndCities(3, 2);
     player.awardLongestRoad();
     player.awardLargestArmy();
     assertEquals(11, player.getVictoryPoints());
@@ -253,8 +251,7 @@ class PlayerTest {
   // BVA TC29
   @Test
   void shouldRestoreVp_whenLongestRoadAwardedThenRevoked() {
-    placeSettlements(3);
-    placeCities(2);
+    placeSettlementsAndCities(3, 2);
     int before = player.getVictoryPoints();
     player.awardLongestRoad();
     player.revokeLongestRoad();
@@ -279,45 +276,90 @@ class PlayerTest {
         () -> assertEquals(STARTING_ROADS, player.getRemainingRoads()));
   }
 
+  // BVA TC39
+  @Test
+  void shouldThrowNullPointer_whenPlaceSettlementVertexIsNull() {
+    assertThrows(NullPointerException.class, () -> player.placeSettlement(null));
+  }
+
+  // BVA TC40
+  @Test
+  void shouldThrowIllegalState_whenPlacingSettlementOnOccupiedVertex() {
+    Vertex v = nextVertex();
+    player.placeSettlement(v);
+    assertThrows(IllegalStateException.class, () -> player.placeSettlement(v));
+  }
+
   // BVA TC32
   @Test
   void shouldThrowIllegalState_whenPlacingMoreSettlementsThanCap() {
-    placeSettlements(STARTING_SETTLEMENTS);
-    assertThrows(IllegalStateException.class, () -> player.placeSettlement());
+    for (int i = 0; i < STARTING_SETTLEMENTS; i++) {
+      player.placeSettlement(nextVertex());
+    }
+    assertThrows(IllegalStateException.class, () -> player.placeSettlement(nextVertex()));
+  }
+
+  // BVA TC42
+  @Test
+  void shouldThrowIllegalState_whenUpgradingSettlementThatIsAlreadyACity() {
+    Vertex v = nextVertex();
+    player.placeSettlement(v);
+    player.upgradeSettlementToCity(v);
+    assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity(v));
+  }
+
+  // BVA TC35
+  @Test
+  void shouldUpgradeSettlementToCity_restoreSettlementPieceAndConsumeCity() {
+    Vertex v = nextVertex();
+    player.placeSettlement(v);
+    int settlementsBefore = player.getRemainingSettlements();
+    int citiesBefore = player.getRemainingCities();
+    player.upgradeSettlementToCity(v);
+    assertAll(
+        () -> assertTrue(v.getSettlement().isCity()),
+        () -> assertEquals(settlementsBefore + 1, player.getRemainingSettlements()),
+        () -> assertEquals(citiesBefore - 1, player.getRemainingCities()));
   }
 
   // BVA TC33
   @Test
-  void shouldThrowIllegalState_whenPlacingMoreCitiesThanCap() {
-    placeCities(STARTING_CITIES);
-    assertThrows(IllegalStateException.class, () -> player.placeCity());
+  void shouldThrowIllegalState_whenUpgradingMoreCitiesThanCap() {
+    for (int i = 0; i < STARTING_CITIES; i++) {
+      Vertex v = nextVertex();
+      player.placeSettlement(v);
+      player.upgradeSettlementToCity(v);
+    }
+    Vertex overflow = nextVertex();
+    player.placeSettlement(overflow);
+    assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity(overflow));
+  }
+
+  // BVA TC36
+  @Test
+  void shouldThrowIllegalState_whenUpgradingVertexWithNoPlayerSettlement() {
+    assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity(nextVertex()));
+  }
+
+  // BVA TC43
+  @Test
+  void shouldThrowNullPointer_whenPlaceRoadEdgeIsNull() {
+    assertThrows(NullPointerException.class, () -> player.placeRoad(null));
   }
 
   // BVA TC34
   @Test
   void shouldThrowIllegalState_whenPlacingMoreRoadsThanCap() {
     for (int i = 0; i < STARTING_ROADS; i++) {
-      player.placeRoad();
+      player.placeRoad(new Edge("e" + i));
     }
-    assertThrows(IllegalStateException.class, () -> player.placeRoad());
+    assertThrows(IllegalStateException.class, () -> player.placeRoad(new Edge("overflow")));
   }
 
-  // BVA TC35
+  // BVA TC41
   @Test
-  void shouldRestoreSettlementAndConsumeCity_whenUpgradingSettlementToCity() {
-    player.placeSettlement();
-    int settlementsBefore = player.getRemainingSettlements();
-    int citiesBefore = player.getRemainingCities();
-    player.upgradeSettlementToCity();
-    assertAll(
-        () -> assertEquals(settlementsBefore + 1, player.getRemainingSettlements()),
-        () -> assertEquals(citiesBefore - 1, player.getRemainingCities()));
-  }
-
-  // BVA TC36
-  @Test
-  void shouldThrowIllegalState_whenUpgradingWithNoSettlementsOnBoard() {
-    assertThrows(IllegalStateException.class, () -> player.upgradeSettlementToCity());
+  void shouldThrowNullPointer_whenUpgradeSettlementToCityVertexIsNull() {
+    assertThrows(NullPointerException.class, () -> player.upgradeSettlementToCity(null));
   }
 
   // BVA TC37
@@ -336,15 +378,18 @@ class PlayerTest {
     assertEquals(3, player.getKnightsPlayed());
   }
 
-  private void placeSettlements(int count) {
-    for (int i = 0; i < count; i++) {
-      player.placeSettlement();
-    }
+  private Vertex nextVertex() {
+    return new Vertex("v" + vertexCounter++);
   }
 
-  private void placeCities(int count) {
-    for (int i = 0; i < count; i++) {
-      player.placeCity();
+  private void placeSettlementsAndCities(int numSettlements, int numCities) {
+    for (int i = 0; i < numCities; i++) {
+      Vertex v = nextVertex();
+      player.placeSettlement(v);
+      player.upgradeSettlementToCity(v);
+    }
+    for (int i = 0; i < numSettlements; i++) {
+      player.placeSettlement(nextVertex());
     }
   }
 }
