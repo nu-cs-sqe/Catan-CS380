@@ -1,5 +1,12 @@
 package board;
 
 public class Settlement {
-    // TODO: implement
+
+    public boolean isCity() {
+        return false;
+    }
+
+    public int getVictoryPoints() {
+        return 1;
+    }
 }
