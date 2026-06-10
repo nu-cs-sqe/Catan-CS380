@@ -273,4 +273,15 @@ public class BankTest {
     assertEquals(giveBefore + 3, bank.getStock(Resource.WOOD));
     assertEquals(receiveBefore - 1, bank.getStock(Resource.BRICK));
   }
+
+  // TC31 - Rate 4 succeeds (boundary — maximum valid)
+  @Test
+  public void maritimeTradeRateFourSucceeds() {
+    Bank bank = new Bank(list -> {});
+    int giveBefore = bank.getStock(Resource.WOOD);
+    int receiveBefore = bank.getStock(Resource.BRICK);
+    bank.maritimeTrade(Resource.WOOD, 4, Resource.BRICK);
+    assertEquals(giveBefore + 4, bank.getStock(Resource.WOOD));
+    assertEquals(receiveBefore - 1, bank.getStock(Resource.BRICK));
+  }
 }

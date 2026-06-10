@@ -214,7 +214,7 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **State of the system**: Bank has receive resource in stock
 - **Expected output**: Bank stock of give increases by 4, receive decreases by 1
 - **BVA note**: 4:1 default rate — maximum valid trade rate
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC32 – Rate 5 throws IllegalArgumentException (boundary above valid)
 - **State of the system**: Any bank
