@@ -12,7 +12,7 @@ Determines which player holds the Longest Road and Largest Army special cards (2
 - **State of the system**: All players have 2 or fewer knights played
 - **Expected output**: No player has Largest Army
 - **BVA note**: Boundary between 2 knights (not enough) and 3 (minimum for Largest Army)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC2 – First player to play 3 knights gets Largest Army
 - **State of the system**: Player 0 plays 3 knights, others have fewer
