@@ -268,6 +268,18 @@ public class TurnFlowTest {
                 () -> game.playKnightCard());
     }
 
+    // TC17 – Cannot play more than 1 development card per turn
+    @Test
+    public void testCannotPlayMoreThan1DevCardPerTurn() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+
+        game.playKnightCard();
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> game.playKnightCard());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override

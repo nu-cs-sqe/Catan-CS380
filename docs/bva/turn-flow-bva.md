@@ -84,25 +84,25 @@ Manages a single turn: roll dice, distribute resources, trade, build, play/buy d
 - **State of the system**: Turn just started, dice not rolled yet
 - **Expected output**: Attempting to trade throws `IllegalStateException`
 - **BVA note**: Boundary between ROLL phase (trade forbidden) and TRADE_BUILD phase (trade allowed)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC12 – Cannot build before rolling dice
 - **State of the system**: Turn just started, dice not rolled yet
 - **Expected output**: Attempting to build throws `IllegalStateException`
 - **BVA note**: Boundary between ROLL phase (build forbidden) and TRADE_BUILD phase (build allowed)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC13 – Can trade and build in any order after rolling
 - **State of the system**: Dice rolled, in TRADE_BUILD phase
 - **Expected output**: Player can trade then build, or build then trade, without error
 - **BVA note**: Boundary between ROLL phase (restricted) and TRADE_BUILD phase (open)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC14 – Cannot roll dice twice in one turn
 - **State of the system**: Dice already rolled this turn
 - **Expected output**: Attempting to roll again throws `IllegalStateException`
 - **BVA note**: Boundary between first roll (allowed) and second roll (forbidden)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ## Development Cards
 
@@ -110,19 +110,19 @@ Manages a single turn: roll dice, distribute resources, trade, build, play/buy d
 - **State of the system**: Turn just started, player holds a knight card from a previous turn
 - **Expected output**: Playing the card succeeds
 - **BVA note**: Boundary between dev card play (allowed any time) and trade/build (only after roll)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC16 – Can play a development card after rolling dice
 - **State of the system**: Dice rolled, player holds a knight card from a previous turn
 - **Expected output**: Playing the card succeeds
 - **BVA note**: Dev card play is allowed in both ROLL and TRADE_BUILD phases
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC17 – Cannot play more than 1 development card per turn
 - **State of the system**: Player already played a dev card this turn
 - **Expected output**: Attempting to play another throws `IllegalStateException`
 - **BVA note**: Boundary between 0 cards played (allowed) and 1 card played (forbidden)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC18 – Cannot play a development card bought this turn
 - **State of the system**: Player bought a dev card this turn, tries to play it immediately
