@@ -229,6 +229,21 @@ public class TurnFlowTest {
         Assertions.assertDoesNotThrow(() -> game.build());
     }
 
+    // TC14 – Cannot roll dice twice in one turn
+    @Test
+    public void testCannotRollDiceTwice() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        game.rollDice(board, robber, stubDiceRoller(new int[]{5}));
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> game.rollDice(board, robber,
+                        stubDiceRoller(new int[]{6})));
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
