@@ -12,25 +12,25 @@ Manages a single turn: roll dice, distribute resources, trade, build, play/buy d
 - **State of the system**: Game after setup; player has settlement adjacent to hex with number 5; no robber on that hex
 - **Expected output**: When 5 is rolled, player receives 1 resource from that hex
 - **BVA note**: Boundary between matching roll (produces) and non-matching roll (no production)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC2 – Rolling dice does not produce resources for players without settlements on matching hexes
 - **State of the system**: Game after setup; player has no settlement adjacent to hex with number 6
 - **Expected output**: When 6 is rolled, player receives nothing
 - **BVA note**: Boundary between having an adjacent settlement (produces) and not having one (nothing)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC3 – Rolling a 7 produces no resources for any player
 - **State of the system**: Game after setup; dice roll returns 7
 - **Expected output**: No player receives any resources
 - **BVA note**: Boundary between 6 (normal production) and 7 (no production, robber activates)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC3b – Robber blocks resource production on its tile
 - **State of the system**: Player has settlement adjacent to hex with number 5; robber is on that hex
 - **Expected output**: When 5 is rolled, player receives nothing from that hex
 - **BVA note**: Boundary between robber absent (produces) and robber present (blocked)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ## Turn Advancement
 

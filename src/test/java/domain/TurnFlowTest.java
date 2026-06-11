@@ -72,6 +72,27 @@ public class TurnFlowTest {
         }
     }
 
+    // TC3b – Robber blocks resource production on its tile
+    @Test
+    public void testRobberBlocksResourceProduction() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        // Place settlement adjacent to FOREST tile at (-2,0) token 5
+        Vertex vertex = board.getVertex("-3,1");
+        vertex.setOwner(players.get(0));
+
+        // Place robber on that FOREST tile
+        robber.setTile(board.getTile(-2, 0));
+
+        game.rollForProduction(board, robber, 5);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WOOD));
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
