@@ -193,6 +193,16 @@ public class TurnFlowTest {
                 () -> game.advanceTurn());
     }
 
+    // TC11 – Cannot trade before rolling dice
+    @Test
+    public void testCannotTradeBeforeRolling() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> game.trade());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override

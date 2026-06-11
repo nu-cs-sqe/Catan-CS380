@@ -33,6 +33,7 @@ public final class Game {
     private int winnerIndex;
 
     private boolean gameOver;
+    private TurnPhase turnPhase;
 
 
     private int currentTurnIndex;
@@ -56,6 +57,7 @@ public final class Game {
         this.currentTurnIndex = 0;
         this.gameOver = false;
         this.winnerIndex = -1;
+        this.turnPhase = TurnPhase.ROLL;
     }
 
     private int determineFirstPlayer(DiceRoller diceRoller) {
@@ -137,6 +139,12 @@ public final class Game {
             for (Resource resource : resources[playerIndex]) {
                 player.addResource(resource, 1);
             }
+        }
+    }
+    public void trade() {
+        if (turnPhase != TurnPhase.TRADE_BUILD) {
+            throw new IllegalStateException(
+                    "Cannot trade before rolling dice");
         }
     }
 
@@ -283,7 +291,7 @@ public final class Game {
     public int getCurrentPlayerIndex() {
         return turnOrder[currentTurnIndex];
     }
-    
+
     public void advanceTurn() {
         if (gameOver) {
             throw new IllegalStateException("Game is over");
