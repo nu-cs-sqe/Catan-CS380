@@ -254,6 +254,20 @@ public class TurnFlowTest {
                 () -> game.playKnightCard());
     }
 
+    // TC16 – Can play a development card after rolling dice
+    @Test
+    public void testCanPlayDevCardAfterRolling() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        game.rollDice(board, robber, stubDiceRoller(new int[]{5}));
+
+        Assertions.assertDoesNotThrow(
+                () -> game.playKnightCard());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
