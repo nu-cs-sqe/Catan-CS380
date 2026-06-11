@@ -93,6 +93,17 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.WOOD));
     }
 
+    // TC4 – Turn advances to next player in clockwise order
+    @Test
+    public void testTurnAdvancesToNextPlayer() {
+        List<Player> players = createPlayers();
+        int[] rolls = {7, 5, 3};
+        Game game = new Game(players, stubDiceRoller(rolls));
+        Assertions.assertEquals(0, game.getCurrentPlayerIndex());
+        game.advanceTurn();
+        Assertions.assertEquals(1, game.getCurrentPlayerIndex());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override

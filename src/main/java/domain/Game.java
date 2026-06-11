@@ -30,6 +30,9 @@ public final class Game {
     private static final int MIN_ROAD_LENGTH = 5;
     private final AtomicInteger placementCounter = new AtomicInteger();
 
+
+    private int currentTurnIndex;
+
     public Game(List<Player> players) {
         this(players, new RandomDiceRoller());
     }
@@ -46,6 +49,7 @@ public final class Game {
         this.turnOrder = buildTurnOrder();
         this.largestArmyHolder = -1;
         this.longestRoadHolder = -1;
+        this.currentTurnIndex = 0;
     }
 
     private int determineFirstPlayer(DiceRoller diceRoller) {
@@ -55,6 +59,7 @@ public final class Game {
         }
         return resolveHighestRoller(rolls, diceRoller);
     }
+
 
     private int resolveHighestRoller(int[] rolls,
                                      DiceRoller diceRoller) {
@@ -248,7 +253,11 @@ public final class Game {
     }
 
     public int getCurrentPlayerIndex() {
-        return firstPlayerIndex;
+        return turnOrder[currentTurnIndex];
+    }
+
+    public void advanceTurn() {
+        currentTurnIndex = (currentTurnIndex + 1) % players.size();
     }
 
     public int[] getTurnOrder() {
