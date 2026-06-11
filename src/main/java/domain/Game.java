@@ -21,6 +21,7 @@ public final class Game {
     private static final int LARGEST_ARMY_VP = 2;
     private static final int LONGEST_ROAD_VP = 2;
     private static final int MIN_KNIGHTS_FOR_ARMY = 3;
+    private static final int WIN_THRESHOLD = 10;
 
     private final List<Player> players;
     private final int firstPlayerIndex;
@@ -29,6 +30,8 @@ public final class Game {
     private int longestRoadHolder;
     private static final int MIN_ROAD_LENGTH = 5;
     private final AtomicInteger placementCounter = new AtomicInteger();
+
+    private boolean gameOver;
 
 
     private int currentTurnIndex;
@@ -50,6 +53,7 @@ public final class Game {
         this.largestArmyHolder = -1;
         this.longestRoadHolder = -1;
         this.currentTurnIndex = 0;
+        this.gameOver = false;
     }
 
     private int determineFirstPlayer(DiceRoller diceRoller) {
@@ -146,6 +150,23 @@ public final class Game {
             }
         }
         longestRoadHolder = newHolder;
+    }
+
+    public void playVictoryPointCard() {
+        Player current = players.get(getCurrentPlayerIndex());
+        current.addVictoryPointDevCard();
+        checkWinner();
+    }
+
+    public void checkWinner() {
+        int currentIndex = getCurrentPlayerIndex();
+        if (getVictoryPoints(currentIndex) >= WIN_THRESHOLD) {
+            gameOver = true;
+        }
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 
     public int getLongestRoadHolder() {

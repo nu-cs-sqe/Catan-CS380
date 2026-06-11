@@ -117,6 +117,21 @@ public class TurnFlowTest {
         Assertions.assertEquals(0, game.getCurrentPlayerIndex());
     }
 
+    // TC6 – Game detects winner when current player reaches 10 VP
+    @Test
+    public void testGameDetectsWinnerAt10VP() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+
+        for (int i = 0; i < 9; i++) {
+            game.playVictoryPointCard();
+        }
+        Assertions.assertFalse(game.isGameOver());
+
+        game.playVictoryPointCard();
+        Assertions.assertTrue(game.isGameOver());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
