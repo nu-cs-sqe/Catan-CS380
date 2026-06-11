@@ -145,6 +145,24 @@ public class TurnFlowTest {
         Assertions.assertFalse(game.isGameOver());
     }
 
+    // TC8 – Game does not declare winner if non-current player
+    // reaches 10 VP
+    @Test
+    public void testNonCurrentPlayerAt10VPDoesNotWin() {
+        List<Player> players = createPlayers();
+        int[] rolls = {7, 5, 3};
+        Game game = new Game(players, stubDiceRoller(rolls));
+
+        // Current player is index 0
+        // Give 10 VP to player 1 (not current)
+        for (int i = 0; i < 10; i++) {
+            players.get(1).addVictoryPointDevCard();
+        }
+
+        game.checkWinner();
+        Assertions.assertFalse(game.isGameOver());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
