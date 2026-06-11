@@ -194,4 +194,8 @@ public final class Game {
     public int[] getTurnOrder() {
         return Arrays.copyOf(turnOrder, turnOrder.length);
     }
+
+    public int getDiscardCount(int playerIndex) {
+        return players.get(playerIndex).discardOnSevenCount();
+    }
 }
