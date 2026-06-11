@@ -203,6 +203,16 @@ public class TurnFlowTest {
                 () -> game.trade());
     }
 
+    // TC12 – Cannot build before rolling dice
+    @Test
+    public void testCannotBuildBeforeRolling() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> game.build());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override

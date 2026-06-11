@@ -148,6 +148,13 @@ public final class Game {
         }
     }
 
+    public void build() {
+        if (turnPhase != TurnPhase.TRADE_BUILD) {
+            throw new IllegalStateException(
+                    "Cannot build before rolling dice");
+        }
+    }
+
     public void updateLongestRoad(Board board) {
         int maxLength = MIN_ROAD_LENGTH - 1;
         int newHolder = -1;
