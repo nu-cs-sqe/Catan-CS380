@@ -40,16 +40,16 @@ public class BankTest {
   @Test
   public void initialDeckCompositionIsCorrect() {
     Bank bank = new Bank(list -> {});
-    Map<DevelopmentCardType, Integer> counts = new EnumMap<>(DevelopmentCardType.class);
+    Map<DevelopmentCard, Integer> counts = new EnumMap<>(DevelopmentCard.class);
     for (int i = 0; i < INITIAL_DEV_CARD_COUNT; i++) {
-      DevelopmentCardType type = bank.drawDevelopmentCard().getType();
+      DevelopmentCard type = bank.drawDevelopmentCard();
       counts.merge(type, 1, Integer::sum);
     }
-    assertEquals(KNIGHT_COUNT, counts.get(DevelopmentCardType.KNIGHT));
-    assertEquals(VICTORY_POINT_COUNT, counts.get(DevelopmentCardType.VICTORY_POINT));
-    assertEquals(ACTION_CARD_COUNT, counts.get(DevelopmentCardType.ROAD_BUILDING));
-    assertEquals(ACTION_CARD_COUNT, counts.get(DevelopmentCardType.YEAR_OF_PLENTY));
-    assertEquals(ACTION_CARD_COUNT, counts.get(DevelopmentCardType.MONOPOLY));
+    assertEquals(KNIGHT_COUNT, counts.get(DevelopmentCard.KNIGHT));
+    assertEquals(VICTORY_POINT_COUNT, counts.get(DevelopmentCard.VICTORY_POINT));
+    assertEquals(ACTION_CARD_COUNT, counts.get(DevelopmentCard.ROAD_BUILDING));
+    assertEquals(ACTION_CARD_COUNT, counts.get(DevelopmentCard.YEAR_OF_PLENTY));
+    assertEquals(ACTION_CARD_COUNT, counts.get(DevelopmentCard.MONOPOLY));
   }
 
   // TC4 - Null shuffler throws NullPointerException
@@ -196,7 +196,7 @@ public class BankTest {
   public void returningKnightCardIncreasesDeckCount() {
     Bank bank = new Bank(list -> {});
     int before = bank.getDevCardCount();
-    bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.KNIGHT));
+    bank.returnDevelopmentCard(DevelopmentCard.KNIGHT);
     assertEquals(before + 1, bank.getDevCardCount());
   }
 
@@ -205,7 +205,7 @@ public class BankTest {
   public void returningRoadBuildingCardIncreasesDeckCount() {
     Bank bank = new Bank(list -> {});
     int before = bank.getDevCardCount();
-    bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.ROAD_BUILDING));
+    bank.returnDevelopmentCard(DevelopmentCard.ROAD_BUILDING);
     assertEquals(before + 1, bank.getDevCardCount());
   }
 
@@ -214,7 +214,7 @@ public class BankTest {
   public void returningYearOfPlentyCardIncreasesDeckCount() {
     Bank bank = new Bank(list -> {});
     int before = bank.getDevCardCount();
-    bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.YEAR_OF_PLENTY));
+    bank.returnDevelopmentCard(DevelopmentCard.YEAR_OF_PLENTY);
     assertEquals(before + 1, bank.getDevCardCount());
   }
 
@@ -223,7 +223,7 @@ public class BankTest {
   public void returningMonopolyCardIncreasesDeckCount() {
     Bank bank = new Bank(list -> {});
     int before = bank.getDevCardCount();
-    bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.MONOPOLY));
+    bank.returnDevelopmentCard(DevelopmentCard.MONOPOLY);
     assertEquals(before + 1, bank.getDevCardCount());
   }
 
@@ -233,7 +233,7 @@ public class BankTest {
     Bank bank = new Bank(list -> {});
     assertThrows(
         IllegalArgumentException.class,
-        () -> bank.returnDevelopmentCard(new DevelopmentCard(DevelopmentCardType.VICTORY_POINT)));
+        () -> bank.returnDevelopmentCard(DevelopmentCard.VICTORY_POINT));
   }
 
   // TC27 - Null card in returnDevelopmentCard throws NullPointerException
@@ -248,8 +248,7 @@ public class BankTest {
   public void maritimeTradeRateOneBelowMinThrowsIllegalArgumentException() {
     Bank bank = new Bank(list -> {});
     assertThrows(
-        IllegalArgumentException.class,
-        () -> bank.maritimeTrade(Resource.WOOD, 1, Resource.BRICK));
+        IllegalArgumentException.class, () -> bank.maritimeTrade(Resource.WOOD, 1, Resource.BRICK));
   }
 
   // TC29 - Rate 2 succeeds (boundary — minimum valid)
@@ -290,8 +289,7 @@ public class BankTest {
   public void maritimeTradeRateFiveAboveMaxThrowsIllegalArgumentException() {
     Bank bank = new Bank(list -> {});
     assertThrows(
-        IllegalArgumentException.class,
-        () -> bank.maritimeTrade(Resource.WOOD, 5, Resource.BRICK));
+        IllegalArgumentException.class, () -> bank.maritimeTrade(Resource.WOOD, 5, Resource.BRICK));
   }
 
   // TC33 - Same resource for give and receive throws IllegalArgumentException
@@ -299,8 +297,7 @@ public class BankTest {
   public void maritimeTradeSameResourceThrowsIllegalArgumentException() {
     Bank bank = new Bank(list -> {});
     assertThrows(
-        IllegalArgumentException.class,
-        () -> bank.maritimeTrade(Resource.WOOD, 4, Resource.WOOD));
+        IllegalArgumentException.class, () -> bank.maritimeTrade(Resource.WOOD, 4, Resource.WOOD));
   }
 
   // TC34 - Bank out of receive resource throws IllegalStateException
@@ -309,25 +306,20 @@ public class BankTest {
     Bank bank = new Bank(list -> {});
     bank.distributeResource(Resource.BRICK, INITIAL_STOCK);
     assertThrows(
-        IllegalStateException.class,
-        () -> bank.maritimeTrade(Resource.WOOD, 4, Resource.BRICK));
+        IllegalStateException.class, () -> bank.maritimeTrade(Resource.WOOD, 4, Resource.BRICK));
   }
 
   // TC35 - Null give resource throws NullPointerException
   @Test
   public void maritimeTradeNullGiveResourceThrowsNullPointerException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(
-        NullPointerException.class,
-        () -> bank.maritimeTrade(null, 4, Resource.BRICK));
+    assertThrows(NullPointerException.class, () -> bank.maritimeTrade(null, 4, Resource.BRICK));
   }
 
   // TC36 - Null receive resource throws NullPointerException
   @Test
   public void maritimeTradeNullReceiveResourceThrowsNullPointerException() {
     Bank bank = new Bank(list -> {});
-    assertThrows(
-        NullPointerException.class,
-        () -> bank.maritimeTrade(Resource.WOOD, 4, null));
+    assertThrows(NullPointerException.class, () -> bank.maritimeTrade(Resource.WOOD, 4, null));
   }
 }

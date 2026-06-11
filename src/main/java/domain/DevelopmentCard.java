@@ -1,14 +1,9 @@
 package domain;
 
-public class DevelopmentCard {
-
-  private final DevelopmentCardType type;
-
-  public DevelopmentCard(DevelopmentCardType type) {
-    this.type = type;
-  }
-
-  public DevelopmentCardType getType() {
-    return type;
-  }
+public enum DevelopmentCard {
+  KNIGHT,
+  VICTORY_POINT,
+  ROAD_BUILDING,
+  YEAR_OF_PLENTY,
+  MONOPOLY
 }

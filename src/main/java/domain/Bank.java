@@ -16,10 +16,13 @@ public class Bank {
   private static final int MIN_TRADE_RATE = 2;
   private static final int MAX_TRADE_RATE = 4;
 
-  private final Map<Resource, Integer> stock = new EnumMap<>(Resource.class);
-  private final List<DevelopmentCard> deck = new ArrayList<>();
+  private final Map<Resource, Integer> stock;
+  private final List<DevelopmentCard> deck;
 
   public Bank(Consumer<List<DevelopmentCard>> shuffler) {
+    this.stock = new EnumMap<>(Resource.class);
+    this.deck = new ArrayList<>();
+
     Objects.requireNonNull(shuffler);
     for (Resource type : Resource.values()) {
       if (type != Resource.GENERIC) {
@@ -30,17 +33,17 @@ public class Bank {
   }
 
   private void initDeck(Consumer<List<DevelopmentCard>> shuffler) {
-    addCards(DevelopmentCardType.KNIGHT, KNIGHT_COUNT);
-    addCards(DevelopmentCardType.VICTORY_POINT, VICTORY_POINT_COUNT);
-    addCards(DevelopmentCardType.ROAD_BUILDING, ACTION_CARD_COUNT);
-    addCards(DevelopmentCardType.YEAR_OF_PLENTY, ACTION_CARD_COUNT);
-    addCards(DevelopmentCardType.MONOPOLY, ACTION_CARD_COUNT);
+    addCards(DevelopmentCard.KNIGHT, KNIGHT_COUNT);
+    addCards(DevelopmentCard.VICTORY_POINT, VICTORY_POINT_COUNT);
+    addCards(DevelopmentCard.ROAD_BUILDING, ACTION_CARD_COUNT);
+    addCards(DevelopmentCard.YEAR_OF_PLENTY, ACTION_CARD_COUNT);
+    addCards(DevelopmentCard.MONOPOLY, ACTION_CARD_COUNT);
     shuffler.accept(deck);
   }
 
-  private void addCards(DevelopmentCardType type, int count) {
+  private void addCards(DevelopmentCard type, int count) {
     for (int i = 0; i < count; i++) {
-      deck.add(new DevelopmentCard(type));
+      deck.add(type);
     }
   }
 
@@ -80,7 +83,7 @@ public class Bank {
 
   public void returnDevelopmentCard(DevelopmentCard card) {
     Objects.requireNonNull(card);
-    if (card.getType() == DevelopmentCardType.VICTORY_POINT) {
+    if (card == DevelopmentCard.VICTORY_POINT) {
       throw new IllegalArgumentException();
     }
     deck.add(card);
