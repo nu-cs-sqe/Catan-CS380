@@ -63,7 +63,7 @@
 | TC27 | 3 settlements + 2 cities + longest road                        | VP = 9                                       | yes           |
 | TC28 | 3 settlements + 2 cities + longest road + largest army         | VP = 11, hasWon = true                       | yes           |
 | TC29 | award then revoke longest road                                 | VP returns to pre-award value                | yes           |
-| TC30 | 5 VP dev cards held                                            | VP = 5                                       | yes           |
+| TC30 | buy 5 VICTORY_POINT dev cards                                  | VP = 5                                       | no            |
 
 
 ### Method under test: `placeSettlement(Vertex v)`
