@@ -28,6 +28,26 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.WOOD));
     }
 
+    // TC2 – Rolling dice does not produce resources for players
+    // without settlements on matching hexes
+    @Test
+    public void testRollDoesNotProduceForNonAdjacentPlayer() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        // Player 0 has settlement on vertex "-3,1" (adjacent to
+        // FOREST token 5), but we roll 6 instead
+        Vertex vertex = board.getVertex("-3,1");
+        vertex.setOwner(players.get(0));
+
+        game.rollForProduction(board, robber, 6);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WOOD));
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
