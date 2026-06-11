@@ -155,6 +155,17 @@ public final class Game {
         }
     }
 
+    public void rollDice(Board board, Robber robber,
+                         DiceRoller diceRoller) {
+        if (turnPhase != TurnPhase.ROLL) {
+            throw new IllegalStateException(
+                    "Already rolled this turn");
+        }
+        int roll = diceRoller.roll();
+        rollForProduction(board, robber, roll);
+        turnPhase = TurnPhase.TRADE_BUILD;
+    }
+
     public void updateLongestRoad(Board board) {
         int maxLength = MIN_ROAD_LENGTH - 1;
         int newHolder = -1;

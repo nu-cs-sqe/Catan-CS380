@@ -213,6 +213,22 @@ public class TurnFlowTest {
                 () -> game.build());
     }
 
+    // TC13 – Can trade and build in any order after rolling
+    @Test
+    public void testCanTradeAndBuildAfterRolling() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        game.rollDice(board, robber, stubDiceRoller(new int[]{5}));
+
+        Assertions.assertDoesNotThrow(() -> game.trade());
+        Assertions.assertDoesNotThrow(() -> game.build());
+        Assertions.assertDoesNotThrow(() -> game.trade());
+        Assertions.assertDoesNotThrow(() -> game.build());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
