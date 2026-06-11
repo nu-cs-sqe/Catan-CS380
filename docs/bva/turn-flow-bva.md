@@ -124,7 +124,8 @@ Manages a single turn: roll dice, distribute resources, trade, build, play/buy d
 - **BVA note**: Boundary between 0 cards played (allowed) and 1 card played (forbidden)
 - **Implemented**: [x]
 
-### TC18 – Cannot play a development card bought this turn
+
+### TC18 – Cannot play a development card bought this turn 
 - **State of the system**: Player bought a dev card this turn, tries to play it immediately
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between cards from previous turns (playable) and cards bought this turn (not playable)
