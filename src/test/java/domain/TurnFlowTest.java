@@ -104,6 +104,19 @@ public class TurnFlowTest {
         Assertions.assertEquals(1, game.getCurrentPlayerIndex());
     }
 
+    // TC5 – Turn wraps around from last player to first player
+    @Test
+    public void testTurnWrapsAroundToFirstPlayer() {
+        List<Player> players = createPlayers();
+        int[] rolls = {7, 5, 3};
+        Game game = new Game(players, stubDiceRoller(rolls));
+        game.advanceTurn();
+        game.advanceTurn();
+        Assertions.assertEquals(2, game.getCurrentPlayerIndex());
+        game.advanceTurn();
+        Assertions.assertEquals(0, game.getCurrentPlayerIndex());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
