@@ -38,13 +38,13 @@ Manages a single turn: roll dice, distribute resources, trade, build, play/buy d
 - **State of the system**: Game with 3 players; current player is index 0
 - **Expected output**: After advancing, current player is index 1
 - **BVA note**: Boundary between current player and next player in turn order
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC5 – Turn wraps around from last player to first player
 - **State of the system**: Game with 3 players; current player is the last in turn order
 - **Expected output**: After advancing, current player wraps to first in turn order
 - **BVA note**: Boundary between last player (wraps) and all others (increments)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ## Win Condition
 
@@ -52,31 +52,31 @@ Manages a single turn: roll dice, distribute resources, trade, build, play/buy d
 - **State of the system**: Current player has 10 victory points after building
 - **Expected output**: `checkWinner()` returns true
 - **BVA note**: Boundary between 9 VP (no win) and 10 VP (win)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC7 – Game does not declare winner at 9 VP
 - **State of the system**: Current player has 9 victory points
 - **Expected output**: `checkWinner()` returns false
 - **BVA note**: Boundary between 9 VP (no win) and 10 VP (win)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC8 – Game does not declare winner if non-current player reaches 10 VP
 - **State of the system**: Non-current player has 10 VP
 - **Expected output**: `checkWinner()` returns false
 - **BVA note**: Boundary between current player winning (valid) and other player winning (not yet)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC9 – Game is over after winner is declared
 - **State of the system**: Current player reached 10 VP
 - **Expected output**: `isGameOver()` returns true
 - **BVA note**: Boundary between game in progress (false) and game ended (true)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC10 – Cannot advance turn after game is over
 - **State of the system**: Game is over
 - **Expected output**: `advanceTurn()` throws `IllegalStateException`
 - **BVA note**: Boundary between active game (can advance) and ended game (cannot)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ## Turn Phase Enforcement
 

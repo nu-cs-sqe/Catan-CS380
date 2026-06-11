@@ -178,6 +178,21 @@ public class TurnFlowTest {
                 game.getWinnerIndex());
     }
 
+    // TC10 – Cannot advance turn after game is over
+    @Test
+    public void testCannotAdvanceTurnAfterGameOver() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+
+        for (int i = 0; i < 10; i++) {
+            game.playVictoryPointCard();
+        }
+
+        Assertions.assertTrue(game.isGameOver());
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> game.advanceTurn());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override

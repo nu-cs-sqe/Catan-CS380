@@ -283,8 +283,11 @@ public final class Game {
     public int getCurrentPlayerIndex() {
         return turnOrder[currentTurnIndex];
     }
-
+    
     public void advanceTurn() {
+        if (gameOver) {
+            throw new IllegalStateException("Game is over");
+        }
         currentTurnIndex = (currentTurnIndex + 1) % players.size();
     }
 
