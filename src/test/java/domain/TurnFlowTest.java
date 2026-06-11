@@ -132,6 +132,19 @@ public class TurnFlowTest {
         Assertions.assertTrue(game.isGameOver());
     }
 
+    // TC7 – Game does not declare winner at 9 VP
+    @Test
+    public void testGameDoesNotDeclareWinnerAt9VP() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+
+        for (int i = 0; i < 9; i++) {
+            game.playVictoryPointCard();
+        }
+
+        Assertions.assertFalse(game.isGameOver());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
