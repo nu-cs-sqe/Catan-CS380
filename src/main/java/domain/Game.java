@@ -30,6 +30,7 @@ public final class Game {
     private int longestRoadHolder;
     private static final int MIN_ROAD_LENGTH = 5;
     private final AtomicInteger placementCounter = new AtomicInteger();
+    private int winnerIndex;
 
     private boolean gameOver;
 
@@ -54,6 +55,7 @@ public final class Game {
         this.longestRoadHolder = -1;
         this.currentTurnIndex = 0;
         this.gameOver = false;
+        this.winnerIndex = -1;
     }
 
     private int determineFirstPlayer(DiceRoller diceRoller) {
@@ -162,7 +164,12 @@ public final class Game {
         int currentIndex = getCurrentPlayerIndex();
         if (getVictoryPoints(currentIndex) >= WIN_THRESHOLD) {
             gameOver = true;
+            winnerIndex = currentIndex;
         }
+    }
+
+    public int getWinnerIndex() {
+        return winnerIndex;
     }
 
     public boolean isGameOver() {

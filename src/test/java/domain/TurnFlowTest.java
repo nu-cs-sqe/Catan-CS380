@@ -163,6 +163,21 @@ public class TurnFlowTest {
         Assertions.assertFalse(game.isGameOver());
     }
 
+    // TC9 – Game is over after winner is declared
+    @Test
+    public void testGameIsOverAfterWinnerDeclared() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+
+        for (int i = 0; i < 10; i++) {
+            game.playVictoryPointCard();
+        }
+
+        Assertions.assertTrue(game.isGameOver());
+        Assertions.assertEquals(game.getCurrentPlayerIndex(),
+                game.getWinnerIndex());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
