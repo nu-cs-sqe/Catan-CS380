@@ -1,0 +1,65 @@
+package domain;
+
+import board.Board;
+import board.Shuffler;
+import board.Vertex;
+import java.util.Arrays;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+import board.Robber;
+public class TurnFlowTest {
+
+    // TC1 – Rolling dice produces resources for players with
+    // settlements on matching hexes
+    @Test
+    public void testRollProducesResourcesForAdjacentSettlement() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        Vertex vertex = board.getVertex("-3,1");
+        vertex.setOwner(players.get(0));
+
+        game.rollForProduction(board, robber, 5);
+
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.WOOD));
+    }
+
+    private Board createBoard() {
+        Shuffler noOp = new Shuffler() {
+            @Override
+            public <T> void shuffle(List<T> list) {
+                // no-op
+            }
+        };
+        Board board = new Board(noOp);
+        board.create();
+        return board;
+    }
+
+    private List<Player> createPlayers() {
+        return Arrays.asList(
+                new Player("Alice", PlayerColor.RED),
+                new Player("Bob", PlayerColor.BLUE),
+                new Player("Carol", PlayerColor.WHITE)
+        );
+    }
+
+    private Game createGame(List<Player> players) {
+        int[] rolls = {7, 5, 3};
+        return new Game(players, stubDiceRoller(rolls));
+    }
+
+    private DiceRoller stubDiceRoller(int[] rolls) {
+        return new DiceRoller() {
+            private int index = 0;
+            @Override
+            public int roll() {
+                return rolls[index++];
+            }
+        };
+    }
+}
