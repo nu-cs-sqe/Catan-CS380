@@ -1,25 +1,22 @@
 package board;
 
-import org.easymock.EasyMockExtension;
-import org.easymock.Mock;
+import domain.Player;
+import domain.PlayerColor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 
-import static org.easymock.EasyMock.replay;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(EasyMockExtension.class)
 class EdgeTest {
 
   private static final int MAX_ADJACENT_TILES = 2;
   private static final int MIN_ADJACENT_TILES = 1;
   private static final int COASTAL_Q = -2;
 
-  @Mock private Player player;
+  private final Player player = new Player("Alice", PlayerColor.RED);
 
   // TC1 – Constructor stores id correctly
   @Test
@@ -81,7 +78,6 @@ class EdgeTest {
   // TC7 – setOwner stores and getOwner retrieves the player
   @Test
   void setOwner_nonNullPlayer_returnsPlayer() {
-    replay(player);
     Edge edge = new Edge("0");
     edge.setOwner(player);
 

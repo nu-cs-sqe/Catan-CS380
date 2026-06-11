@@ -1,18 +1,16 @@
 package board;
 
-import org.easymock.EasyMockExtension;
-import org.easymock.Mock;
+import domain.Player;
+import domain.PlayerColor;
+import domain.Resource;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 
-import static org.easymock.EasyMock.replay;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(EasyMockExtension.class)
 class VertexTest {
 
   private static final int MAX_ADJACENT_TILES = 3;
@@ -20,7 +18,7 @@ class VertexTest {
   private static final int GENERIC_HARBOR_RATE = 3;
   private static final int INTERIOR_Q = -2;
 
-  @Mock private Player player;
+  private final Player player = new Player("Alice", PlayerColor.RED);
 
   // TC1 – Constructor stores id correctly
   @Test
@@ -83,7 +81,6 @@ class VertexTest {
   // TC7 – setOwner stores and getOwner retrieves the player
   @Test
   void setOwner_nonNullPlayer_returnsPlayer() {
-    replay(player);
     Vertex vertex = new Vertex("0");
     vertex.setOwner(player);
 
@@ -122,7 +119,7 @@ class VertexTest {
   @Test
   void setHarbor_nonNullHarbor_returnsHarbor() {
     Vertex vertex = new Vertex("0");
-    Harbor harbor = new Harbor(ResourceType.GENERIC, GENERIC_HARBOR_RATE, "v1", "v2");
+    Harbor harbor = new Harbor(Resource.GENERIC, GENERIC_HARBOR_RATE, "v1", "v2");
     vertex.setHarbor(harbor);
 
     assertEquals(harbor, vertex.getHarbor());
