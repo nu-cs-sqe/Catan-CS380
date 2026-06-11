@@ -244,6 +244,16 @@ public class TurnFlowTest {
                         stubDiceRoller(new int[]{6})));
     }
 
+    // TC15 – Can play a development card before rolling dice
+    @Test
+    public void testCanPlayDevCardBeforeRolling() {
+        List<Player> players = createPlayers();
+        Game game = createGame(players);
+
+        Assertions.assertDoesNotThrow(
+                () -> game.playKnightCard());
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override

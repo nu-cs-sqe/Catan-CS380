@@ -34,7 +34,7 @@ public final class Game {
 
     private boolean gameOver;
     private TurnPhase turnPhase;
-
+    private boolean devCardPlayedThisTurn;
 
     private int currentTurnIndex;
 
@@ -58,6 +58,7 @@ public final class Game {
         this.gameOver = false;
         this.winnerIndex = -1;
         this.turnPhase = TurnPhase.ROLL;
+        this.devCardPlayedThisTurn = false;
     }
 
     private int determineFirstPlayer(DiceRoller diceRoller) {
@@ -164,6 +165,16 @@ public final class Game {
         int roll = diceRoller.roll();
         rollForProduction(board, robber, roll);
         turnPhase = TurnPhase.TRADE_BUILD;
+    }
+
+    public void playKnightCard() {
+        if (devCardPlayedThisTurn) {
+            throw new IllegalStateException(
+                    "Already played a dev card this turn");
+        }
+        Player current = players.get(getCurrentPlayerIndex());
+        current.playKnight();
+        devCardPlayedThisTurn = true;
     }
 
     public void updateLongestRoad(Board board) {
