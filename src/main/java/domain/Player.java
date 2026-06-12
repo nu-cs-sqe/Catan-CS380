@@ -151,13 +151,16 @@ public final class Player {
   }
 
   public List<DevelopmentCard> getDevelopmentCards() {
-    return null;
+    return List.copyOf(developmentCards);
   }
 
   public void addDevelopmentCard(DevelopmentCard card) {
+    Objects.requireNonNull(card, "card");
+    developmentCards.add(card);
   }
 
   public void addDevelopmentCards(List<DevelopmentCard> cards) {
+    developmentCards.addAll(List.copyOf(cards));
   }
 
   public void playKnight() {
