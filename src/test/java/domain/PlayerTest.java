@@ -260,9 +260,9 @@ class PlayerTest {
 
   // BVA TC30
   @Test
-  void shouldHaveFiveVp_whenHoldingFiveVictoryPointDevCards() {
+  void shouldHaveFiveVp_whenBuyingFiveVictoryPointDevCards() {
     for (int i = 0; i < 5; i++) {
-      player.addVictoryPointDevCard();
+      player.buyDevelopmentCard(DevelopmentCard.VICTORY_POINT);
     }
     assertEquals(5, player.getVictoryPoints());
   }
