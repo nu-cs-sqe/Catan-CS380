@@ -315,9 +315,11 @@ public final class TurnFlow {
     }
 
     public void buildCity(Player player, Vertex vertex) {
-        if (!player.hasResources(CITY_COST)) {
+
+        if (!player.hasResources( CITY_COST )) {
+
             throw new IllegalStateException(
-                    "Insufficient resources for city");
+                    "Insufficient resources to build city");
         }
         player.upgradeSettlementToCity(vertex);
         payCost(player, CITY_COST);

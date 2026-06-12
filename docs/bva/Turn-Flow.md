@@ -347,7 +347,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 2 ORE, 2 WHEAT
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between exact cost (valid) and 1 short (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC52 – Cannot upgrade vertex without player's settlement
 - **State of the system**: Vertex has no settlement or has another player's settlement
