@@ -86,7 +86,7 @@ public class BoardView extends Pane {
     for (TileType type : TileType.values()) {
       URL url = getClass().getResource("/images/" + type.name() + ".png");
       if (url != null) {
-        tileImages.put(type, rotateCcw90(new Image(url.toExternalForm())));
+        tileImages.put(type, new Image(url.toExternalForm()));
       }
     }
   }
