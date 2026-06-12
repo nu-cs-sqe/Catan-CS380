@@ -221,10 +221,15 @@ public class TurnFlowTest {
     public void testStealResourceFromVictim() {
         List<Player> players = createPlayers();
         TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+        robber.setTile(board.getTile(-2, 0));
 
+        players.get(1).placeSettlement(board.getVertex("-3,1"));
         players.get(1).addResource(Resource.ORE, 1);
 
-        turnFlow.stealResource(players.get(0), players.get(1));
+        turnFlow.stealResource(players.get(0), players.get(1),
+                robber, board);
 
         Assertions.assertEquals(1,
                 players.get(0).getResourceCount(Resource.ORE));
@@ -237,8 +242,14 @@ public class TurnFlowTest {
     public void testStealFromVictimWith0Resources() {
         List<Player> players = createPlayers();
         TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+        robber.setTile(board.getTile(-2, 0));
 
-        turnFlow.stealResource(players.get(0), players.get(1));
+        players.get(1).placeSettlement(board.getVertex("-3,1"));
+
+        turnFlow.stealResource(players.get(0), players.get(1),
+                robber, board);
 
         for (Resource resource : Resource.values()) {
             Assertions.assertEquals(0,
@@ -253,12 +264,49 @@ public class TurnFlowTest {
     public void testCannotStealFromYourself() {
         List<Player> players = createPlayers();
         TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
 
         players.get(0).addResource(Resource.BRICK, 1);
 
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> turnFlow.stealResource(players.get(0),
-                        players.get(0)));
+                        players.get(0), robber, board));
+    }
+
+    // TC66 – stealCandidates lists players bordering the robber's tile
+    @Test
+    public void testStealCandidatesBorderingRobberTile() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+        robber.setTile(board.getTile(-2, 0));
+
+        players.get(1).placeSettlement(board.getVertex("-3,1"));
+        players.get(2).placeSettlement(board.getVertex("2,8"));
+
+        List<Player> candidates = turnFlow.stealCandidates(robber, board);
+
+        Assertions.assertTrue(candidates.contains(players.get(1)));
+        Assertions.assertFalse(candidates.contains(players.get(2)));
+    }
+
+    // TC67 – Stealing from a victim not bordering the robber throws
+    @Test
+    public void testStealFromNonBorderingVictimThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+        robber.setTile(board.getTile(-2, 0));
+
+        players.get(1).placeSettlement(board.getVertex("2,8"));
+        players.get(1).addResource(Resource.ORE, 1);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.stealResource(players.get(0),
+                        players.get(1), robber, board));
     }
 
     // TC14 – Buy dev card with exact resources enters pending list
@@ -409,11 +457,12 @@ public class TurnFlowTest {
         robber.setTile(board.getTile(0, 0));
 
         players.get(0).addDevelopmentCard(DevelopmentCard.KNIGHT);
+        players.get(1).placeSettlement(board.getVertex("-3,1"));
         players.get(1).addResource(Resource.ORE, 1);
 
         Tile targetTile = board.getTile(-2, 0);
         turnFlow.playKnightCard(players.get(0), robber,
-                targetTile, players.get(1));
+                targetTile, players.get(1), board);
 
         Assertions.assertEquals(1,
                 players.get(0).getKnightsPlayed());

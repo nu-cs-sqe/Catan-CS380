@@ -469,7 +469,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
   is not
 - **BVA note**: Boundary between a vertex that touches the robbed hex (eligible)
   and one that does not (ineligible)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC67 – Stealing from a victim who does not border the robber throws
 - **State of the system**: Robber on a tile; victim's only settlement borders a
@@ -477,7 +477,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **Expected output**: Throws `IllegalArgumentException`
 - **BVA note**: Boundary between an eligible victim (borders the hex) and an
   ineligible one
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC68 – Resolving a roll of 7 sets the robber pending and skips production
 - **State of the system**: A 7 is rolled; players have settlements on the board

@@ -177,11 +177,20 @@ public final class TurnFlow {
         robber.setTile(targetTile);
     }
 
-    public void stealResource(Player thief, Player victim) {
+    public void stealResource(Player thief, Player victim,
+                              Robber robber, Board board) {
         if (thief.equals(victim)) {
             throw new IllegalArgumentException(
                     "Cannot steal from yourself");
         }
+        if (!stealCandidates(robber, board).contains(victim)) {
+            throw new IllegalArgumentException(
+                    "Victim does not border the robber");
+        }
+        transferStolenResource(thief, victim);
+    }
+
+    private void transferStolenResource(Player thief, Player victim) {
         for (Resource resource : Resource.values()) {
             if (resource == Resource.GENERIC) {
                 continue;
@@ -192,6 +201,35 @@ public final class TurnFlow {
                 return;
             }
         }
+    }
+
+    public List<Player> stealCandidates(Robber robber, Board board) {
+        List<Player> candidates = new ArrayList<>();
+        Tile robberTile = robber.getTile();
+        if (robberTile == null) {
+            return candidates;
+        }
+        for (Vertex vertex : board.getVertices()) {
+            if (vertex.getOwner() == null
+                    || !vertexBordersTile(vertex, robberTile)) {
+                continue;
+            }
+            Player owner = findMatchingPlayer(vertex.getOwner());
+            if (owner != null && !candidates.contains(owner)) {
+                candidates.add(owner);
+            }
+        }
+        return candidates;
+    }
+
+    private boolean vertexBordersTile(Vertex vertex, Tile tile) {
+        for (Tile adjacent : vertex.getAdjacentTiles()) {
+            if (adjacent.getQ() == tile.getQ()
+                    && adjacent.getR() == tile.getR()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void buyDevelopmentCard(Player player) {
@@ -224,11 +262,12 @@ public final class TurnFlow {
     }
 
     public void playKnightCard(Player player, Robber robber,
-                               Tile targetTile, Player victim) {
+                               Tile targetTile, Player victim,
+                               Board board) {
         playDevelopmentCard(player, DevelopmentCard.KNIGHT);
         moveRobber(robber, targetTile);
         player.playKnight();
-        stealResource(player, victim);
+        stealResource(player, victim, robber, board);
         updateLargestArmy();
     }
 
