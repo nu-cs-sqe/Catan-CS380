@@ -417,14 +417,14 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **Expected output**: Settlement placed; no resources spent; no road required
 - **BVA note**: Boundary between main-phase placement (requires a road + cost)
   and setup placement (free, no road)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC61 – Setup settlement violating the distance rule throws
 - **State of the system**: An adjacent vertex already holds a settlement
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: The distance rule still applies during setup; boundary between
   all neighbors empty (valid) and one neighbor occupied (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC62 – Setup road is free and must connect to the player's settlement
 - **State of the system**: Player places a setup road on an edge touching their

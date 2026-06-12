@@ -288,6 +288,12 @@ public final class TurnFlow {
         checkForWinner();
     }
 
+    public void buildSetupSettlement(Player player, Vertex vertex,
+                                     Board board) {
+        checkDistanceRule(vertex, board);
+        player.placeSettlement(vertex);
+    }
+
     private void checkAdjacentRoad(Vertex vertex, Player player,
                                    Board board) {
         for (Edge edge : board.getEdges()) {

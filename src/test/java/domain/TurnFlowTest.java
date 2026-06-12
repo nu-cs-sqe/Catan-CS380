@@ -897,6 +897,43 @@ public class TurnFlowTest {
                         v6, board));
     }
 
+    // TC60 – Setup settlement is free and needs no adjacent road
+    @Test
+    public void testBuildSetupSettlementFreeAndNoRoadRequired() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex vertex = board.getVertex("-3,1");
+
+        turnFlow.buildSetupSettlement(players.get(0), vertex, board);
+
+        Assertions.assertNotNull(vertex.getSettlement());
+        Assertions.assertEquals(4,
+                players.get(0).getRemainingSettlements());
+        for (Resource resource : Resource.values()) {
+            Assertions.assertEquals(0,
+                    players.get(0).getResourceCount(resource));
+        }
+    }
+
+    // TC61 – Setup settlement violating the distance rule throws
+    @Test
+    public void testBuildSetupSettlementDistanceRuleThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex vertex1 = board.getVertex("-3,1");
+        Vertex vertex2 = board.getVertex("-3,-1");
+
+        turnFlow.buildSetupSettlement(players.get(0), vertex1, board);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildSetupSettlement(players.get(1),
+                        vertex2, board));
+    }
+
     // TC50 – Upgrade settlement to city with exact resources
     @Test
     public void testUpgradeSettlementToCityWithExactResources() {
