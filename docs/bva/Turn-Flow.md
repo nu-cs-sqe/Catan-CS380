@@ -52,7 +52,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 7 resource cards; 7 is rolled
 - **Expected output**: Player discards nothing
 - **BVA note**: Boundary between 7 (safe) and 8 (must discard)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC8 – Rolling 7: odd card count rounds down
 - **State of the system**: Player has 9 resource cards; 7 is rolled

@@ -120,6 +120,19 @@ public class TurnFlowTest {
         Assertions.assertEquals(4, turnFlow.getDiscardCount(0));
     }
 
+    // TC7 – Rolling 7: player with 7 cards does not discard
+    @Test
+    public void testRolling7PlayerWith7CardsNoDiscard() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        for (int i = 0; i < 7; i++) {
+            players.get(0).addResource(Resource.BRICK, 1);
+        }
+
+        Assertions.assertEquals(0, turnFlow.getDiscardCount(0));
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
