@@ -37,6 +37,8 @@
 | TC27 | Fresh `Board`, no-op `Shuffler` | Exactly 18 vertices have a non-null `getHarbor()` (BVA: boundaries 17, 18, 19)                                    | :white_check_mark: |
 | TC28 | Fresh `Board`, no-op `Shuffler` | Each resource-specific harbor has `getExchangeRate() == 2` (BVA: min exchange rate)                               | :white_check_mark: |
 | TC29 | Fresh `Board`, no-op `Shuffler` | Each GENERIC harbor has `getExchangeRate() == 3` (BVA: boundary between 2 and 3)                                  | :white_check_mark: |
+| TC30 | Board with injected harbor whose `vertex1Id` maps to no vertex | Harbor still appears in `getHarbors()`; no vertex is assigned that harbor on the vertex1 side (BVA: `v1 == null` branch in `createHarbors()`) | :white_check_mark: |
+| TC31 | Board with injected harbor whose `vertex2Id` maps to no vertex | Harbor still appears in `getHarbors()`; no vertex is assigned that harbor on the vertex2 side (BVA: `v2 == null` branch in `createHarbors()`) | :white_check_mark: |
 | TC32 | Fresh `Board`, no-op `Shuffler` | Token value 2 (min valid token) appears exactly once across all tiles (BVA: lower boundary of token value range)  | :white_check_mark: |
 | TC33 | Fresh `Board`, no-op `Shuffler` | Token value 12 (max valid token) appears exactly once across all tiles (BVA: upper boundary of token value range) | :white_check_mark: |
 

@@ -66,13 +66,19 @@ public class Board {
           new Harbor(Resource.SHEEP, 2, "-4,2", "-3,1"));
 
   private final Shuffler shuffler;
+  private final List<Harbor> harborDefinitions;
   private Map<String, Tile> tiles;
   private Map<String, Vertex> vertices;
   private Map<String, Edge> edges;
   private Map<String, Harbor> harbors;
 
   public Board(Shuffler shuffler) {
+    this(shuffler, HARBOR_DEFINITIONS);
+  }
+
+  Board(Shuffler shuffler, List<Harbor> harborDefinitions) {
     this.shuffler = shuffler;
+    this.harborDefinitions = harborDefinitions;
   }
 
   public void create() {
@@ -138,7 +144,7 @@ public class Board {
 
   private void createHarbors() {
     harbors = new HashMap<>();
-    for (Harbor harbor : HARBOR_DEFINITIONS) {
+    for (Harbor harbor : harborDefinitions) {
       String key = harbor.getVertex1Id() + "|" + harbor.getVertex2Id();
       harbors.put(key, harbor);
       Vertex v1 = vertices.get(harbor.getVertex1Id());
