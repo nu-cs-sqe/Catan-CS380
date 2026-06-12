@@ -679,6 +679,24 @@ public class TurnFlowTest {
                         DevelopmentCard.MONOPOLY));
     }
 
+    // TC40 – endTurn flushes pending dev cards to player hand
+    @Test
+    public void testEndTurnFlushesPendingDevCardsToHand() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+
+        players.get(0).addResource(Resource.ORE, 1);
+        players.get(0).addResource(Resource.WHEAT, 1);
+        players.get(0).addResource(Resource.SHEEP, 1);
+        turnFlow.buyDevelopmentCard(players.get(0));
+
+        turnFlow.endTurn(players.get(0));
+
+        Assertions.assertEquals(0, turnFlow.getPendingCardCount());
+        Assertions.assertEquals(1,
+                players.get(0).getDevelopmentCards().size());
+    }
+
 
 
     // TC44 – Build settlement with exact resources succeeds
