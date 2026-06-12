@@ -201,6 +201,22 @@ public class TurnFlowTest {
                 players.get(1).getResourceCount(Resource.ORE));
     }
 
+    // TC12 – Steal from victim with 0 resources does nothing
+    @Test
+    public void testStealFromVictimWith0Resources() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        turnFlow.stealResource(players.get(0), players.get(1));
+
+        for (Resource resource : Resource.values()) {
+            Assertions.assertEquals(0,
+                    players.get(0).getResourceCount(resource));
+            Assertions.assertEquals(0,
+                    players.get(1).getResourceCount(resource));
+        }
+    }
+
     private Tile findDesertTile(Board board) {
         for (Tile tile : board.getTiles()) {
             if (tile.getTileType() == TileType.DESERT) {

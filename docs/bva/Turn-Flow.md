@@ -76,13 +76,13 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Robber moved; victim has settlement adjacent and holds resources
 - **Expected output**: Victim loses 1 resource, current player gains 1
 - **BVA note**: Boundary between 0 resources (nothing to steal) and 1+ (steal occurs)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC12 – Steal from victim with 0 resources does nothing
 - **State of the system**: Robber moved; victim has settlement adjacent but 0 resources
 - **Expected output**: No resources change hands
 - **BVA note**: Boundary at 0 — steal attempted but nothing available
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC13 – Cannot steal from yourself
 - **State of the system**: Current player tries to steal from themselves
