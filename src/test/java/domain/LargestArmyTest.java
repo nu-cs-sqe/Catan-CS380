@@ -13,15 +13,66 @@ public class LargestArmyTest {
     @Test
     public void testNoLargestArmyUnder3Knights() {
         List<Player> players = createPlayers();
-        Game game = createGame(players);
+        TurnFlow turnFlow = new TurnFlow(players);
         players.get(0).playKnight();
         players.get(0).playKnight();
         players.get(1).playKnight();
-        game.updateLargestArmy();
-        Assertions.assertEquals(-1, game.getLargestArmyHolder());
+        turnFlow.updateLargestArmy();
+        Assertions.assertEquals(-1, turnFlow.getLargestArmyHolder());
         for (int i = 0; i < players.size(); i++) {
-            Assertions.assertEquals(0, game.getVictoryPoints(i));
+            Assertions.assertEquals(0, turnFlow.getVictoryPoints(i));
         }
+    }
+
+    // TC2 – First player to play 3 knights gets Largest Army
+    @Test
+    public void testFirstPlayerWith3KnightsGetsLargestArmy() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        turnFlow.updateLargestArmy();
+        Assertions.assertEquals(0, turnFlow.getLargestArmyHolder());
+        Assertions.assertEquals(LARGEST_ARMY_VP,
+                turnFlow.getVictoryPoints(0) - players.get(0).getVictoryPoints());
+    }
+
+    // TC3 – Another player with more knights takes Largest Army
+    @Test
+    public void testPlayerWithMoreKnightsTakesLargestArmy() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        turnFlow.updateLargestArmy();
+        Assertions.assertEquals(0, turnFlow.getLargestArmyHolder());
+
+        players.get(1).playKnight();
+        players.get(1).playKnight();
+        players.get(1).playKnight();
+        players.get(1).playKnight();
+        turnFlow.updateLargestArmy();
+        Assertions.assertEquals(1, turnFlow.getLargestArmyHolder());
+    }
+
+    // TC4 – Tied knight count does not change Largest Army holder
+    @Test
+    public void testTiedKnightCountDoesNotChangeLargestArmy() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        turnFlow.updateLargestArmy();
+        Assertions.assertEquals(0, turnFlow.getLargestArmyHolder());
+
+        players.get(1).playKnight();
+        players.get(1).playKnight();
+        players.get(1).playKnight();
+        turnFlow.updateLargestArmy();
+        Assertions.assertEquals(0, turnFlow.getLargestArmyHolder());
     }
 
     private List<Player> createPlayers() {
@@ -31,69 +82,4 @@ public class LargestArmyTest {
                 new Player("Carol", PlayerColor.PINK)
         );
     }
-
-    private Game createGame(List<Player> players) {
-        int[] rolls = {7, 5, 3};
-        return new Game(players, stubDiceRoller(rolls));
-    }
-
-    private DiceRoller stubDiceRoller(int[] rolls) {
-        return new DiceRoller() {
-            private int index = 0;
-            @Override
-            public int roll() {
-                return rolls[index++];
-            }
-        };
-    }
-    // TC2 – First player to play 3 knights gets Largest Army
-    @Test
-    public void testFirstPlayerWith3KnightsGetsLargestArmy() {
-        List<Player> players = createPlayers();
-        Game game = createGame(players);
-        players.get(0).playKnight();
-        players.get(0).playKnight();
-        players.get(0).playKnight();
-        game.updateLargestArmy();
-        Assertions.assertEquals(0, game.getLargestArmyHolder());
-        Assertions.assertEquals(LARGEST_ARMY_VP,
-                game.getVictoryPoints(0) - players.get(0).getVictoryPoints());
-    }
-    // TC3 – Another player with more knights takes Largest Army
-    @Test
-    public void testPlayerWithMoreKnightsTakesLargestArmy() {
-        List<Player> players = createPlayers();
-        Game game = createGame(players);
-        players.get(0).playKnight();
-        players.get(0).playKnight();
-        players.get(0).playKnight();
-        game.updateLargestArmy();
-        Assertions.assertEquals(0, game.getLargestArmyHolder());
-
-        players.get(1).playKnight();
-        players.get(1).playKnight();
-        players.get(1).playKnight();
-        players.get(1).playKnight();
-        game.updateLargestArmy();
-        Assertions.assertEquals(1, game.getLargestArmyHolder());
-    }
-
-    // TC4 – Tied knight count does not change Largest Army holder
-    @Test
-    public void testTiedKnightCountDoesNotChangeLargestArmy() {
-        List<Player> players = createPlayers();
-        Game game = createGame(players);
-        players.get(0).playKnight();
-        players.get(0).playKnight();
-        players.get(0).playKnight();
-        game.updateLargestArmy();
-        Assertions.assertEquals(0, game.getLargestArmyHolder());
-
-        players.get(1).playKnight();
-        players.get(1).playKnight();
-        players.get(1).playKnight();
-        game.updateLargestArmy();
-        Assertions.assertEquals(0, game.getLargestArmyHolder());
-    }
-
 }

@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
+    <!--
+      MVC controllers intentionally hold references to mutable view/model objects.
+      Defensive copying JavaFX nodes and domain models would break the MVC wiring.
+    -->
+    <Match>
+        <Package name="controller"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
 
-  <!--
-    MVC controllers intentionally hold references to mutable view/model objects.
-    Defensive copying JavaFX nodes and domain models would break the MVC wiring.
-  -->
-  <Match>
-    <Package name="controller"/>
-    <Bug pattern="EI_EXPOSE_REP2"/>
-  </Match>
+    <!--
+      View classes intentionally expose their JavaFX components (Scene, BoardView,
+      PlayerInfoView) so controllers can wire event handlers and call refresh methods.
+    -->
+    <Match>
+        <Package name="view"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
 
-  <!--
-    View classes intentionally expose their JavaFX components (Scene, BoardView,
-    PlayerInfoView) so controllers can wire event handlers and call refresh methods.
-  -->
-  <Match>
-    <Package name="view"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
+    <Match>
+        <Class name="domain.TurnFlow"/>
+        <Method name="&lt;init&gt;"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
 </FindBugsFilter>
