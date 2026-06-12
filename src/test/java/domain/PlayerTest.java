@@ -346,6 +346,13 @@ class PlayerTest {
     assertThrows(NullPointerException.class, () -> player.upgradeSettlementToCity(null));
   }
 
+  // BVA TC59
+  @Test
+  void shouldCountVictoryPointDevCardInHand_towardVictoryPoints() {
+    player.addDevelopmentCard(DevelopmentCard.VICTORY_POINT);
+    assertEquals(1, player.getVictoryPoints());
+  }
+
   // BVA TC37
   @Test
   void shouldHaveOneKnightPlayed_whenPlayingFirstKnight() {

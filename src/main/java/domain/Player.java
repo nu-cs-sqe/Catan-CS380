@@ -56,7 +56,10 @@ public final class Player {
 
   public int getVictoryPoints() {
     int vp = settlements.stream().mapToInt(Settlement::getVictoryPoints).sum()
-        + victoryPointDevCards;
+        + victoryPointDevCards
+        + (int) developmentCards.stream()
+            .filter(card -> card == DevelopmentCard.VICTORY_POINT)
+            .count();
     return vp;
   }
 
