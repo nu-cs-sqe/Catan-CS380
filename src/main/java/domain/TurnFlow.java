@@ -215,6 +215,10 @@ public final class TurnFlow {
     }
 
     public void playMonopolyCard(Player player, Resource resource) {
+        if (resource == Resource.GENERIC) {
+            throw new IllegalArgumentException(
+                    "Cannot monopolize GENERIC resource");
+        }
         playDevelopmentCard(player, DevelopmentCard.MONOPOLY);
         for (Player other : players) {
             if (!other.equals(player)) {

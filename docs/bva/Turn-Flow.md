@@ -156,13 +156,13 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player plays MONOPOLY naming WHEAT; opponents have 2 and 3
 - **Expected output**: Active player gains 5 WHEAT; opponents drop to 0
 - **BVA note**: Boundary between opponents having 0 (nothing) and >0 (full transfer)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC24 – MONOPOLY with GENERIC resource throws
 - **State of the system**: Player plays MONOPOLY naming GENERIC
 - **Expected output**: Throws `IllegalArgumentException`
 - **BVA note**: Boundary between valid resource types and GENERIC (not a real resource)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC25 – ROAD_BUILDING: places 2 free roads
 - **State of the system**: Player has 2+ roads remaining; plays ROAD_BUILDING

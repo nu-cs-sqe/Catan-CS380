@@ -420,6 +420,19 @@ public class TurnFlowTest {
                 players.get(2).getResourceCount(Resource.WHEAT));
     }
 
+    // TC24 – MONOPOLY with GENERIC resource throws
+    @Test
+    public void testPlayMonopolyWithGenericThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addDevelopmentCard(DevelopmentCard.MONOPOLY);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.playMonopolyCard(players.get(0),
+                        Resource.GENERIC));
+    }
+
 
 
     private Bank createBank() {
