@@ -251,9 +251,12 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **Implemented**: [ ]
 
 ### TC38 – checkWin called after every VP-changing action
-- **State of the system**: Player builds settlement reaching 10 VP
-- **Expected output**: Game ends immediately, not at end of turn
-- **BVA note**: Win check is per-action, not per-turn
+- **State of the system**: Player at 9 VP builds a settlement,
+  reaching 10 VP
+- **Expected output**: `isGameOver()` is true immediately after the
+  build, not deferred to end of turn
+- **BVA note**: Win check is per-action, not per-turn; `buildSettlement`
+  (TC44) triggers the check, as do `updateLargestArmy`/`updateLongestRoad`
 - **Implemented**: [x]
 
 ---

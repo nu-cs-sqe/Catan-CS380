@@ -648,22 +648,15 @@ public class TurnFlowTest {
     public void testGameEndsImmediatelyWhenActionReaches10VP() {
         List<Player> players = createPlayers();
         TurnFlow turnFlow = new TurnFlow(players);
-        Board board = createBoard();
-        Robber robber = new Robber();
-        robber.setTile(board.getTile(0, 0));
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             players.get(0).addVictoryPointDevCard();
         }
-        players.get(0).playKnight();
-        players.get(0).playKnight();
-        players.get(0).addDevelopmentCard(DevelopmentCard.KNIGHT);
-        players.get(1).addResource(Resource.ORE, 1);
+        giveSettlementCost(players.get(0));
 
         Assertions.assertFalse(turnFlow.isGameOver());
 
-        turnFlow.playKnightCard(players.get(0), robber,
-                board.getTile(-2, 0), players.get(1));
+        turnFlow.buildSettlement(players.get(0), new Vertex("win-v1"));
 
         Assertions.assertTrue(turnFlow.isGameOver());
     }
