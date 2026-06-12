@@ -298,7 +298,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 1 WOOD, 1 BRICK, 1 SHEEP, 1 WHEAT; valid vertex
 - **Expected output**: Settlement placed; resources deducted; checkWin called
 - **BVA note**: Boundary between insufficient resources (cannot build) and exact cost (can build)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC45 – Build settlement with insufficient resources throws
 - **State of the system**: Player has 1 WOOD, 1 BRICK, 1 SHEEP, 0 WHEAT

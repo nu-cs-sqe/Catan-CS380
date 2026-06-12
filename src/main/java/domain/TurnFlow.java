@@ -7,7 +7,9 @@ import board.Tile;
 import board.TileType;
 import board.Vertex;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public final class TurnFlow {
 
@@ -16,6 +18,17 @@ public final class TurnFlow {
     private static final int MIN_KNIGHTS_FOR_ARMY = 3;
     private static final int MIN_ROAD_LENGTH = 5;
     private static final int WIN_THRESHOLD = 10;
+    private static final Map<Resource, Integer> SETTLEMENT_COST =
+            settlementCost();
+
+    private static Map<Resource, Integer> settlementCost() {
+        Map<Resource, Integer> cost = new EnumMap<>(Resource.class);
+        cost.put(Resource.WOOD, 1);
+        cost.put(Resource.BRICK, 1);
+        cost.put(Resource.SHEEP, 1);
+        cost.put(Resource.WHEAT, 1);
+        return cost;
+    }
 
     private final List<Player> players;
     private final Bank bank;
@@ -219,6 +232,22 @@ public final class TurnFlow {
         player.addDevelopmentCards(pendingCards);
         pendingCards.clear();
         devCardPlayedThisTurn = false;
+    }
+
+    public void buildSettlement(Player player, Vertex vertex) {
+        if (!player.hasResources(SETTLEMENT_COST)) {
+            throw new IllegalStateException(
+                    "Insufficient resources for settlement");
+        }
+        player.placeSettlement(vertex);
+        payCost(player, SETTLEMENT_COST);
+        checkForWinner();
+    }
+
+    private void payCost(Player player, Map<Resource, Integer> cost) {
+        for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
+            player.removeResource(entry.getKey(), entry.getValue());
+        }
     }
 
     public void updateLongestRoad(Board board) {
