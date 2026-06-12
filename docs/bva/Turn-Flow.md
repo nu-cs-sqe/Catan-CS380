@@ -375,7 +375,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 1 WOOD, 1 BRICK; valid edge adjacent to player's network
 - **Expected output**: Road placed; resources deducted; longest road updated; checkWin called
 - **BVA note**: Boundary between insufficient resources (cannot build) and exact cost (can build)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC56 – Build road with insufficient resources throws
 - **State of the system**: Player has 1 WOOD, 0 BRICK

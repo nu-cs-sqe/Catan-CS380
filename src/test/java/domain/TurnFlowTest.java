@@ -996,6 +996,28 @@ public class TurnFlowTest {
                 players.get(0).getRemainingSettlements());
     }
 
+    // TC55 – Build road with exact resources succeeds
+    @Test
+    public void testBuildRoadWithExactResources() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Edge edge = board.getEdge("0,2|1,1");
+
+        players.get(0).addResource(Resource.WOOD, 1);
+        players.get(0).addResource(Resource.BRICK, 1);
+
+        turnFlow.buildRoad(players.get(0), edge, board);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WOOD));
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.BRICK));
+        Assertions.assertEquals(14,
+                players.get(0).getRemainingRoads());
+    }
+
 
 
     private void giveSettlementCost(Player player) {

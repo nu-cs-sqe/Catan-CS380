@@ -41,6 +41,16 @@ public final class TurnFlow {
         cost.put(Resource.WHEAT, 2);
         return cost;
     }
+    private static final Map<Resource, Integer> ROAD_COST =
+            roadCost();
+
+    private static Map<Resource, Integer> roadCost() {
+        Map<Resource, Integer> cost = new EnumMap<>(Resource.class);
+        cost.put(Resource.WOOD, 1);
+        cost.put(Resource.BRICK, 1);
+        return cost;
+    }
+
 
     private final List<Player> players;
     private final Bank bank;
@@ -324,6 +334,16 @@ public final class TurnFlow {
         player.upgradeSettlementToCity(vertex);
         payCost(player, CITY_COST);
         checkForWinner();
+    }
+
+    public void buildRoad(Player player, Edge edge, Board board) {
+        if (!player.hasResources(ROAD_COST)) {
+            throw new IllegalStateException(
+                    "Insufficient resources for road");
+        }
+        player.placeRoad(edge);
+        payCost(player, ROAD_COST);
+        updateLongestRoad(board);
     }
 
     public void updateLongestRoad(Board board) {
