@@ -670,6 +670,37 @@ public class TurnFlowTest {
 
 
 
+    // TC44 – Build settlement with exact resources succeeds
+    @Test
+    public void testBuildSettlementWithExactResources() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Vertex vertex = new Vertex("build-v1");
+
+        giveSettlementCost(players.get(0));
+
+        turnFlow.buildSettlement(players.get(0), vertex);
+
+        Assertions.assertNotNull(vertex.getSettlement());
+        Assertions.assertEquals(4,
+                players.get(0).getRemainingSettlements());
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WOOD));
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.BRICK));
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.SHEEP));
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WHEAT));
+    }
+
+    private void giveSettlementCost(Player player) {
+        player.addResource(Resource.WOOD, 1);
+        player.addResource(Resource.BRICK, 1);
+        player.addResource(Resource.SHEEP, 1);
+        player.addResource(Resource.WHEAT, 1);
+    }
+
     private Tile findDesertTile(Board board) {
         for (Tile tile : board.getTiles()) {
             if (tile.getTileType() == TileType.DESERT) {
