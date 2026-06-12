@@ -93,6 +93,7 @@
 |------|----------------------------------|-----------------------|--------------|
 | TC34 | placed 15 roads, place a 16th    | IllegalStateException | yes          |
 | TC43 | edge = null                      | NullPointerException  | yes          |
+| TC58 | edge already owned by a player   | IllegalStateException (cannot build on an occupied edge) | no |
 
 
 ### Method under test: `playKnight()` / `getKnightsPlayed()`

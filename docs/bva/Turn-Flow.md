@@ -388,3 +388,11 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 remaining (blocked) and 1+ (allowed)
 - **Implemented**: [x]
+
+### TC58 – Cannot build road disconnected from player's network
+- **State of the system**: Edge is not adjacent to any road, settlement, or
+  city owned by the player; player can afford the road
+- **Expected output**: Throws `IllegalStateException`
+- **BVA note**: Boundary between 0 adjacent owned roads/buildings (invalid)
+  and 1+ (valid); a road must extend the player's own network
+- **Implemented**: [ ]
