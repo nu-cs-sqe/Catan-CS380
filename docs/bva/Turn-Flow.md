@@ -365,7 +365,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 5 settlements, 0 remaining; upgrades one to city
 - **Expected output**: Player now has 1 remaining settlement piece
 - **BVA note**: Boundary between 0 settlement pieces (blocked from building) and 1 (freed by upgrade)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 

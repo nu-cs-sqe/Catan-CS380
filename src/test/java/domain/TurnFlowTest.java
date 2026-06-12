@@ -965,6 +965,37 @@ public class TurnFlowTest {
                 () -> turnFlow.buildCity(players.get(0), v5));
     }
 
+    // TC54 – Upgrading city frees a settlement piece
+    @Test
+    public void testUpgradingCityFreesSettlementPiece() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex v1 = board.getVertex("-3,1");
+        Vertex v2 = board.getVertex("-4,2");
+        Vertex v3 = board.getVertex("3,-1");
+        Vertex v4 = board.getVertex("3,1");
+        Vertex v5 = board.getVertex("5,1");
+
+        players.get(0).placeSettlement(v1);
+        players.get(0).placeSettlement(v2);
+        players.get(0).placeSettlement(v3);
+        players.get(0).placeSettlement(v4);
+        players.get(0).placeSettlement(v5);
+
+        Assertions.assertEquals(0,
+                players.get(0).getRemainingSettlements());
+
+        players.get(0).addResource(Resource.ORE, 3);
+        players.get(0).addResource(Resource.WHEAT, 2);
+
+        turnFlow.buildCity(players.get(0), v1);
+
+        Assertions.assertEquals(1,
+                players.get(0).getRemainingSettlements());
+    }
+
 
 
     private void giveSettlementCost(Player player) {
