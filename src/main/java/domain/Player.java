@@ -115,6 +115,9 @@ public final class Player {
 
   public void placeRoad(Edge e) {
     Objects.requireNonNull(e, "edge");
+    if (e.getOwner() != null) {
+      throw new IllegalStateException("edge already has a road");
+    }
     if (getRemainingRoads() == 0) {
       throw new IllegalStateException("no road pieces remaining");
     }
