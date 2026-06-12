@@ -146,6 +146,21 @@ public class TurnFlowTest {
         Assertions.assertEquals(4, turnFlow.getDiscardCount(0));
     }
 
+
+    // TC9 – Robber must move to a different tile
+    @Test
+    public void testRobberMustMoveToDifferentTile() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        robber.setTile(board.getTile(0, 0));
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.moveRobber(robber, board.getTile(0, 0)));
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override

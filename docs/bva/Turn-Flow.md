@@ -58,13 +58,13 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 9 resource cards; 7 is rolled
 - **Expected output**: Player must discard 4 (9/2 rounded down)
 - **BVA note**: Boundary between even (exact half) and odd (round down)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC9 – Robber must move to a different tile
 - **State of the system**: Robber on tile (0,0); player tries to move to (0,0)
 - **Expected output**: Throws `IllegalArgumentException`
 - **BVA note**: Boundary between same tile (invalid) and different tile (valid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC10 – Robber can move to any other tile including desert
 - **State of the system**: Robber on tile (0,0); player moves to desert tile

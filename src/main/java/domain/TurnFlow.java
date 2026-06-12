@@ -143,5 +143,16 @@ public final class TurnFlow {
         return players.get(playerIndex).discardOnSevenCount();
     }
 
+    public void moveRobber(Robber robber, Tile targetTile) {
+        Tile currentTile = robber.getTile();
+        if (currentTile != null
+                && currentTile.getQ() == targetTile.getQ()
+                && currentTile.getR() == targetTile.getR()) {
+            throw new IllegalArgumentException(
+                    "Robber must move to a different tile");
+        }
+        robber.setTile(targetTile);
+    }
+
 
 }
