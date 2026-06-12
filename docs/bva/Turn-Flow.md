@@ -442,4 +442,4 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **BVA note**: Boundary between a coastal vertex (1 tile, 1 resource) and an
   interior vertex (up to 3 tiles); resources derive from the board, not an
   injected list
-- **Implemented**: [ ]
+- **Implemented**: [x]

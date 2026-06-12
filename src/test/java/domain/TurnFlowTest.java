@@ -955,6 +955,25 @@ public class TurnFlowTest {
         }
     }
 
+    // TC63 – Setup resources derived from settlement's adjacent tiles
+    @Test
+    public void testGrantSetupResourcesFromAdjacentTiles() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+        Board board = createBoard();
+
+        Vertex vertex = board.getVertex("0,2");
+        players.get(0).placeSettlement(vertex);
+
+        turnFlow.grantSetupResources(players.get(0), vertex);
+
+        Assertions.assertEquals(2,
+                players.get(0).getResourceCount(Resource.WHEAT));
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.BRICK));
+    }
+
     // TC50 – Upgrade settlement to city with exact resources
     @Test
     public void testUpgradeSettlementToCityWithExactResources() {

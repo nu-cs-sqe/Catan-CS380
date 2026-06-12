@@ -358,6 +358,16 @@ public final class TurnFlow {
         placeConnectedRoad(player, edge, board);
     }
 
+    public void grantSetupResources(Player player, Vertex vertex) {
+        for (Tile tile : vertex.getAdjacentTiles()) {
+            Resource resource = tileTypeToResource(tile.getTileType());
+            if (resource != null && bank.canDistribute(resource, 1)) {
+                bank.distributeResource(resource, 1);
+                player.addResource(resource, 1);
+            }
+        }
+    }
+
     private void placeConnectedRoad(Player player, Edge edge,
                                     Board board) {
         checkRoadConnectivity(player, edge, board);
