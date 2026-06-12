@@ -268,6 +268,26 @@ public class TurnFlowTest {
                 () -> turnFlow.buyDevelopmentCard(players.get(0), bank));
     }
 
+    // TC16 – Cannot buy dev card when deck is empty
+    @Test
+    public void testCannotBuyDevCardWhenDeckEmpty() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        // Draw all 25 cards to empty the deck
+        for (int i = 0; i < 25; i++) {
+            bank.drawDevelopmentCard();
+        }
+
+        players.get(0).addResource(Resource.ORE, 1);
+        players.get(0).addResource(Resource.WHEAT, 1);
+        players.get(0).addResource(Resource.SHEEP, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buyDevelopmentCard(players.get(0), bank));
+    }
+
 
 
     private Bank createBank() {

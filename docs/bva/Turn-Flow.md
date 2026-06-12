@@ -110,7 +110,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Deck has 0 cards; player has sufficient resources
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between deck size 0 (cannot draw) and 1 (can draw)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC17 – Pending dev card cannot be played this turn
 - **State of the system**: Player buys dev card; immediately tries to play it
