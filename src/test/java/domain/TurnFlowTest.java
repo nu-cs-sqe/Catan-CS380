@@ -153,6 +153,7 @@ public class TurnFlowTest {
         TurnFlow turnFlow = new TurnFlow(players, bank);
 
         for (int i = 0; i < 8; i++) {
+            bank.distributeResource(Resource.BRICK, 1);
             players.get(0).addResource(Resource.BRICK, 1);
         }
         int bankBefore = bank.getStock(Resource.BRICK);

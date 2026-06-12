@@ -136,7 +136,7 @@ It is the authoritative source for resource distribution, resource returns, deve
   total supply of a resource can never exceed its fixed 19
 - **BVA note**: Upper boundary — a return that would push stock past the fixed
   starting supply is invalid
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 
