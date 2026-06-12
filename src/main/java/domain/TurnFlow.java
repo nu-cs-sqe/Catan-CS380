@@ -203,7 +203,16 @@ public final class TurnFlow {
                     "Already played a dev card this turn");
         }
         devCardPlayedThisTurn = true;
-    }   
+    }
+
+    public void playKnightCard(Player player, Robber robber,
+                               Tile targetTile, Player victim) {
+        playDevelopmentCard(player, DevelopmentCard.KNIGHT);
+        moveRobber(robber, targetTile);
+        player.playKnight();
+        stealResource(player, victim);
+        updateLargestArmy();
+    }
 
     public void endTurn(Player player) {
         player.addDevelopmentCards(pendingCards);

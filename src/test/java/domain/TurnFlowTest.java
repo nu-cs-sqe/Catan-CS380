@@ -374,6 +374,32 @@ public class TurnFlowTest {
                         DevelopmentCard.VICTORY_POINT));
     }
 
+    // TC22 – KNIGHT: moves robber, steals, increments knights,
+    // checks largest army
+    @Test
+    public void testPlayKnightMovesRobberAndIncrementsKnights() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+        robber.setTile(board.getTile(0, 0));
+
+        players.get(0).addDevelopmentCard(DevelopmentCard.KNIGHT);
+        players.get(1).addResource(Resource.ORE, 1);
+
+        Tile targetTile = board.getTile(-2, 0);
+        turnFlow.playKnightCard(players.get(0), robber,
+                targetTile, players.get(1));
+
+        Assertions.assertEquals(1, players.get(0).getKnightsPlayed());
+        Assertions.assertEquals(targetTile.getQ(),
+                robber.getTile().getQ());
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.ORE));
+        Assertions.assertEquals(0,
+                players.get(1).getResourceCount(Resource.ORE));
+    }
+
 
 
     private Bank createBank() {

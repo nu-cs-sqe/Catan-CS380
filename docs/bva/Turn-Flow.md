@@ -150,7 +150,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player plays KNIGHT; robber moves to new tile; victim adjacent
 - **Expected output**: Robber moves; victim loses 1 resource; knightsPlayed incremented; updateLargestArmy called
 - **BVA note**: Knight combines robber movement with army tracking
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC23 – MONOPOLY: takes all of named resource from all other players
 - **State of the system**: Player plays MONOPOLY naming WHEAT; opponents have 2 and 3
