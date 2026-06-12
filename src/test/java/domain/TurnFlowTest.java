@@ -31,6 +31,24 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.WOOD));
     }
 
+    // TC2 – Roll does not produce for non-matching tile
+    @Test
+    public void testRollDoesNotProduceForNonMatchingTile() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        Vertex vertex = board.getVertex("-3,1");
+        vertex.setOwner(players.get(0));
+
+        // Token on that tile is 5, but we roll 6
+        turnFlow.rollForProduction(board, robber, 6);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WOOD));
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
