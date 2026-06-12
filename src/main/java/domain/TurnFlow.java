@@ -168,7 +168,11 @@ public final class TurnFlow {
         }
     }
 
-    public void moveRobber(Robber robber, Tile targetTile) {
+    public void moveRobber(Robber robber, Tile targetTile, Board board) {
+        if (board.getTile(targetTile.getQ(), targetTile.getR()) == null) {
+            throw new IllegalArgumentException(
+                    "Robber target is not a board tile");
+        }
         Tile currentTile = robber.getTile();
         if (currentTile != null
                 && currentTile.getQ() == targetTile.getQ()
@@ -194,7 +198,7 @@ public final class TurnFlow {
     public void moveRobberAndSteal(Robber robber, Tile targetTile,
                                    Player thief, Player victim,
                                    Board board) {
-        moveRobber(robber, targetTile);
+        moveRobber(robber, targetTile, board);
         if (victim != null) {
             stealResource(thief, victim, robber, board);
         }
@@ -304,7 +308,7 @@ public final class TurnFlow {
                                Tile targetTile, Player victim,
                                Board board) {
         playDevelopmentCard(player, DevelopmentCard.KNIGHT);
-        moveRobber(robber, targetTile);
+        moveRobber(robber, targetTile, board);
         player.playKnight();
         stealResource(player, victim, robber, board);
         updateLargestArmy();

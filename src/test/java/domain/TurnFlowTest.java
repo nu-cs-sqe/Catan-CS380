@@ -192,7 +192,22 @@ public class TurnFlowTest {
         robber.setTile(board.getTile(0, 0));
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> turnFlow.moveRobber(robber, board.getTile(0, 0)));
+                () -> turnFlow.moveRobber(robber, board.getTile(0, 0),
+                        board));
+    }
+
+    // TC78 – Moving the robber to a tile not on the board throws
+    @Test
+    public void testMoveRobberToNonBoardTileThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        Tile offBoard = new Tile(TileType.DESERT, 99, 99);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.moveRobber(robber, offBoard, board));
     }
 
     // TC10 – Robber can move to any other tile including desert
@@ -208,7 +223,7 @@ public class TurnFlowTest {
         Tile desertTile = findDesertTile(board);
         Assertions.assertNotNull(desertTile);
 
-        turnFlow.moveRobber(robber, desertTile);
+        turnFlow.moveRobber(robber, desertTile, board);
 
         Assertions.assertEquals(desertTile.getQ(),
                 robber.getTile().getQ());

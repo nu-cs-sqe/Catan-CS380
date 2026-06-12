@@ -563,7 +563,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **Expected output**: Throws `IllegalArgumentException`
 - **BVA note**: Boundary between a real board tile (valid target) and an off-board
   tile (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC79 – A player wins only on their own turn
 - **State of the system**: It is player 0's turn; player 1 is pushed to 10 VP by an
