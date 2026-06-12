@@ -34,7 +34,7 @@ public class PlayerInfoView extends VBox {
     setSpacing(SPACING);
     setPadding(new Insets(PADDING_VALUE));
     setPrefWidth(PANEL_WIDTH);
-    setStyle("-fx-background-color: #f5f0e8; -fx-border-color: #ccc;");
+    setStyle("-fx-border-color: -color-border-default;");
     nameLabel = new Label("—");
     nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
     colorIndicator = new Rectangle(COLOR_BOX_SIZE, COLOR_BOX_SIZE);
