@@ -1,3 +1,14 @@
+error id: file://<WORKSPACE>/src/test/java/domain/PlayerTest.java:_empty_/Player#addVictoryPointDevCard#
+file://<WORKSPACE>/src/test/java/domain/PlayerTest.java
+empty definition using pc, found symbol in pc: _empty_/Player#addVictoryPointDevCard#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 7179
+uri: file://<WORKSPACE>/src/test/java/domain/PlayerTest.java
+text:
+```scala
 package domain;
 
 import board.Edge;
@@ -237,7 +248,7 @@ class PlayerTest {
   @Test
   void shouldHaveFiveVp_whenHoldingFiveVictoryPointDevCards() {
     for (int i = 0; i < 5; i++) {
-      player.addVictoryPointDevCard();
+      player.addVictoryPoi@@ntDevCard();
     }
     assertEquals(5, player.getVictoryPoints());
   }
@@ -484,3 +495,10 @@ class PlayerTest {
     }
   }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/Player#addVictoryPointDevCard#

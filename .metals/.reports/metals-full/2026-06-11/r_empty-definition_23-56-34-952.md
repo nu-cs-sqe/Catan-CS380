@@ -1,3 +1,14 @@
+error id: file://<WORKSPACE>/src/test/java/domain/PlayerTest.java:_empty_/Test#
+file://<WORKSPACE>/src/test/java/domain/PlayerTest.java
+empty definition using pc, found symbol in pc: _empty_/Test#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 7051
+uri: file://<WORKSPACE>/src/test/java/domain/PlayerTest.java
+text:
+```scala
 package domain;
 
 import board.Edge;
@@ -234,7 +245,7 @@ class PlayerTest {
   }
 
   // BVA TC30
-  @Test
+  @T@@est
   void shouldHaveFiveVp_whenHoldingFiveVictoryPointDevCards() {
     for (int i = 0; i < 5; i++) {
       player.addVictoryPointDevCard();
@@ -484,3 +495,10 @@ class PlayerTest {
     }
   }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/Test#

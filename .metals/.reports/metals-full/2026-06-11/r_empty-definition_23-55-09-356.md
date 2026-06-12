@@ -1,3 +1,14 @@
+error id: file://<WORKSPACE>/src/main/java/domain/Player.java:_empty_/Edge#
+file://<WORKSPACE>/src/main/java/domain/Player.java
+empty definition using pc, found symbol in pc: _empty_/Edge#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 762
+uri: file://<WORKSPACE>/src/main/java/domain/Player.java
+text:
+```scala
 package domain;
 
 import board.Edge;
@@ -16,12 +27,14 @@ public final class Player {
   private static final int STARTING_ROADS = 15;
   private static final int DISCARD_THRESHOLD = 7;
   private static final int WIN_THRESHOLD = 10;
+  private static final int LONGEST_ROAD_VP = 2;
+  private static final int LARGEST_ARMY_VP = 2;
 
   private final String name;
   private final PlayerColor color;
   private final Map<Resource, Integer> resources;
   private final List<Settlement> settlements;
-  private final List<Edge> roads;
+  private final List<E@@dge> roads;
   private final List<DevelopmentCard> developmentCards;
   private int victoryPointDevCards;
   private int knightsPlayed;
@@ -44,6 +57,8 @@ public final class Player {
     this.developmentCards = new ArrayList<>(other.developmentCards);
     this.victoryPointDevCards = other.victoryPointDevCards;
     this.knightsPlayed = other.knightsPlayed;
+    this.hasLongestRoad = other.hasLongestRoad;
+    this.hasLargestArmy = other.hasLargestArmy;
   }
 
   public String getName() {
@@ -57,6 +72,12 @@ public final class Player {
   public int getVictoryPoints() {
     int vp = settlements.stream().mapToInt(Settlement::getVictoryPoints).sum()
         + victoryPointDevCards;
+    if (hasLongestRoad) {
+      vp += LONGEST_ROAD_VP;
+    }
+    if (hasLargestArmy) {
+      vp += LARGEST_ARMY_VP;
+    }
     return vp;
   }
 
@@ -120,6 +141,18 @@ public final class Player {
     }
     roads.add(e);
     e.setOwner(this);
+  }
+
+  public void awardLongestRoad() {
+    hasLongestRoad = true;
+  }
+
+  public void revokeLongestRoad() {
+    hasLongestRoad = false;
+  }
+
+  public void awardLargestArmy() {
+    hasLargestArmy = true;
   }
 
   public void addVictoryPointDevCard() {
@@ -212,3 +245,10 @@ public final class Player {
     return hand;
   }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: _empty_/Edge#
