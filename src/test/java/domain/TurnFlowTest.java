@@ -453,7 +453,33 @@ public class TurnFlowTest {
                 players.get(0).getRemainingRoads());
     }
 
-    
+    // TC26 – ROAD_BUILDING: player has 0 roads remaining; throws
+    @Test
+    public void testRoadBuildingWith0RoadsThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        players.get(0).addDevelopmentCard(
+                DevelopmentCard.ROAD_BUILDING);
+
+        // Place all 15 roads
+        int edgeIndex = 0;
+        for (Edge edge : board.getEdges()) {
+            if (edgeIndex >= 15) {
+                break;
+            }
+            players.get(0).placeRoad(edge);
+            edgeIndex++;
+        }
+
+        Edge edge1 = board.getEdge("-3,-5|-2,-4");
+        Edge edge2 = board.getEdge("-2,-4|-1,-5");
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.playRoadBuildingCard(players.get(0),
+                        edge1, edge2));
+    }
 
 
 
