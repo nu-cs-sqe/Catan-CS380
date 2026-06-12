@@ -2,11 +2,13 @@ package view;
 
 import board.Board;
 import board.Edge;
+import board.Harbor;
 import board.Tile;
 import board.TileType;
 import board.Vertex;
 import domain.Player;
 import domain.PlayerColor;
+import domain.Resource;
 import javafx.scene.Cursor;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -39,6 +41,9 @@ public class BoardView extends Pane {
   private static final int HIGH_PROB_TOKEN_B = 8;
   private static final double VERTEX_ACTIVE_STROKE_WIDTH = 2.0;
   private static final double VERTEX_HOVER_STROKE_WIDTH = 3.0;
+  private static final double HARBOR_STROKE = 5.0;
+  private static final double HARBOR_TEXT_HALF_W = 8.0;
+  private static final double HARBOR_TEXT_HALF_H = 4.0;
   private static final int HEX_Q_SCALE = 2;
   private static final int HEX_R_SCALE = -3;
   private static final int[][] CORNER_OFFSETS = {
@@ -70,6 +75,7 @@ public class BoardView extends Pane {
   public void refresh(Board board) {
     getChildren().clear();
     drawTiles(board);
+    drawHarbors(board);
     drawEdges(board);
     drawVertices(board);
   }
@@ -107,6 +113,45 @@ public class BoardView extends Pane {
     text.setFill(highProbability ? Color.RED : Color.BLACK);
     text.setStyle("-fx-font-weight: bold;");
     getChildren().add(text);
+  }
+
+  private void drawHarbors(Board board) {
+    for (Harbor harbor : board.getHarbors()) {
+      drawHarbor(harbor);
+    }
+  }
+
+  private void drawHarbor(Harbor harbor) {
+    double[] p1 = vertexPixelCoords(harbor.getVertex1Id());
+    double[] p2 = vertexPixelCoords(harbor.getVertex2Id());
+    Line pier = new Line(p1[0], p1[1], p2[0], p2[1]);
+    pier.setStroke(harborColor(harbor.getHarborType()));
+    pier.setStrokeWidth(HARBOR_STROKE);
+    pier.setStrokeLineCap(StrokeLineCap.ROUND);
+    getChildren().add(pier);
+    double mx = (p1[0] + p2[0]) / 2;
+    double my = (p1[1] + p2[1]) / 2;
+    Text label = new Text(mx - HARBOR_TEXT_HALF_W, my + HARBOR_TEXT_HALF_H, harborLabel(harbor));
+    label.setStyle("-fx-font-size: 9px; -fx-font-weight: bold;");
+    getChildren().add(label);
+  }
+
+  private static String harborLabel(Harbor harbor) {
+    if (harbor.getHarborType() == Resource.GENERIC) {
+      return "3:1";
+    }
+    return "2:1\n" + harbor.getHarborType().name();
+  }
+
+  private static Color harborColor(Resource resource) {
+    switch (resource) {
+      case WOOD: return Color.web("#228B22");
+      case BRICK: return Color.FIREBRICK;
+      case SHEEP: return Color.LAWNGREEN;
+      case WHEAT: return Color.GOLDENROD;
+      case ORE: return Color.SLATEGRAY;
+      default: return Color.WHITE;
+    }
   }
 
   private void drawEdges(Board board) {
