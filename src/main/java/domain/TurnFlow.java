@@ -146,6 +146,26 @@ public final class TurnFlow {
         return players.get(playerIndex).discardOnSevenCount();
     }
 
+    public void discard(Player player, Map<Resource, Integer> chosen) {
+        int required = player.discardOnSevenCount();
+        int total = 0;
+        for (Map.Entry<Resource, Integer> entry : chosen.entrySet()) {
+            if (player.getResourceCount(entry.getKey()) < entry.getValue()) {
+                throw new IllegalArgumentException(
+                        "Cannot discard resources not held");
+            }
+            total += entry.getValue();
+        }
+        if (total != required) {
+            throw new IllegalArgumentException(
+                    "Must discard exactly " + required + " cards");
+        }
+        for (Map.Entry<Resource, Integer> entry : chosen.entrySet()) {
+            player.removeResource(entry.getKey(), entry.getValue());
+            bank.returnResource(entry.getKey(), entry.getValue());
+        }
+    }
+
     public void moveRobber(Robber robber, Tile targetTile) {
         Tile currentTile = robber.getTile();
         if (currentTile != null

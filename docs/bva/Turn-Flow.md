@@ -454,13 +454,13 @@ Manages everything that happens during a player's turn: rolling dice, resource d
   returned to the bank
 - **BVA note**: Boundary between the exact required count (valid) and any other
   count; the discard executes the count from `getDiscardCount`
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC65 – Discarding the wrong number of cards throws
 - **State of the system**: Player must discard 4 but supplies a set summing to 3
 - **Expected output**: Throws `IllegalArgumentException`; nothing is removed
 - **BVA note**: Boundary between the required count (valid) and one below (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC66 – stealCandidates lists players with a building on the robber's tile
 - **State of the system**: Robber on a tile; one opponent has a settlement on a

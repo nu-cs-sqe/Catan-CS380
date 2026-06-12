@@ -9,6 +9,7 @@ import board.TileType;
 import board.Vertex;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
@@ -142,6 +143,42 @@ public class TurnFlowTest {
         }
 
         Assertions.assertEquals(4, turnFlow.getDiscardCount(0));
+    }
+
+    // TC64 – Discarding the required number of cards succeeds
+    @Test
+    public void testDiscardRequiredCountSucceeds() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+
+        for (int i = 0; i < 8; i++) {
+            players.get(0).addResource(Resource.BRICK, 1);
+        }
+        int bankBefore = bank.getStock(Resource.BRICK);
+
+        turnFlow.discard(players.get(0), Map.of(Resource.BRICK, 4));
+
+        Assertions.assertEquals(4,
+                players.get(0).getResourceCount(Resource.BRICK));
+        Assertions.assertEquals(bankBefore + 4,
+                bank.getStock(Resource.BRICK));
+    }
+
+    // TC65 – Discarding the wrong number of cards throws
+    @Test
+    public void testDiscardWrongCountThrows() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+
+        for (int i = 0; i < 8; i++) {
+            players.get(0).addResource(Resource.BRICK, 1);
+        }
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.discard(players.get(0),
+                        Map.of(Resource.BRICK, 3)));
     }
 
     // TC9 – Robber must move to a different tile
