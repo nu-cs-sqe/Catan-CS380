@@ -306,6 +306,28 @@ public class TurnFlowTest {
                         DevelopmentCard.KNIGHT));
     }
 
+    // TC18 – Pending dev card moves to player hand after endTurn
+    @Test
+    public void testPendingCardMovesToHandAfterEndTurn() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addResource(Resource.ORE, 1);
+        players.get(0).addResource(Resource.WHEAT, 1);
+        players.get(0).addResource(Resource.SHEEP, 1);
+
+        turnFlow.buyDevelopmentCard(players.get(0), bank);
+        Assertions.assertTrue(
+                players.get(0).getDevelopmentCards().isEmpty());
+
+        turnFlow.endTurn(players.get(0));
+
+        Assertions.assertFalse(
+                players.get(0).getDevelopmentCards().isEmpty());
+        Assertions.assertEquals(0, turnFlow.getPendingCardCount());
+    }
+
 
 
     private Bank createBank() {

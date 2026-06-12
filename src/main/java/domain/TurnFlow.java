@@ -193,5 +193,10 @@ public final class TurnFlow {
         }
     }
 
+    public void endTurn(Player player) {
+        player.addDevelopmentCards(pendingCards);
+        pendingCards.clear();
+    }
+
 
 }
