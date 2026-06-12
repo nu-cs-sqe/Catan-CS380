@@ -433,3 +433,13 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **BVA note**: Boundary between main-phase road (requires cost) and setup road
   (free, still connected)
 - **Implemented**: [x]
+
+### TC63 – Setup resources derived from the settlement's adjacent tiles
+- **State of the system**: Settlement on a vertex bordering two FIELDS and one
+  HILLS tile; bank has stock
+- **Expected output**: Player gains 2 WHEAT and 1 BRICK (one per adjacent tile),
+  drawn from the bank
+- **BVA note**: Boundary between a coastal vertex (1 tile, 1 resource) and an
+  interior vertex (up to 3 tiles); resources derive from the board, not an
+  injected list
+- **Implemented**: [ ]

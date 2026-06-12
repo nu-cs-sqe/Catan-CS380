@@ -2,7 +2,16 @@
 
 ## Method under test: `Game` constructor / setup methods
 
-The setup phase initializes the game with 3–4 players, determines turn order via dice rolls, and executes two rounds of settlement and road placement.
+The setup phase initializes the game with 3–4 players, determines turn order via dice rolls, and runs two rounds of settlement and road placement.
+
+Setup placement is **per-player and position-driven** (Option A). For the
+current setup player the caller supplies a chosen board `Vertex` and an incident
+`Edge`; `Game.placeSetupSettlement(vertex, road, board, bank)` delegates to the
+validated `TurnFlow.buildSetupSettlement` / `buildSetupRoad` primitives (distance
+rule + connectivity, free of cost) and, in round two only, grants one resource
+per tile adjacent to the new settlement (drawn from the `Bank`). The cursor walks
+`turnOrder` in round one and the reverse order in round two; `getCurrentSetupPlayer`
+exposes whose placement is next and `isSetupComplete` reports when both rounds are done.
 
 ---
 
@@ -79,13 +88,34 @@ The setup phase initializes the game with 3–4 players, determines turn order v
 - **Implemented**: [x]
 
 ### TC13 – Players receive resources only from second settlement
-- **State of the system**: Game with stubbed board; player's second settlement borders ore and brick
-- **Expected output**: Player has 1 ore and 1 brick; no resources from first settlement
-- **BVA note**: Boundary between 0 resource grants (first settlement) and 1 per adjacent hex (second settlement)
+- **State of the system**: Real board (no-op shuffler); each player's round-one
+  settlement grants nothing; round-two settlements border known single-resource
+  tiles (pasture/forest/mountains)
+- **Expected output**: After round one every player has 0 resources; after round
+  two each player holds exactly the resource derived from the tiles adjacent to
+  their second settlement
+- **BVA note**: Boundary between 0 resource grants (first settlement) and 1 per
+  adjacent hex (second settlement); resources are now derived from the board, not injected
 - **Implemented**: [x]
 
 ### TC14 – Starting player begins the main game after setup
-- **State of the system**: Game after full setup phase complete
-- **Expected output**: `getCurrentPlayerIndex()` is the player who rolled highest
-- **BVA note**: The starting player (last to place in round two) takes the first turn
+- **State of the system**: Full setup driven through `placeSetupSettlement`
+- **Expected output**: `isSetupComplete()` is true and `getCurrentPlayerIndex()`
+  is the player who rolled highest
+- **BVA note**: The starting player (first in turn order) takes the first turn
+- **Implemented**: [x]
+
+### TC15 – Placing a setup settlement after setup is complete throws
+- **State of the system**: Both setup rounds finished (`isSetupComplete()` true)
+- **Expected output**: `placeSetupSettlement` throws `IllegalStateException`
+- **BVA note**: Boundary between the last legal placement (round two, last player)
+  and any placement beyond it
+- **Implemented**: [x]
+
+### TC16 – Setup cursor follows turn order, then reverses for round two
+- **State of the system**: 3 players, turn order [1, 2, 0]
+- **Expected output**: `getCurrentSetupPlayer()` yields players 1, 2, 0 across
+  round one and 0, 2, 1 across round two
+- **BVA note**: Boundary between round one (clockwise) and round two
+  (counterclockwise), and the round-one → round-two transition
 - **Implemented**: [x]
