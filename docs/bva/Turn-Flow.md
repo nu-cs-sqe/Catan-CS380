@@ -387,4 +387,4 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has placed all 15 roads
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 remaining (blocked) and 1+ (allowed)
-- **Implemented**: [ ]
+- **Implemented**: [x]

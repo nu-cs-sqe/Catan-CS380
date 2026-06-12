@@ -1033,6 +1033,31 @@ public class TurnFlowTest {
                 () -> turnFlow.buildRoad(players.get(0), edge, board));
     }
 
+    // TC57 – Cannot build road with 0 pieces remaining
+    @Test
+    public void testCannotBuildRoadWith0Remaining() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        int edgeIndex = 0;
+        for (Edge edge : board.getEdges()) {
+            if (edgeIndex >= 15) {
+                break;
+            }
+            players.get(0).placeRoad(edge);
+            edgeIndex++;
+        }
+
+        Edge edge = board.getEdge("-3,-5|-2,-4");
+
+        players.get(0).addResource(Resource.WOOD, 1);
+        players.get(0).addResource(Resource.BRICK, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildRoad(players.get(0), edge, board));
+    }
+
 
 
     private void giveSettlementCost(Player player) {
