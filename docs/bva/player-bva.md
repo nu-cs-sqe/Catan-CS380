@@ -101,3 +101,37 @@
 |------|------------------------------|--------------------------------------------------|--------------|
 | TC37 | 0 knights played, play one   | knights = 1                                      | yes           |
 | TC38 | 2 knights played, play one   | knights = 3 (Largest Army eligibility boundary)  | yes           |
+
+
+### Method under test: `getDevelopmentCards()`
+
+|      | System under test                              | Expected output                                      | Implemented? |
+|------|------------------------------------------------|------------------------------------------------------|--------------|
+| TC44 | freshly constructed player                     | empty list (size 0, lower boundary)                  | no           |
+| TC45 | hand holds [KNIGHT, MONOPOLY]                  | list = [KNIGHT, MONOPOLY] (order preserved)          | no           |
+| TC46 | mutate the returned list                       | player's internal list unchanged (defensive copy)    | no           |
+
+
+### Method under test: `setDevelopmentCards(List<DevelopmentCard> cards)`
+
+|      | System under test                              | Expected output                                      | Implemented? |
+|------|------------------------------------------------|------------------------------------------------------|--------------|
+| TC47 | cards = [KNIGHT]                               | hand = [KNIGHT] (replaces previous contents)         | no           |
+| TC48 | cards = [] (empty)                             | hand = [] (boundary lower-valid)                     | no           |
+| TC49 | cards = null                                   | NullPointerException                                 | no           |
+| TC50 | cards contains a null element                  | NullPointerException                                 | no           |
+| TC51 | existing hand [KNIGHT], set [MONOPOLY]         | hand = [MONOPOLY] (old contents discarded, no merge) | no           |
+| TC52 | mutate the source list after setting           | player's internal list unchanged (defensive copy)    | no           |
+
+
+### Method under test: `addDevelopmentCards(List<DevelopmentCard> cards)` (concatenate temporary turn list)
+
+|      | System under test                              | Expected output                                      | Implemented? |
+|------|------------------------------------------------|------------------------------------------------------|--------------|
+| TC53 | empty hand, add [KNIGHT, ROAD_BUILDING]        | hand = [KNIGHT, ROAD_BUILDING] (appended)            | no           |
+| TC54 | hand [KNIGHT], add [MONOPOLY]                  | hand = [KNIGHT, MONOPOLY] (size 2, order preserved)  | no           |
+| TC55 | hand [KNIGHT], add [] (empty)                  | hand = [KNIGHT] (no change, boundary lower-valid)    | no           |
+| TC56 | add a list already containing duplicates       | duplicates retained (e.g. [KNIGHT, KNIGHT])          | no           |
+| TC57 | cards = null                                   | NullPointerException                                 | no           |
+| TC58 | cards contains a null element                  | NullPointerException                                 | no           |
+| TC59 | mutate the source list after adding            | player's internal list unchanged (defensive copy)    | no           |
