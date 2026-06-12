@@ -224,95 +224,33 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 
 ---
 
-## Largest Army
-
-### TC34 – No largest army with fewer than 3 knights
-- **State of the system**: All players have 2 or fewer knights
-- **Expected output**: No player holds largest army
-- **BVA note**: Boundary between 2 knights (not enough) and 3 (minimum)
-- **Implemented**: [ ]
-
-### TC35 – First player to play 3 knights gets largest army
-- **State of the system**: Player plays 3rd knight; no current holder
-- **Expected output**: Player awarded largest army
-- **BVA note**: 3 is the minimum threshold
-- **Implemented**: [ ]
-
-### TC36 – Player with strictly more knights takes largest army
-- **State of the system**: Holder has 3; challenger plays 4th
-- **Expected output**: Challenger takes largest army
-- **BVA note**: Boundary between tied (no change) and strictly more (takes)
-- **Implemented**: [ ]
-
-### TC37 – Tied knight count does not change holder
-- **State of the system**: Holder has 3; challenger also reaches 3
-- **Expected output**: Holder retains largest army
-- **BVA note**: Boundary between equal (no change) and strictly more (takes)
-- **Implemented**: [ ]
-
----
-
-## Longest Road
-
-### TC38 – No longest road with fewer than 5 segments
-- **State of the system**: All players have 4 or fewer continuous segments
-- **Expected output**: No player holds longest road
-- **BVA note**: Boundary between 4 (not enough) and 5 (minimum)
-- **Implemented**: [ ]
-
-### TC39 – First player to build 5 continuous roads gets longest road
-- **State of the system**: Player has 5 connected roads; no current holder
-- **Expected output**: Player awarded longest road
-- **BVA note**: 5 is the minimum threshold
-- **Implemented**: [ ]
-
-### TC40 – Player with strictly longer road takes longest road
-- **State of the system**: Holder has 5; challenger builds 6
-- **Expected output**: Challenger takes longest road
-- **BVA note**: Boundary between tied (no change) and strictly longer (takes)
-- **Implemented**: [ ]
-
-### TC41 – Tied road length does not change holder
-- **State of the system**: Holder has 5; challenger also reaches 5
-- **Expected output**: Holder retains longest road
-- **BVA note**: Boundary between equal (no change) and strictly longer (takes)
-- **Implemented**: [ ]
-
-### TC42 – Opponent settlement breaks road; recalculated
-- **State of the system**: Holder has 6 roads; opponent builds settlement in middle
-- **Expected output**: Road length recalculated; title revoked if below 5
-- **BVA note**: Boundary between unbroken (full length) and broken (reduced)
-- **Implemented**: [ ]
-
----
-
 ## Victory Points and Win Condition
 
-### TC43 – getVictoryPoints includes largest army bonus
+### TC34 – getVictoryPoints includes largest army bonus
 - **State of the system**: Player holds largest army
 - **Expected output**: VP includes +2 for largest army
 - **BVA note**: Boundary between holding bonus (+2) and not (no addition)
 - **Implemented**: [ ]
 
-### TC44 – getVictoryPoints includes longest road bonus
+### TC35 – getVictoryPoints includes longest road bonus
 - **State of the system**: Player holds longest road
 - **Expected output**: VP includes +2 for longest road
 - **BVA note**: Boundary between holding bonus (+2) and not (no addition)
 - **Implemented**: [ ]
 
-### TC45 – checkWin returns true at exactly 10 VP
+### TC36 – checkWin returns true at exactly 10 VP
 - **State of the system**: Current player has exactly 10 VP
 - **Expected output**: Game ends
 - **BVA note**: Boundary between 9 (continues) and 10 (ends)
 - **Implemented**: [ ]
 
-### TC46 – checkWin returns false at 9 VP
+### TC37 – checkWin returns false at 9 VP
 - **State of the system**: Current player has 9 VP
 - **Expected output**: Game continues
 - **BVA note**: Boundary between 9 (below threshold) and 10 (at threshold)
 - **Implemented**: [ ]
 
-### TC47 – checkWin called after every VP-changing action
+### TC38 – checkWin called after every VP-changing action
 - **State of the system**: Player builds settlement reaching 10 VP
 - **Expected output**: Game ends immediately, not at end of turn
 - **BVA note**: Win check is per-action, not per-turn
@@ -322,31 +260,31 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 
 ## End Turn
 
-### TC48 – endTurn resets devCardPlayedThisTurn to false
+### TC39 – endTurn resets devCardPlayedThisTurn to false
 - **State of the system**: Player played dev card this turn; endTurn called
 - **Expected output**: devCardPlayedThisTurn reset to false
 - **BVA note**: Boundary between mid-turn (blocked) and post-endTurn (reset)
 - **Implemented**: [ ]
 
-### TC49 – endTurn flushes pending dev cards to player hand
+### TC40 – endTurn flushes pending dev cards to player hand
 - **State of the system**: Player bought dev card this turn; endTurn called
 - **Expected output**: Pending list empty; card in player hand
 - **BVA note**: Boundary between mid-turn (locked) and end-of-turn (promoted)
 - **Implemented**: [ ]
 
-### TC50 – endTurn advances to next player
+### TC41 – endTurn advances to next player
 - **State of the system**: Current player is index 0 in turn order
 - **Expected output**: Current player becomes index 1
 - **BVA note**: Boundary between current and next in clockwise order
 - **Implemented**: [ ]
 
-### TC51 – endTurn wraps from last player to first
+### TC42 – endTurn wraps from last player to first
 - **State of the system**: Current player is last in turn order
 - **Expected output**: Current player wraps to first in turn order
 - **BVA note**: Boundary between last player (wraps) and others (increments)
 - **Implemented**: [ ]
 
-### TC52 – Cannot endTurn after game is over
+### TC43 – Cannot endTurn after game is over
 - **State of the system**: Game is over
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between active game (can end turn) and ended game (cannot)
@@ -356,37 +294,37 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 
 ## Building Settlements
 
-### TC53 – Build settlement with exact resources succeeds
+### TC44 – Build settlement with exact resources succeeds
 - **State of the system**: Player has 1 WOOD, 1 BRICK, 1 SHEEP, 1 WHEAT; valid vertex
 - **Expected output**: Settlement placed; resources deducted; checkWin called
 - **BVA note**: Boundary between insufficient resources (cannot build) and exact cost (can build)
 - **Implemented**: [ ]
 
-### TC54 – Build settlement with insufficient resources throws
+### TC45 – Build settlement with insufficient resources throws
 - **State of the system**: Player has 1 WOOD, 1 BRICK, 1 SHEEP, 0 WHEAT
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between exact cost (valid) and 1 short (invalid)
 - **Implemented**: [ ]
 
-### TC55 – Cannot build settlement on occupied vertex
+### TC46 – Cannot build settlement on occupied vertex
 - **State of the system**: Vertex already has a settlement
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between unoccupied (valid) and occupied (invalid)
 - **Implemented**: [ ]
 
-### TC56 – Cannot build settlement violating distance rule
+### TC47 – Cannot build settlement violating distance rule
 - **State of the system**: Adjacent vertex has a settlement
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between all neighbors empty (valid) and one neighbor occupied (invalid)
 - **Implemented**: [ ]
 
-### TC57 – Cannot build settlement without adjacent road
+### TC48 – Cannot build settlement without adjacent road
 - **State of the system**: Vertex has no adjacent road owned by player
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 adjacent roads (invalid) and 1+ (valid)
 - **Implemented**: [ ]
 
-### TC58 – Cannot build settlement with 0 pieces remaining
+### TC49 – Cannot build settlement with 0 pieces remaining
 - **State of the system**: Player has placed all 5 settlements (none upgraded to city)
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 remaining (blocked) and 1+ (allowed)
@@ -396,31 +334,31 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 
 ## Building Cities
 
-### TC59 – Upgrade settlement to city with exact resources succeeds
+### TC50 – Upgrade settlement to city with exact resources succeeds
 - **State of the system**: Player has 3 ORE, 2 WHEAT; valid vertex with player's settlement
 - **Expected output**: Settlement upgraded to city; resources deducted; checkWin called
 - **BVA note**: Boundary between insufficient resources (cannot upgrade) and exact cost (can upgrade)
 - **Implemented**: [ ]
 
-### TC60 – Upgrade settlement to city with insufficient resources throws
+### TC51 – Upgrade settlement to city with insufficient resources throws
 - **State of the system**: Player has 2 ORE, 2 WHEAT
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between exact cost (valid) and 1 short (invalid)
 - **Implemented**: [ ]
 
-### TC61 – Cannot upgrade vertex without player's settlement
+### TC52 – Cannot upgrade vertex without player's settlement
 - **State of the system**: Vertex has no settlement or has another player's settlement
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between player's settlement (valid) and no settlement (invalid)
 - **Implemented**: [ ]
 
-### TC62 – Cannot upgrade with 0 city pieces remaining
+### TC53 – Cannot upgrade with 0 city pieces remaining
 - **State of the system**: Player has placed all 4 cities
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 remaining (blocked) and 1+ (allowed)
 - **Implemented**: [ ]
 
-### TC63 – Upgrading city frees a settlement piece
+### TC54 – Upgrading city frees a settlement piece
 - **State of the system**: Player has 5 settlements, 0 remaining; upgrades one to city
 - **Expected output**: Player now has 1 remaining settlement piece
 - **BVA note**: Boundary between 0 settlement pieces (blocked from building) and 1 (freed by upgrade)
@@ -430,19 +368,19 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 
 ## Building Roads
 
-### TC64 – Build road with exact resources succeeds
+### TC55 – Build road with exact resources succeeds
 - **State of the system**: Player has 1 WOOD, 1 BRICK; valid edge adjacent to player's network
 - **Expected output**: Road placed; resources deducted; longest road updated; checkWin called
 - **BVA note**: Boundary between insufficient resources (cannot build) and exact cost (can build)
 - **Implemented**: [ ]
 
-### TC65 – Build road with insufficient resources throws
+### TC56 – Build road with insufficient resources throws
 - **State of the system**: Player has 1 WOOD, 0 BRICK
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between exact cost (valid) and 1 short (invalid)
 - **Implemented**: [ ]
 
-### TC66 – Cannot build road with 0 pieces remaining
+### TC57 – Cannot build road with 0 pieces remaining
 - **State of the system**: Player has placed all 15 roads
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 remaining (blocked) and 1+ (allowed)
