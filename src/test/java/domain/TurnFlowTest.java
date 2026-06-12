@@ -796,6 +796,28 @@ public class TurnFlowTest {
                 () -> turnFlow.buildSettlement(players.get(0), vertex));
     }
 
+    // TC47 – Cannot build settlement violating distance rule
+    @Test
+    public void testCannotBuildSettlementViolatingDistanceRule() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex vertex1 = board.getVertex("-3,1");
+        Vertex vertex2 = board.getVertex("-3,-1");
+
+        players.get(0).addResource(Resource.WOOD, 2);
+        players.get(0).addResource(Resource.BRICK, 2);
+        players.get(0).addResource(Resource.SHEEP, 2);
+        players.get(0).addResource(Resource.WHEAT, 2);
+
+        turnFlow.buildSettlement(players.get(0), vertex1, board);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildSettlement(players.get(0),
+                        vertex2, board));
+    }
+
     private void giveSettlementCost(Player player) {
         player.addResource(Resource.WOOD, 1);
         player.addResource(Resource.BRICK, 1);

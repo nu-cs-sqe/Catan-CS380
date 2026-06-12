@@ -307,13 +307,13 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 1 WOOD, 1 BRICK, 1 SHEEP, 0 WHEAT
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between exact cost (valid) and 1 short (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC46 – Cannot build settlement on occupied vertex
 - **State of the system**: Vertex already has a settlement
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between unoccupied (valid) and occupied (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC47 – Cannot build settlement violating distance rule
 - **State of the system**: Adjacent vertex has a settlement

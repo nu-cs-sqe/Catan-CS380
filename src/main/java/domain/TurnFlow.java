@@ -246,13 +246,38 @@ public final class TurnFlow {
     }
 
     public void buildSettlement(Player player, Vertex vertex) {
+        buildSettlement(player, vertex, null);
+    }
+
+    public void buildSettlement(Player player, Vertex vertex,
+                                Board board) {
         if (!player.hasResources(SETTLEMENT_COST)) {
             throw new IllegalStateException(
                     "Insufficient resources for settlement");
         }
+        if (board != null) {
+            checkDistanceRule(vertex, board);
+        }
         player.placeSettlement(vertex);
         payCost(player, SETTLEMENT_COST);
         checkForWinner();
+    }
+
+    private void checkDistanceRule(Vertex vertex, Board board) {
+        for (Edge edge : board.getEdges()) {
+            String[] verts = edge.getId().split("\\|");
+            if (verts[0].equals(vertex.getId())
+                    || verts[1].equals(vertex.getId())) {
+                String otherKey = verts[0].equals(vertex.getId())
+                        ? verts[1] : verts[0];
+                Vertex neighbor = board.getVertex(otherKey);
+                if (neighbor != null
+                        && neighbor.getSettlement() != null) {
+                    throw new IllegalStateException(
+                            "Violates distance rule");
+                }
+            }
+        }
     }
 
     private void payCost(Player player, Map<Resource, Integer> cost) {
