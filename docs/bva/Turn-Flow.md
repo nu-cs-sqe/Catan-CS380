@@ -242,7 +242,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Current player has exactly 10 VP
 - **Expected output**: Game ends
 - **BVA note**: Boundary between 9 (continues) and 10 (ends)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC37 – checkWin returns false at 9 VP
 - **State of the system**: Current player has 9 VP

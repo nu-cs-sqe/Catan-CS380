@@ -15,6 +15,7 @@ public final class TurnFlow {
     private static final int LONGEST_ROAD_VP = 2;
     private static final int MIN_KNIGHTS_FOR_ARMY = 3;
     private static final int MIN_ROAD_LENGTH = 5;
+    private static final int WIN_THRESHOLD = 10;
 
     private final List<Player> players;
     private final Bank bank;
@@ -263,5 +264,9 @@ public final class TurnFlow {
             vp += LONGEST_ROAD_VP;
         }
         return vp;
+    }
+
+    public boolean checkWin(int playerIndex) {
+        return getVictoryPoints(playerIndex) >= WIN_THRESHOLD;
     }
 }

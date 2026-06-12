@@ -616,6 +616,19 @@ public class TurnFlowTest {
         }
     }
 
+    // TC36 – checkWin returns true at exactly 10 VP
+    @Test
+    public void testCheckWinAt10VP() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        for (int i = 0; i < 10; i++) {
+            players.get(0).addVictoryPointDevCard();
+        }
+
+        Assertions.assertTrue(turnFlow.checkWin(0));
+    }
+
 
 
     private Tile findDesertTile(Board board) {
