@@ -319,13 +319,13 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Adjacent vertex has a settlement
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between all neighbors empty (valid) and one neighbor occupied (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC48 – Cannot build settlement without adjacent road
 - **State of the system**: Vertex has no adjacent road owned by player
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 adjacent roads (invalid) and 1+ (valid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC49 – Cannot build settlement with 0 pieces remaining
 - **State of the system**: Player has placed all 5 settlements (none upgraded to city)

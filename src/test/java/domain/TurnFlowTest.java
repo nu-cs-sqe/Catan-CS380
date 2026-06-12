@@ -806,6 +806,14 @@ public class TurnFlowTest {
         Vertex vertex1 = board.getVertex("-3,1");
         Vertex vertex2 = board.getVertex("-3,-1");
 
+        // Give road adjacent to vertex1
+        Edge road1 = board.getEdge("-3,1|-2,2");
+        road1.setOwner(players.get(0));
+
+        // Give road adjacent to vertex2
+        Edge road2 = board.getEdge("-3,-1|-3,1");
+        road2.setOwner(players.get(0));
+
         players.get(0).addResource(Resource.WOOD, 2);
         players.get(0).addResource(Resource.BRICK, 2);
         players.get(0).addResource(Resource.SHEEP, 2);
@@ -816,6 +824,25 @@ public class TurnFlowTest {
         Assertions.assertThrows(IllegalStateException.class,
                 () -> turnFlow.buildSettlement(players.get(0),
                         vertex2, board));
+    }
+
+    // TC48 – Cannot build settlement without adjacent road
+    @Test
+    public void testCannotBuildSettlementWithoutAdjacentRoad() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex vertex = board.getVertex("-3,1");
+
+        players.get(0).addResource(Resource.WOOD, 1);
+        players.get(0).addResource(Resource.BRICK, 1);
+        players.get(0).addResource(Resource.SHEEP, 1);
+        players.get(0).addResource(Resource.WHEAT, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildSettlement(players.get(0),
+                        vertex, board));
     }
 
     private void giveSettlementCost(Player player) {

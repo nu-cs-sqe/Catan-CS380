@@ -257,10 +257,26 @@ public final class TurnFlow {
         }
         if (board != null) {
             checkDistanceRule(vertex, board);
+            checkAdjacentRoad(vertex, player, board);
         }
         player.placeSettlement(vertex);
         payCost(player, SETTLEMENT_COST);
         checkForWinner();
+    }
+
+    private void checkAdjacentRoad(Vertex vertex, Player player,
+                                   Board board) {
+        for (Edge edge : board.getEdges()) {
+            String[] verts = edge.getId().split("\\|");
+            if (verts[0].equals(vertex.getId())
+                    || verts[1].equals(vertex.getId())) {
+                if (player.equals(edge.getOwner())) {
+                    return;
+                }
+            }
+        }
+        throw new IllegalStateException(
+                "No adjacent road owned by player");
     }
 
     private void checkDistanceRule(Vertex vertex, Board board) {
