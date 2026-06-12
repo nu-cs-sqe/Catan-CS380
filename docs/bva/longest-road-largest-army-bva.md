@@ -69,3 +69,13 @@ Determines which player holds the Longest Road and Largest Army special cards (2
 - **Expected output**: Player 0's longest road is recalculated as the longer of the two halves
 - **BVA note**: Boundary between unbroken road (full length) and broken road (split)
 - **Implemented**: [x]
+
+### TC11 – Incumbent keeps Longest Road on a tie regardless of player index
+- **State of the system**: Player 2 (a higher index) holds Longest Road with 5
+  roads; player 0 (a lower index) then also reaches 5 roads
+- **Expected output**: Player 2 keeps Longest Road; the title does not jump to the
+  lower-index player on a tie
+- **BVA note**: Exposes the index-order bug — the recompute must seed the current
+  holder's length so only a strictly longer road takes the title (TC8 only covered
+  a lower-index incumbent, which masks this)
+- **Implemented**: [ ]

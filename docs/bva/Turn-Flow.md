@@ -504,3 +504,71 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **BVA note**: Boundary between the pending robber (blocks actions) and the
   resolved robber (unblocks)
 - **Implemented**: [x]
+
+---
+
+## Bank-Aware Production and Trade Corrections
+
+### TC72 – Production draws the distributed resources from the bank
+- **State of the system**: Bank has full stock; a player has a settlement on a
+  token-5 FOREST tile; 5 is rolled
+- **Expected output**: Player gains 1 WOOD **and** the bank's WOOD stock drops by 1
+- **BVA note**: Production must come out of the finite bank supply, not be created
+  from nothing
+- **Implemented**: [ ]
+
+### TC73 – Production is withheld when the bank cannot supply every claimant
+- **State of the system**: Two players each have a settlement producing the same
+  resource on the rolled token, but the bank holds only 1 of that resource
+- **Expected output**: Neither player receives that resource (Catan rule: if the
+  bank cannot pay all claimants of a single resource type, none is paid)
+- **BVA note**: Boundary between enough stock for all (everyone paid) and one short
+  (no one paid)
+- **Implemented**: [ ]
+
+### TC74 – Maritime trade rate is bounded by the player's harbors (default 4:1)
+- **State of the system**: Player owns no harbor and attempts a 3:1 (or 2:1) trade
+- **Expected output**: Throws `IllegalArgumentException`; only a 4:1 trade is allowed
+- **BVA note**: Boundary between the best rate the player has earned (valid) and a
+  better rate they have not (invalid); harbor ownership, not a caller-supplied
+  number, sets the rate
+- **Implemented**: [ ]
+
+### TC75 – Owning a 2:1 harbor enables that harbor's rate
+- **State of the system**: Player owns a settlement on a 2:1 ORE harbor and gives 2 ORE
+- **Expected output**: Trade succeeds at 2:1 for ORE
+- **BVA note**: Boundary between a resource the player has a 2:1 harbor for (2:1 valid)
+  and one they do not (still 4:1)
+- **Implemented**: [ ]
+
+### TC76 – Buying a dev card with insufficient resources changes nothing
+- **State of the system**: Player has 1 ORE and 1 WHEAT but 0 SHEEP
+- **Expected output**: Throws, and the player still holds 1 ORE and 1 WHEAT
+  (no partial deduction)
+- **BVA note**: Boundary between affordable (atomic purchase) and unaffordable
+  (atomic rollback — no resource is consumed)
+- **Implemented**: [ ]
+
+### TC77 – A road may not extend through an opponent's settlement
+- **State of the system**: The connecting vertex between the player's road and the
+  new edge holds an opponent's settlement
+- **Expected output**: Throws `IllegalStateException`
+- **BVA note**: Boundary between an open/own-occupied vertex (road continues) and a
+  vertex blocked by an opponent's building (road cannot pass through)
+- **Implemented**: [ ]
+
+### TC78 – Moving the robber to a tile not on the board throws
+- **State of the system**: `moveRobber` called with a tile whose coordinates are
+  not a board hex
+- **Expected output**: Throws `IllegalArgumentException`
+- **BVA note**: Boundary between a real board tile (valid target) and an off-board
+  tile (invalid)
+- **Implemented**: [ ]
+
+### TC79 – A player wins only on their own turn
+- **State of the system**: It is player 0's turn; player 1 is pushed to 10 VP by an
+  action resolved during player 0's turn (e.g., longest road swing)
+- **Expected output**: The game does not end until it becomes player 1's turn
+- **BVA note**: Boundary between reaching 10 VP off-turn (not yet a win) and on your
+  own turn (win)
+- **Implemented**: [ ]

@@ -130,6 +130,14 @@ It is the authoritative source for resource distribution, resource returns, deve
 - **BVA note**: Negative boundary
 - **Implemented**: [x]
 
+### TC37 – Returning more than was taken cannot exceed the 19-per-resource supply
+- **State of the system**: Stock = 19 (full), return 1
+- **Expected output**: Stock stays capped at 19 (or the return is rejected); the
+  total supply of a resource can never exceed its fixed 19
+- **BVA note**: Upper boundary — a return that would push stock past the fixed
+  starting supply is invalid
+- **Implemented**: [ ]
+
 ---
 
 ## Method under test: `drawDevelopmentCard()`

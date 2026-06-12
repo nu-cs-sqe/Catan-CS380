@@ -119,3 +119,13 @@ exposes whose placement is next and `isSetupComplete` reports when both rounds a
 - **BVA note**: Boundary between round one (clockwise) and round two
   (counterclockwise), and the round-one → round-two transition
 - **Implemented**: [x]
+
+### TC17 – getCurrentPlayerIndex tracks the active turn, not a fixed start
+- **State of the system**: Setup complete; the starting player takes the first
+  turn, then that turn ends
+- **Expected output**: `getCurrentPlayerIndex()` advances to the next player in
+  turn order rather than always returning the starting player
+- **BVA note**: There must be a single source of truth for the current player;
+  `Game.getCurrentPlayerIndex` must agree with turn progression (it currently
+  returns `firstPlayerIndex` unconditionally)
+- **Implemented**: [ ]
