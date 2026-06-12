@@ -37,6 +37,7 @@ public final class TurnFlow {
     private int longestRoadHolder;
     private boolean devCardPlayedThisTurn;
     private boolean gameOver;
+    private int currentPlayerIndex;
 
     public TurnFlow(List<Player> players) {
         this(players, null);
@@ -50,6 +51,7 @@ public final class TurnFlow {
         this.pendingCards = new ArrayList<>();
         this.devCardPlayedThisTurn = false;
         this.gameOver = false;
+        this.currentPlayerIndex = 0;
     }
 
     public void rollForProduction(Board board, Robber robber,
@@ -232,6 +234,11 @@ public final class TurnFlow {
         player.addDevelopmentCards(pendingCards);
         pendingCards.clear();
         devCardPlayedThisTurn = false;
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    }
+
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
     }
 
     public void buildSettlement(Player player, Vertex vertex) {
