@@ -230,6 +230,36 @@ public class TurnFlowTest {
                         players.get(0)));
     }
 
+    // TC14 – Buy dev card with exact resources enters pending list
+    @Test
+    public void testBuyDevCardWithExactResources() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addResource(Resource.ORE, 1);
+        players.get(0).addResource(Resource.WHEAT, 1);
+        players.get(0).addResource(Resource.SHEEP, 1);
+
+        turnFlow.buyDevelopmentCard(players.get(0), bank);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.ORE));
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WHEAT));
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.SHEEP));
+        Assertions.assertEquals(1, turnFlow.getPendingCardCount());
+        Assertions.assertTrue(
+                players.get(0).getDevelopmentCards().isEmpty());
+    }
+
+    private Bank createBank() {
+        return new Bank(cards -> { });
+    }
+
+
+
     private Tile findDesertTile(Board board) {
         for (Tile tile : board.getTiles()) {
             if (tile.getTileType() == TileType.DESERT) {

@@ -15,6 +15,7 @@ public final class TurnFlow {
     private static final int LONGEST_ROAD_VP = 2;
     private static final int MIN_KNIGHTS_FOR_ARMY = 3;
     private static final int MIN_ROAD_LENGTH = 5;
+    private final List<DevelopmentCard> pendingCards;
 
     private final List<Player> players;
     private int largestArmyHolder;
@@ -24,6 +25,7 @@ public final class TurnFlow {
         this.players = new ArrayList<>(players);
         this.largestArmyHolder = -1;
         this.longestRoadHolder = -1;
+        this.pendingCards = new ArrayList<>();
     }
 
     public void updateLongestRoad(Board board) {
@@ -169,6 +171,18 @@ public final class TurnFlow {
                 return;
             }
         }
+    }
+
+    public void buyDevelopmentCard(Player player, Bank bank) {
+        player.removeResource(Resource.ORE, 1);
+        player.removeResource(Resource.WHEAT, 1);
+        player.removeResource(Resource.SHEEP, 1);
+        DevelopmentCard card = bank.drawDevelopmentCard();
+        pendingCards.add(card);
+    }
+
+    public int getPendingCardCount() {
+        return pendingCards.size();
     }
 
 
