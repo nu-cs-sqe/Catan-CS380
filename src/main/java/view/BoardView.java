@@ -14,6 +14,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -78,8 +83,22 @@ public class BoardView extends Pane {
   public BoardView() {
     setPrefSize(PREF_WIDTH, PREF_HEIGHT);
     setMaxSize(PREF_WIDTH, PREF_HEIGHT);
-    setStyle("-fx-background-color: #b0d4f1;");
+    initBackground();
     loadTileImages();
+  }
+
+  private void initBackground() {
+    URL url = getClass().getResource("/images/WATER.png");
+    if (url != null) {
+      Image img = new Image(url.toExternalForm());
+      BackgroundSize size = new BackgroundSize(1.0, 1.0, true, true, false, false);
+      BackgroundImage bgImg = new BackgroundImage(img,
+          BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+          BackgroundPosition.DEFAULT, size);
+      setBackground(new Background(bgImg));
+    } else {
+      setStyle("-fx-background-color: #b0d4f1;");
+    }
   }
 
   private void loadTileImages() {
