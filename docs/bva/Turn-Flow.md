@@ -254,7 +254,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player builds settlement reaching 10 VP
 - **Expected output**: Game ends immediately, not at end of turn
 - **BVA note**: Win check is per-action, not per-turn
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 

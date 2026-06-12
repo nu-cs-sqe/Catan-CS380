@@ -23,6 +23,7 @@ public final class TurnFlow {
     private int largestArmyHolder;
     private int longestRoadHolder;
     private boolean devCardPlayedThisTurn;
+    private boolean gameOver;
 
     public TurnFlow(List<Player> players) {
         this(players, null);
@@ -35,6 +36,7 @@ public final class TurnFlow {
         this.longestRoadHolder = -1;
         this.pendingCards = new ArrayList<>();
         this.devCardPlayedThisTurn = false;
+        this.gameOver = false;
     }
 
     public void rollForProduction(Board board, Robber robber,
@@ -231,6 +233,7 @@ public final class TurnFlow {
             }
         }
         longestRoadHolder = newHolder;
+        checkForWinner();
     }
 
     public int getLongestRoadHolder() {
@@ -246,9 +249,23 @@ public final class TurnFlow {
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getKnightsPlayed() > maxKnights) {
                 largestArmyHolder = i;
+                break;
+            }
+        }
+        checkForWinner();
+    }
+
+    private void checkForWinner() {
+        for (int i = 0; i < players.size(); i++) {
+            if (checkWin(i)) {
+                gameOver = true;
                 return;
             }
         }
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 
     public int getLargestArmyHolder() {
