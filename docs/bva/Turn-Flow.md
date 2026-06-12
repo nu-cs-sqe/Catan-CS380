@@ -168,13 +168,13 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 2+ roads remaining; plays ROAD_BUILDING
 - **Expected output**: Both roads placed successfully
 - **BVA note**: Boundary between 1 road remaining (cannot place pair) and 2 (can)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC26 – ROAD_BUILDING with 0 roads remaining throws
 - **State of the system**: Player has 0 roads remaining
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 roads (blocked) and 1+ (can place)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC27 – YEAR_OF_PLENTY: player receives 2 resources from bank
 - **State of the system**: Player plays YEAR_OF_PLENTY requesting WOOD and ORE; bank has both

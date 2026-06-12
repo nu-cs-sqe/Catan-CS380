@@ -1,13 +1,14 @@
 package domain;
 
 import board.Board;
-import java.util.ArrayList;
-import java.util.List;
-
+import board.Edge;
 import board.Robber;
 import board.Tile;
 import board.TileType;
 import board.Vertex;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class TurnFlow {
 
@@ -229,6 +230,13 @@ public final class TurnFlow {
                 }
             }
         }
+    }
+
+    public void playRoadBuildingCard(Player player,
+                                     Edge edge1, Edge edge2) {
+        playDevelopmentCard(player, DevelopmentCard.ROAD_BUILDING);
+        player.placeRoad(edge1);
+        player.placeRoad(edge2);
     }
 
     public void endTurn(Player player) {

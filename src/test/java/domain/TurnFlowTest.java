@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 
 import board.Tile;
 import board.TileType;
+import board.Edge;
 
 public class TurnFlowTest {
 
@@ -432,6 +433,27 @@ public class TurnFlowTest {
                 () -> turnFlow.playMonopolyCard(players.get(0),
                         Resource.GENERIC));
     }
+
+    // TC25 – ROAD_BUILDING: places 2 free roads
+    @Test
+    public void testPlayRoadBuildingPlaces2Roads() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        players.get(0).addDevelopmentCard(
+                DevelopmentCard.ROAD_BUILDING);
+
+        Edge edge1 = board.getEdge("0,2|1,1");
+        Edge edge2 = board.getEdge("1,-1|1,1");
+
+        turnFlow.playRoadBuildingCard(players.get(0), edge1, edge2);
+
+        Assertions.assertEquals(13,
+                players.get(0).getRemainingRoads());
+    }
+
+    
 
 
 
