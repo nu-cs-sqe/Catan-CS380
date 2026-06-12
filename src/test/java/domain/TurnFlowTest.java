@@ -825,6 +825,32 @@ public class TurnFlowTest {
         }
     }
 
+    // TC79 – A player wins only on their own turn
+    @Test
+    public void testWinOnlyOnOwnTurn() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        for (int i = 0; i < 8; i++) {
+            players.get(1).addVictoryPointDevCard();
+        }
+        setEdgeOwner(board, "0,2|1,1", players.get(1));
+        setEdgeOwner(board, "1,-1|1,1", players.get(1));
+        setEdgeOwner(board, "0,-2|1,-1", players.get(1));
+        setEdgeOwner(board, "-1,-1|0,-2", players.get(1));
+        setEdgeOwner(board, "-1,-1|-1,1", players.get(1));
+
+        // Action resolved during player 0's turn pushes player 1 to 10 VP
+        turnFlow.updateLongestRoad(board);
+        Assertions.assertEquals(10, turnFlow.getVictoryPoints(1));
+        Assertions.assertFalse(turnFlow.isGameOver());
+
+        turnFlow.endTurn(players.get(0));
+
+        Assertions.assertTrue(turnFlow.isGameOver());
+    }
+
     // TC36 – checkWin returns true at exactly 10 VP
     @Test
     public void testCheckWinAt10VP() {

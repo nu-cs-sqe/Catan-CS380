@@ -367,6 +367,7 @@ public final class TurnFlow {
         pendingCards.clear();
         devCardPlayedThisTurn = false;
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        checkForWinner();
     }
 
     public int getCurrentPlayerIndex() {
@@ -570,11 +571,8 @@ public final class TurnFlow {
     }
 
     private void checkForWinner() {
-        for (int i = 0; i < players.size(); i++) {
-            if (checkWin(i)) {
-                gameOver = true;
-                return;
-            }
+        if (checkWin(currentPlayerIndex)) {
+            gameOver = true;
         }
     }
 

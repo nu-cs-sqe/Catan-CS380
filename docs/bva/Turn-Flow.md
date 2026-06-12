@@ -571,4 +571,4 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **Expected output**: The game does not end until it becomes player 1's turn
 - **BVA note**: Boundary between reaching 10 VP off-turn (not yet a win) and on your
   own turn (win)
-- **Implemented**: [ ]
+- **Implemented**: [x]
