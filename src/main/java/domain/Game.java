@@ -1,23 +1,25 @@
 package domain;
 
 
+import board.Board;
 import board.Edge;
 import board.Vertex;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public final class Game {
 
     private static final int MIN_PLAYERS = 3;
     private static final int MAX_PLAYERS = 4;
+    private static final int SETUP_ROUNDS = 2;
 
     private final List<Player> players;
     private final int firstPlayerIndex;
     private final int[] turnOrder;
-    private final AtomicInteger placementCounter = new AtomicInteger();
+    private int setupRound = 1;
+    private int setupIndex;
 
     public Game(List<Player> players) {
         this(players, new RandomDiceRoller());
@@ -82,37 +84,35 @@ public final class Game {
         return order;
     }
 
-    public void executeSetupRoundOne() {
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(turnOrder[i]);
-            Vertex v = new Vertex("setup-v" + placementCounter.getAndIncrement());
-            player.placeSettlement(v);
-            player.placeRoad(new Edge("setup-e" + placementCounter.getAndIncrement()));
+    public boolean isSetupComplete() {
+        return setupRound > SETUP_ROUNDS;
+    }
+
+    public Player getCurrentSetupPlayer() {
+        if (isSetupComplete()) {
+            throw new IllegalStateException("Setup is complete");
         }
+        int[] order = (setupRound == 1) ? turnOrder : getRoundTwoOrder();
+        return players.get(order[setupIndex]);
     }
 
-    public void executeSetupRoundTwo() {
-        executeSetupRoundTwo(null);
-    }
-
-    public void executeSetupRoundTwo(Resource[][] resources) {
-        int[] reverseOrder = getRoundTwoOrder();
-        for (int i = 0; i < players.size(); i++) {
-            int playerIndex = reverseOrder[i];
-            Player player = players.get(playerIndex);
-            Vertex v = new Vertex("setup-v" + placementCounter.getAndIncrement());
-            player.placeSettlement(v);
-            player.placeRoad(new Edge("setup-e" + placementCounter.getAndIncrement()));
-            grantResources(player, playerIndex, resources);
+    public void placeSetupSettlement(Vertex vertex, Edge road,
+                                     Board board, Bank bank) {
+        Player player = getCurrentSetupPlayer();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+        turnFlow.buildSetupSettlement(player, vertex, board);
+        turnFlow.buildSetupRoad(player, road, board);
+        if (setupRound == SETUP_ROUNDS) {
+            turnFlow.grantSetupResources(player, vertex);
         }
+        advanceSetupCursor();
     }
 
-    private void grantResources(Player player, int playerIndex,
-                                Resource[][] resources) {
-        if (resources != null && resources[playerIndex] != null) {
-            for (Resource resource : resources[playerIndex]) {
-                player.addResource(resource, 1);
-            }
+    private void advanceSetupCursor() {
+        setupIndex++;
+        if (setupIndex >= players.size()) {
+            setupIndex = 0;
+            setupRound++;
         }
     }
 
