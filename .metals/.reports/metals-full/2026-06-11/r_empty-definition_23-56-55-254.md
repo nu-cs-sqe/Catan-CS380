@@ -1,3 +1,14 @@
+error id: file://<WORKSPACE>/src/main/java/domain/Player.java:
+file://<WORKSPACE>/src/main/java/domain/Player.java
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 2009
+uri: file://<WORKSPACE>/src/main/java/domain/Player.java
+text:
+```scala
 package domain;
 
 import board.Edge;
@@ -65,7 +76,7 @@ public final class Player {
     return resources.get(resource);
   }
 
-  public void addResource(Resource resource, int amount) {
+  public void addResource(Resource resource, int@@ amount) {
     Objects.requireNonNull(resource, "resource");
     requireNonNegative(amount);
     resources.merge(resource, amount, Integer::sum);
@@ -212,3 +223,10 @@ public final class Player {
     return hand;
   }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 
