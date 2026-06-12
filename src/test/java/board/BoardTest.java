@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import board.ResourceType;
-
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -783,7 +781,7 @@ class BoardTest {
     expectLastCall().anyTimes();
     replay(shuffler);
 
-    Harbor testHarbor = new Harbor(ResourceType.GENERIC, 3, "-5,-1", "99,99");
+    Harbor testHarbor = new Harbor(Resource.GENERIC, 3, "-5,-1", "99,99");
     Board boardWithCustomHarbors = new Board(shuffler, Collections.singletonList(testHarbor));
     boardWithCustomHarbors.create();
 
@@ -800,7 +798,7 @@ class BoardTest {
     expectLastCall().anyTimes();
     replay(shuffler);
 
-    Harbor testHarbor = new Harbor(ResourceType.GENERIC, 3, "99,99", "-5,1");
+    Harbor testHarbor = new Harbor(Resource.GENERIC, 3, "99,99", "-5,1");
     Board boardWithCustomHarbors = new Board(shuffler, Collections.singletonList(testHarbor));
     boardWithCustomHarbors.create();
 
