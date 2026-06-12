@@ -42,7 +42,7 @@ public class BoardView extends Pane {
   private static final double VERTEX_ACTIVE_STROKE_WIDTH = 2.0;
   private static final double VERTEX_HOVER_STROKE_WIDTH = 3.0;
   private static final double HARBOR_STROKE = 5.0;
-  private static final double HARBOR_BOAT_OFFSET = 25.0;
+  private static final double HARBOR_BOAT_OFFSET = 45.0;
   private static final double HARBOR_BOAT_RADIUS = 6.0;
   private static final double HARBOR_TEXT_HALF_W = 8.0;
   private static final double HARBOR_TEXT_HALF_H = 4.0;
@@ -126,12 +126,17 @@ public class BoardView extends Pane {
   private void drawHarbor(Harbor harbor) {
     double[] p1 = vertexPixelCoords(harbor.getVertex1Id());
     double[] p2 = vertexPixelCoords(harbor.getVertex2Id());
-    Line pier = new Line(p1[0], p1[1], p2[0], p2[1]);
-    pier.setStroke(harborColor(harbor.getHarborType()));
-    pier.setStrokeWidth(HARBOR_STROKE);
-    pier.setStrokeLineCap(StrokeLineCap.ROUND);
-    getChildren().add(pier);
     double[] boat = harborBoatPoint(p1, p2);
+    Line dock1 = new Line(p1[0], p1[1], boat[0], boat[1]);
+    dock1.setStroke(Color.SADDLEBROWN);
+    dock1.setStrokeWidth(HARBOR_STROKE);
+    dock1.setStrokeLineCap(StrokeLineCap.ROUND);
+    getChildren().add(dock1);
+    Line dock2 = new Line(p2[0], p2[1], boat[0], boat[1]);
+    dock2.setStroke(Color.SADDLEBROWN);
+    dock2.setStrokeWidth(HARBOR_STROKE);
+    dock2.setStrokeLineCap(StrokeLineCap.ROUND);
+    getChildren().add(dock2);
     Circle boatDot = new Circle(boat[0], boat[1], HARBOR_BOAT_RADIUS);
     boatDot.setFill(harborColor(harbor.getHarborType()));
     boatDot.setStroke(Color.BLACK);
