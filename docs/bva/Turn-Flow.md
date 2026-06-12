@@ -98,13 +98,13 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has exactly 1 ORE, 1 WHEAT, 1 SHEEP; deck non-empty
 - **Expected output**: Card added to pending list; resources deducted
 - **BVA note**: Boundary between insufficient resources (cannot buy) and exact cost (can buy)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC15 – Cannot buy dev card with insufficient resources
 - **State of the system**: Player has 1 ORE, 1 WHEAT, 0 SHEEP
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between exact cost (valid) and 1 short (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC16 – Cannot buy dev card when deck is empty
 - **State of the system**: Deck has 0 cards; player has sufficient resources

@@ -254,11 +254,25 @@ public class TurnFlowTest {
                 players.get(0).getDevelopmentCards().isEmpty());
     }
 
-    private Bank createBank() {
-        return new Bank(cards -> { });
+    // TC15 – Cannot buy dev card with insufficient resources
+    @Test
+    public void testCannotBuyDevCardWithInsufficientResources() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addResource(Resource.ORE, 1);
+        players.get(0).addResource(Resource.WHEAT, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buyDevelopmentCard(players.get(0), bank));
     }
 
 
+
+    private Bank createBank() {
+        return new Bank(cards -> { });
+    }
 
     private Tile findDesertTile(Board board) {
         for (Tile tile : board.getTiles()) {
