@@ -230,10 +230,12 @@ public final class TurnFlow {
     }
 
     public void playRoadBuildingCard(Player player,
-                                     Edge edge1, Edge edge2) {
+                                     Edge edge1, Edge edge2,
+                                     Board board) {
         playDevelopmentCard(player, DevelopmentCard.ROAD_BUILDING);
-        player.placeRoad(edge1);
-        player.placeRoad(edge2);
+        placeConnectedRoad(player, edge1, board);
+        placeConnectedRoad(player, edge2, board);
+        updateLongestRoad(board);
     }
 
     public void playYearOfPlentyCard(Player player,
@@ -341,10 +343,15 @@ public final class TurnFlow {
             throw new IllegalStateException (
                     "Insufficient resources to build road");
         }
-        checkRoadConnectivity(player, edge, board);
-        player.placeRoad(edge);
+        placeConnectedRoad(player, edge, board);
         payCost(player, ROAD_COST);
         updateLongestRoad(board);
+    }
+
+    private void placeConnectedRoad(Player player, Edge edge,
+                                    Board board) {
+        checkRoadConnectivity(player, edge, board);
+        player.placeRoad(edge);
     }
 
     private void checkRoadConnectivity(Player player, Edge edge,

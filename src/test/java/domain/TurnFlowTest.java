@@ -430,14 +430,33 @@ public class TurnFlowTest {
 
         players.get(0).addDevelopmentCard(
                 DevelopmentCard.ROAD_BUILDING);
+        players.get(0).placeSettlement(board.getVertex("0,2"));
 
         Edge edge1 = board.getEdge("0,2|1,1");
         Edge edge2 = board.getEdge("1,-1|1,1");
 
-        turnFlow.playRoadBuildingCard(players.get(0), edge1, edge2);
+        turnFlow.playRoadBuildingCard(players.get(0), edge1, edge2, board);
 
         Assertions.assertEquals(13,
                 players.get(0).getRemainingRoads());
+    }
+
+    // TC59 – ROAD_BUILDING roads must connect to player's network
+    @Test
+    public void testRoadBuildingDisconnectedRoadThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        players.get(0).addDevelopmentCard(
+                DevelopmentCard.ROAD_BUILDING);
+
+        Edge edge1 = board.getEdge("0,2|1,1");
+        Edge edge2 = board.getEdge("1,-1|1,1");
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.playRoadBuildingCard(players.get(0),
+                        edge1, edge2, board));
     }
 
     // TC26 – ROAD_BUILDING: player has 0 roads remaining; throws
@@ -464,7 +483,7 @@ public class TurnFlowTest {
 
         Assertions.assertThrows(IllegalStateException.class,
                 () -> turnFlow.playRoadBuildingCard(players.get(0),
-                        edge1, edge2));
+                        edge1, edge2, board));
     }
 
     // TC27 – YEAR_OF_PLENTY: player receives 2 resources from bank
