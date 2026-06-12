@@ -547,7 +547,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
   (no partial deduction)
 - **BVA note**: Boundary between affordable (atomic purchase) and unaffordable
   (atomic rollback — no resource is consumed)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC77 – A road may not extend through an opponent's settlement
 - **State of the system**: The connecting vertex between the player's road and the

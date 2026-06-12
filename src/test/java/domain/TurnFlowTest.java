@@ -417,6 +417,24 @@ public class TurnFlowTest {
                 () -> turnFlow.buyDevelopmentCard(players.get(0)));
     }
 
+    // TC76 – Buying a dev card with insufficient resources changes nothing
+    @Test
+    public void testBuyDevCardInsufficientLeavesResources() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+
+        players.get(0).addResource(Resource.ORE, 1);
+        players.get(0).addResource(Resource.WHEAT, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buyDevelopmentCard(players.get(0)));
+
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.ORE));
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.WHEAT));
+    }
+
     // TC16 – Cannot buy dev card when deck is empty
     @Test
     public void testCannotBuyDevCardWhenDeckEmpty() {

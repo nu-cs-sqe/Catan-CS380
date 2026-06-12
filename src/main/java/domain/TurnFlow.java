@@ -265,10 +265,16 @@ public final class TurnFlow {
 
     public void buyDevelopmentCard(Player player) {
         requireRobberResolved();
+        if (player.getResourceCount(Resource.ORE) < 1
+                || player.getResourceCount(Resource.WHEAT) < 1
+                || player.getResourceCount(Resource.SHEEP) < 1) {
+            throw new IllegalStateException(
+                    "Insufficient resources for development card");
+        }
+        DevelopmentCard card = bank.drawDevelopmentCard();
         player.removeResource(Resource.ORE, 1);
         player.removeResource(Resource.WHEAT, 1);
         player.removeResource(Resource.SHEEP, 1);
-        DevelopmentCard card = bank.drawDevelopmentCard();
         pendingCards.add(card);
     }
 
