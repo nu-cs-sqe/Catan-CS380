@@ -100,7 +100,7 @@ class VertexTest {
   @Test
   void setSettlement_nonNullSettlement_returnsSettlement() {
     Vertex vertex = new Vertex("0");
-    Settlement settlement = new Settlement();
+    Settlement settlement = new Settlement(player);
     vertex.setSettlement(settlement);
 
     assertEquals(settlement, vertex.getSettlement());

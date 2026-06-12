@@ -96,7 +96,7 @@ public final class Player {
     if (getRemainingSettlements() == 0) {
       throw new IllegalStateException("no settlement pieces remaining");
     }
-    Settlement s = new Settlement();
+    Settlement s = new Settlement(this);
     settlements.add(s);
     v.setSettlement(s);
   }
