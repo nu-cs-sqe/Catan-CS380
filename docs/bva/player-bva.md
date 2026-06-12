@@ -107,31 +107,29 @@
 
 |      | System under test                              | Expected output                                      | Implemented? |
 |------|------------------------------------------------|------------------------------------------------------|--------------|
-| TC44 | freshly constructed player                     | empty list (size 0, lower boundary)                  | no           |
-| TC45 | hand holds [KNIGHT, MONOPOLY]                  | list = [KNIGHT, MONOPOLY] (order preserved)          | no           |
-| TC46 | mutate the returned list                       | player's internal list unchanged (defensive copy)    | no           |
+| TC44 | freshly constructed player                     | empty list (size 0, lower boundary)                  | yes          |
+| TC45 | hand holds [KNIGHT, MONOPOLY]                  | list = [KNIGHT, MONOPOLY] (order preserved)          | yes          |
+| TC46 | mutate the returned list                       | player's internal list unchanged (defensive copy)    | yes          |
 
 
-### Method under test: `setDevelopmentCards(List<DevelopmentCard> cards)`
+### Method under test: `addDevelopmentCard(DevelopmentCard card)` (append a single card)
 
 |      | System under test                              | Expected output                                      | Implemented? |
 |------|------------------------------------------------|------------------------------------------------------|--------------|
-| TC47 | cards = [KNIGHT]                               | hand = [KNIGHT] (replaces previous contents)         | no           |
-| TC48 | cards = [] (empty)                             | hand = [] (boundary lower-valid)                     | no           |
-| TC49 | cards = null                                   | NullPointerException                                 | no           |
-| TC50 | cards contains a null element                  | NullPointerException                                 | no           |
-| TC51 | existing hand [KNIGHT], set [MONOPOLY]         | hand = [MONOPOLY] (old contents discarded, no merge) | no           |
-| TC52 | mutate the source list after setting           | player's internal list unchanged (defensive copy)    | no           |
+| TC47 | empty hand, add KNIGHT                         | hand = [KNIGHT] (appended to empty)                  | yes          |
+| TC48 | hand [KNIGHT], add MONOPOLY                    | hand = [KNIGHT, MONOPOLY] (size 2, order preserved)  | yes          |
+| TC49 | card = null                                    | NullPointerException                                 | yes          |
+| TC50 | hand [KNIGHT], add KNIGHT                      | hand = [KNIGHT, KNIGHT] (duplicates retained)        | yes          |
 
 
 ### Method under test: `addDevelopmentCards(List<DevelopmentCard> cards)` (concatenate temporary turn list)
 
 |      | System under test                              | Expected output                                      | Implemented? |
 |------|------------------------------------------------|------------------------------------------------------|--------------|
-| TC53 | empty hand, add [KNIGHT, ROAD_BUILDING]        | hand = [KNIGHT, ROAD_BUILDING] (appended)            | no           |
-| TC54 | hand [KNIGHT], add [MONOPOLY]                  | hand = [KNIGHT, MONOPOLY] (size 2, order preserved)  | no           |
-| TC55 | hand [KNIGHT], add [] (empty)                  | hand = [KNIGHT] (no change, boundary lower-valid)    | no           |
-| TC56 | add a list already containing duplicates       | duplicates retained (e.g. [KNIGHT, KNIGHT])          | no           |
-| TC57 | cards = null                                   | NullPointerException                                 | no           |
-| TC58 | cards contains a null element                  | NullPointerException                                 | no           |
-| TC59 | mutate the source list after adding            | player's internal list unchanged (defensive copy)    | no           |
+| TC51 | empty hand, add [KNIGHT, ROAD_BUILDING]        | hand = [KNIGHT, ROAD_BUILDING] (appended)            | yes          |
+| TC52 | hand [KNIGHT], add [MONOPOLY]                  | hand = [KNIGHT, MONOPOLY] (size 2, order preserved)  | yes          |
+| TC53 | hand [KNIGHT], add [] (empty)                  | hand = [KNIGHT] (no change, boundary lower-valid)    | yes          |
+| TC54 | add a list already containing duplicates       | duplicates retained (e.g. [KNIGHT, KNIGHT])          | yes          |
+| TC55 | cards = null                                   | NullPointerException                                 | yes          |
+| TC56 | cards contains a null element                  | NullPointerException                                 | yes          |
+| TC57 | mutate the source list after adding            | player's internal list unchanged (defensive copy)    | yes          |
