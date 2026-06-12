@@ -1,3 +1,14 @@
+error id: file://<WORKSPACE>/src/main/java/domain/Player.java:java/util/stream/Stream#filter#
+file://<WORKSPACE>/src/main/java/domain/Player.java
+empty definition using pc, found symbol in pc: java/util/stream/Stream#filter#
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 5099
+uri: file://<WORKSPACE>/src/main/java/domain/Player.java
+text:
+```scala
 package domain;
 
 import board.Edge;
@@ -151,16 +162,13 @@ public final class Player {
   }
 
   public List<DevelopmentCard> getDevelopmentCards() {
-    return List.copyOf(developmentCards);
+    return null;
   }
 
   public void addDevelopmentCard(DevelopmentCard card) {
-    Objects.requireNonNull(card, "card");
-    developmentCards.add(card);
   }
 
   public void addDevelopmentCards(List<DevelopmentCard> cards) {
-    developmentCards.addAll(List.copyOf(cards));
   }
 
   public void playKnight() {
@@ -185,7 +193,7 @@ public final class Player {
   }
 
   public int getRemainingCities() {
-    long placed = settlements.stream().filter(Settlement::isCity).count();
+    long placed = settlements.stream().filter@@(Settlement::isCity).count();
     return STARTING_CITIES - (int) placed;
   }
 
@@ -236,3 +244,10 @@ public final class Player {
     return hand;
   }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: java/util/stream/Stream#filter#

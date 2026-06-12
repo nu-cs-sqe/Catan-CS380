@@ -1,5 +1,21 @@
 package board;
 
 public class Settlement {
-    // TODO: implement
+
+    private boolean city = false;
+
+    public void upgrade() {
+        if (city) {
+            throw new IllegalStateException("already a city");
+        }
+        city = true;
+    }
+
+    public boolean isCity() {
+        return city;
+    }
+
+    public int getVictoryPoints() {
+        return city ? 2 : 1;
+    }
 }

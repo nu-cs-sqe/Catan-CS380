@@ -1,5 +1,6 @@
 package board;
 
+import domain.Resource;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockExtension;
 import org.easymock.Mock;
@@ -459,7 +460,7 @@ class BoardTest {
 
     long count = 0;
     for (Harbor h : board.getHarbors()) {
-      if (h.getHarborType() == ResourceType.GENERIC) {
+      if (h.getHarborType() == Resource.GENERIC) {
         count++;
       }
     }
@@ -477,13 +478,9 @@ class BoardTest {
 
     board.create();
 
-    for (ResourceType type :
-        new ResourceType[] {
-          ResourceType.WOOD,
-          ResourceType.BRICK,
-          ResourceType.SHEEP,
-          ResourceType.WHEAT,
-          ResourceType.ORE
+    for (Resource type :
+        new Resource[] {
+          Resource.WOOD, Resource.BRICK, Resource.SHEEP, Resource.WHEAT, Resource.ORE
         }) {
       long count = 0;
       for (Harbor h : board.getHarbors()) {
@@ -529,7 +526,7 @@ class BoardTest {
     board.create();
 
     for (Harbor h : board.getHarbors()) {
-      if (h.getHarborType() != ResourceType.GENERIC) {
+      if (h.getHarborType() != Resource.GENERIC) {
         assertEquals(
             RESOURCE_HARBOR_RATE,
             h.getExchangeRate(),
@@ -551,7 +548,7 @@ class BoardTest {
     board.create();
 
     for (Harbor h : board.getHarbors()) {
-      if (h.getHarborType() == ResourceType.GENERIC) {
+      if (h.getHarborType() == Resource.GENERIC) {
         assertEquals(GENERIC_HARBOR_RATE, h.getExchangeRate());
       }
     }
@@ -774,7 +771,7 @@ class BoardTest {
 
     Harbor harbor = board.getHarbor("-5,-1", "-5,1");
     assertNotNull(harbor);
-    assertEquals(ResourceType.GENERIC, harbor.getHarborType());
+    assertEquals(Resource.GENERIC, harbor.getHarborType());
 
     verify(shuffler);
   }

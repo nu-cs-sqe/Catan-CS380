@@ -66,16 +66,33 @@
 | TC30 | 5 VP dev cards held                                            | VP = 5                                       | yes           |
 
 
-### Method under test: piece inventory boundaries
+### Method under test: `placeSettlement(Vertex v)`
 
-|      | System under test                       | Expected output                                | Implemented? |
-|------|-----------------------------------------|------------------------------------------------|--------------|
-| TC31 | fresh player                            | 5 settlements / 4 cities / 15 roads remaining  | yes           |
-| TC32 | placed 5 settlements, place a 6th       | IllegalStateException (cap boundary)           | yes           |
-| TC33 | placed 4 cities, place a 5th            | IllegalStateException                          | yes           |
-| TC34 | placed 15 roads, place a 16th           | IllegalStateException                          | yes           |
-| TC35 | upgrade settlement → city               | settlements +1 back, cities -1 from remaining  | yes           |
-| TC36 | upgrade with 0 settlements on board     | IllegalStateException                          | yes           |
+|      | System under test                                     | Expected output                               | Implemented? |
+|------|-------------------------------------------------------|-----------------------------------------------|--------------|
+| TC31 | fresh player                                          | 5 settlements / 4 cities / 15 roads remaining | yes          |
+| TC32 | placed 5 settlements, place a 6th                     | IllegalStateException (cap boundary)          | yes          |
+| TC39 | vertex = null                                         | NullPointerException                          | yes          |
+| TC40 | vertex already has a settlement owned by this player  | IllegalStateException                         | yes          |
+
+
+### Method under test: `upgradeSettlementToCity(Vertex v)`
+
+|      | System under test                              | Expected output                                                                    | Implemented? |
+|------|------------------------------------------------|------------------------------------------------------------------------------------|--------------|
+| TC33 | 4 cities already on board, attempt a 5th       | IllegalStateException                                                              | yes          |
+| TC35 | player has a settlement at vertex, upgrade it  | Settlement.isCity() = true; getRemainingCities() −1; getRemainingSettlements() +1  | yes          |
+| TC36 | vertex has no player settlement on it          | IllegalStateException                                                              | yes          |
+| TC41 | vertex = null                                  | NullPointerException                                                               | yes          |
+| TC42 | settlement at vertex is already a city         | IllegalStateException                                                              | yes          |
+
+
+### Method under test: `placeRoad(Edge e)`
+
+|      | System under test                | Expected output       | Implemented? |
+|------|----------------------------------|-----------------------|--------------|
+| TC34 | placed 15 roads, place a 16th    | IllegalStateException | yes          |
+| TC43 | edge = null                      | NullPointerException  | yes          |
 
 
 ### Method under test: `playKnight()` / `getKnightsPlayed()`
@@ -84,3 +101,35 @@
 |------|------------------------------|--------------------------------------------------|--------------|
 | TC37 | 0 knights played, play one   | knights = 1                                      | yes           |
 | TC38 | 2 knights played, play one   | knights = 3 (Largest Army eligibility boundary)  | yes           |
+
+
+### Method under test: `getDevelopmentCards()`
+
+|      | System under test                              | Expected output                                      | Implemented? |
+|------|------------------------------------------------|------------------------------------------------------|--------------|
+| TC44 | freshly constructed player                     | empty list (size 0, lower boundary)                  | yes          |
+| TC45 | hand holds [KNIGHT, MONOPOLY]                  | list = [KNIGHT, MONOPOLY] (order preserved)          | yes          |
+| TC46 | mutate the returned list                       | player's internal list unchanged (defensive copy)    | yes          |
+
+
+### Method under test: `addDevelopmentCard(DevelopmentCard card)` (append a single card)
+
+|      | System under test                              | Expected output                                      | Implemented? |
+|------|------------------------------------------------|------------------------------------------------------|--------------|
+| TC47 | empty hand, add KNIGHT                         | hand = [KNIGHT] (appended to empty)                  | yes          |
+| TC48 | hand [KNIGHT], add MONOPOLY                    | hand = [KNIGHT, MONOPOLY] (size 2, order preserved)  | yes          |
+| TC49 | card = null                                    | NullPointerException                                 | yes          |
+| TC50 | hand [KNIGHT], add KNIGHT                      | hand = [KNIGHT, KNIGHT] (duplicates retained)        | yes          |
+
+
+### Method under test: `addDevelopmentCards(List<DevelopmentCard> cards)` (concatenate temporary turn list)
+
+|      | System under test                              | Expected output                                      | Implemented? |
+|------|------------------------------------------------|------------------------------------------------------|--------------|
+| TC51 | empty hand, add [KNIGHT, ROAD_BUILDING]        | hand = [KNIGHT, ROAD_BUILDING] (appended)            | yes          |
+| TC52 | hand [KNIGHT], add [MONOPOLY]                  | hand = [KNIGHT, MONOPOLY] (size 2, order preserved)  | yes          |
+| TC53 | hand [KNIGHT], add [] (empty)                  | hand = [KNIGHT] (no change, boundary lower-valid)    | yes          |
+| TC54 | add a list already containing duplicates       | duplicates retained (e.g. [KNIGHT, KNIGHT])          | yes          |
+| TC55 | cards = null                                   | NullPointerException                                 | yes          |
+| TC56 | cards contains a null element                  | NullPointerException                                 | yes          |
+| TC57 | mutate the source list after adding            | player's internal list unchanged (defensive copy)    | yes          |

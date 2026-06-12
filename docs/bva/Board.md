@@ -1,5 +1,7 @@
 # BVA: Board
 
+> **Constructor change:** `Board(Shuffler shuffler, Robber robber)` — a `Robber` instance is now passed in on instantiation. `create()` assigns the `Robber` to the desert tile.
+
 ---
 
 ### Method under test: `create()`
@@ -20,9 +22,9 @@
 | TC12 | Fresh `Board`, no-op `Shuffler` | First token in sequence is 5 (BVA: lower boundary - position 0 of TOKEN_DISTRIBUTION)                             | :white_check_mark: |
 | TC13 | Fresh `Board`, no-op `Shuffler` | Last token in sequence is 11 (BVA: upper boundary - position 17 of TOKEN_DISTRIBUTION)                            | :white_check_mark: |
 | TC14 | Fresh `Board`, no-op `Shuffler` | Exactly 18 tiles have `getNumberToken() > 0` (BVA: boundaries 17, 18, 19)                                         | :white_check_mark: |
-| TC15 | Fresh `Board`, no-op `Shuffler` | DESERT tile `hasRobber() == true`                                                                                 | :x:                |
-| TC16 | Fresh `Board`, no-op `Shuffler` | 0 non-DESERT tiles have `hasRobber() == true`                                                                     | :x:                |
-| TC17 | Fresh `Board`, no-op `Shuffler` | Exactly 1 tile has `hasRobber() == true` (BVA: boundaries 0, 1, 2)                                                | :x:                |
+| TC15 | `Board` with `Robber` and no-op `Shuffler`, after `create()` | `robber.getTile() != null` (robber is assigned a tile during setup)                                               | :x:                |
+| TC16 | `Board` with `Robber` and no-op `Shuffler`, after `create()` | `robber.getTile().getTileType() == DESERT` (BVA: robber starts on the one desert tile)                            | :x:                |
+| TC17 | `Board` with `Robber` and no-op `Shuffler`, after `create()` | `robber.getPlayer() == null` (BVA: null boundary - no player placed the robber at setup)                          | :x:                |
 | TC18 | Fresh `Board`, no-op `Shuffler` | `getVertices().size() == 54` (BVA: boundaries 53, 54, 55)                                                         | :white_check_mark: |
 | TC19 | Fresh `Board`, no-op `Shuffler` | 24 vertices have `getAdjacentTiles().size() == 3` (BVA: boundaries 23, 24, 25)                                    | :white_check_mark: |
 | TC20 | Fresh `Board`, no-op `Shuffler` | 30 vertices have `getAdjacentTiles().size() < 3` (BVA: boundaries 29, 30, 31)                                     | :white_check_mark: |
