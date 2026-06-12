@@ -526,6 +526,14 @@ public final class TurnFlow {
     public void updateLongestRoad(Board board) {
         int maxLength = MIN_ROAD_LENGTH - 1;
         int newHolder = -1;
+        if (longestRoadHolder >= 0) {
+            int holderLength = LongestRoadCalculator.calculateForPlayer(
+                    board, players.get(longestRoadHolder));
+            if (holderLength >= MIN_ROAD_LENGTH) {
+                maxLength = holderLength;
+                newHolder = longestRoadHolder;
+            }
+        }
         for (int i = 0; i < players.size(); i++) {
             int length = LongestRoadCalculator.calculateForPlayer(
                     board, players.get(i));

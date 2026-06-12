@@ -149,6 +149,33 @@ public class LongestRoadTest {
         return board;
     }
 
+    // TC11 – Incumbent keeps Longest Road on a tie regardless of player index
+    @Test
+    public void testTiedRoadKeepsHigherIndexIncumbent() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        // Player 2 (higher index) earns Longest Road first with 5 roads
+        setEdgeOwner(board, EDGE_1, players.get(2));
+        setEdgeOwner(board, EDGE_2, players.get(2));
+        setEdgeOwner(board, EDGE_3, players.get(2));
+        setEdgeOwner(board, EDGE_4, players.get(2));
+        setEdgeOwner(board, EDGE_5, players.get(2));
+        turnFlow.updateLongestRoad(board);
+        Assertions.assertEquals(2, turnFlow.getLongestRoadHolder());
+
+        // Player 0 (lower index) ties at 5 on a disjoint chain
+        setEdgeOwner(board, "-5,-1|-4,-2", players.get(0));
+        setEdgeOwner(board, "-4,-2|-3,-1", players.get(0));
+        setEdgeOwner(board, "-3,-1|-2,-2", players.get(0));
+        setEdgeOwner(board, "-2,-4|-2,-2", players.get(0));
+        setEdgeOwner(board, "-2,-4|-1,-5", players.get(0));
+        turnFlow.updateLongestRoad(board);
+
+        Assertions.assertEquals(2, turnFlow.getLongestRoadHolder());
+    }
+
     private void setEdgeOwner(Board board, String edgeKey,
                               Player player) {
         Edge edge = board.getEdge(edgeKey);

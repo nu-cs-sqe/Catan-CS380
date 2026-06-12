@@ -78,4 +78,4 @@ Determines which player holds the Longest Road and Largest Army special cards (2
 - **BVA note**: Exposes the index-order bug — the recompute must seed the current
   holder's length so only a strictly longer road takes the title (TC8 only covered
   a lower-index incumbent, which masks this)
-- **Implemented**: [ ]
+- **Implemented**: [x]
