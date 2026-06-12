@@ -9,8 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
+
+import board.ResourceType;
 
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
