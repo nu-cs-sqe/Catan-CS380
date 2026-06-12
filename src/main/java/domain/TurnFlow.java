@@ -231,6 +231,10 @@ public final class TurnFlow {
     }
 
     public void endTurn(Player player) {
+        if (gameOver) {
+            throw new IllegalStateException(
+                    "Cannot end turn after game is over");
+        }
         player.addDevelopmentCards(pendingCards);
         pendingCards.clear();
         devCardPlayedThisTurn = false;
