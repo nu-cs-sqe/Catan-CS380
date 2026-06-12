@@ -96,4 +96,4 @@
 
 |      | System under test                       | Expected output                                                        | Implemented? |
 |------|-----------------------------------------|------------------------------------------------------------------------|--------------|
-| TC47 | Board created; call `createRobber()`    | Returns a `Robber` whose tile is the DESERT tile (the robber's start)  | :x:          |
+| TC47 | Board created; call `createRobber()`    | Returns a `Robber` whose tile is the DESERT tile (the robber's start)  | :white_check_mark: |

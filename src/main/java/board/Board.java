@@ -209,6 +209,17 @@ public class Board {
     return harbors.get(vertex1Id + "|" + vertex2Id);
   }
 
+  public Robber createRobber() {
+    for (Tile tile : tiles.values()) {
+      if (tile.getTileType() == TileType.DESERT) {
+        Robber robber = new Robber();
+        robber.setTile(tile);
+        return robber;
+      }
+    }
+    throw new IllegalStateException("Board has no desert tile");
+  }
+
   private static String key(int q, int r) {
     return q + "," + r;
   }
