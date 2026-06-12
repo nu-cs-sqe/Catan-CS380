@@ -186,7 +186,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player requests ORE; bank has 0
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between stock 0 (cannot give) and 1 (can give)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC29 – YEAR_OF_PLENTY: same resource twice; bank has 2+; succeeds
 - **State of the system**: Player requests WOOD twice; bank has 2+

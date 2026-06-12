@@ -498,7 +498,25 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.WOOD));
         Assertions.assertEquals(1,
                 players.get(0).getResourceCount(Resource.ORE));
-    }   
+    }
+
+    // TC28 – YEAR_OF_PLENTY: bank has 0 of requested resource throws
+    @Test
+    public void testYearOfPlentyBankEmpty() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Bank bank = createBank();
+
+        players.get(0).addDevelopmentCard(
+                DevelopmentCard.YEAR_OF_PLENTY);
+
+        // Drain all ORE from bank
+        bank.distributeResource(Resource.ORE, 19);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.playYearOfPlentyCard(players.get(0),
+                        bank, Resource.WOOD, Resource.ORE));
+    }
 
 
 
