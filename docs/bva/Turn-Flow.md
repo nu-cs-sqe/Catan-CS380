@@ -138,13 +138,13 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player already played one dev card this turn
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 1 card played (blocked) and 0 (allowed)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC21 – Cannot play VICTORY_POINT card
 - **State of the system**: Player has VICTORY_POINT card; attempts to play it
 - **Expected output**: Throws `IllegalArgumentException`
 - **BVA note**: Boundary between playable cards (KNIGHT, MONOPOLY, etc.) and passive (VICTORY_POINT)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC22 – KNIGHT: moves robber, steals, increments knights, checks largest army
 - **State of the system**: Player plays KNIGHT; robber moves to new tile; victim adjacent

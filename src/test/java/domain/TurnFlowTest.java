@@ -360,6 +360,20 @@ public class TurnFlowTest {
                         DevelopmentCard.MONOPOLY));
     }
 
+    // TC21 – Cannot play VICTORY_POINT card
+    @Test
+    public void testCannotPlayVictoryPointCard() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addDevelopmentCard(
+                DevelopmentCard.VICTORY_POINT);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.playDevelopmentCard(players.get(0),
+                        DevelopmentCard.VICTORY_POINT));
+    }
+
 
 
     private Bank createBank() {

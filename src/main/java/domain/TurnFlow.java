@@ -190,6 +190,10 @@ public final class TurnFlow {
 
     public void playDevelopmentCard(Player player,
                                     DevelopmentCard card) {
+        if (card == DevelopmentCard.VICTORY_POINT) {
+            throw new IllegalArgumentException(
+                    "Victory point cards cannot be played");
+        }
         if (!player.getDevelopmentCards().contains(card)) {
             throw new IllegalStateException(
                     "Player does not have this card in hand");
@@ -199,7 +203,7 @@ public final class TurnFlow {
                     "Already played a dev card this turn");
         }
         devCardPlayedThisTurn = true;
-    }
+    }   
 
     public void endTurn(Player player) {
         player.addDevelopmentCards(pendingCards);
