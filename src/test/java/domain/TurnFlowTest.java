@@ -767,6 +767,21 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.WHEAT));
     }
 
+    // TC45 – Build settlement with insufficient resources throws
+    @Test
+    public void testBuildSettlementInsufficientResourcesThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Vertex vertex = new Vertex("build-v2");
+
+        players.get(0).addResource(Resource.WOOD, 1);
+        players.get(0).addResource(Resource.BRICK, 1);
+        players.get(0).addResource(Resource.SHEEP, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildSettlement(players.get(0), vertex));
+    }
+
     private void giveSettlementCost(Player player) {
         player.addResource(Resource.WOOD, 1);
         player.addResource(Resource.BRICK, 1);
