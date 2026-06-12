@@ -49,6 +49,25 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.WOOD));
     }
 
+    // TC3 – City on matching tile yields 2 resources
+    @Test
+    public void testCityYields2Resources() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        Vertex vertex = board.getVertex("-3,1");
+        vertex.setOwner(players.get(0));
+        players.get(0).placeSettlement(vertex);
+        players.get(0).upgradeSettlementToCity(vertex);
+
+        turnFlow.rollForProduction(board, robber, 5);
+
+        Assertions.assertEquals(2,
+                players.get(0).getResourceCount(Resource.WOOD));
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override

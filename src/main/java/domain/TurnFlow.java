@@ -95,10 +95,19 @@ public final class TurnFlow {
                 Resource resource = tileTypeToResource(
                         tile.getTileType());
                 if (resource != null) {
-                    owner.addResource(resource, 1);
+                    int amount = getProductionAmount(vertex);
+                    owner.addResource(resource, amount);
                 }
             }
         }
+    }
+
+    private int getProductionAmount(Vertex vertex) {
+        if (vertex.getSettlement() != null
+                && vertex.getSettlement().isCity()) {
+            return 2;
+        }
+        return 1;
     }
 
     private boolean isRobberOnTile(Robber robber, Tile tile) {
