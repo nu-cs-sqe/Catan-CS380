@@ -10,14 +10,20 @@ import domain.Player;
 import domain.PlayerColor;
 import domain.Resource;
 import javafx.scene.Cursor;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Text;
 
+import java.net.URL;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class BoardView extends Pane {
@@ -50,6 +56,8 @@ public class BoardView extends Pane {
   private static final double HARBOR_BOAT_RADIUS = 6.0;
   private static final double HARBOR_TEXT_HALF_W = 8.0;
   private static final double HARBOR_TEXT_HALF_H = 4.0;
+  private static final double HEX_IMG_WIDTH = 2 * SCALE_X;
+  private static final double HEX_IMG_HEIGHT = 4 * SCALE_Y;
   private static final int HEX_Q_SCALE = 2;
   private static final int HEX_R_SCALE = -3;
   private static final int[][] CORNER_OFFSETS = {
@@ -60,11 +68,22 @@ public class BoardView extends Pane {
   private SelectionMode mode = SelectionMode.NONE;
   private Consumer<Vertex> vertexClickHandler;
   private Consumer<Edge> edgeClickHandler;
+  private final Map<TileType, Image> tileImages = new EnumMap<>(TileType.class);
 
   public BoardView() {
     setPrefSize(PREF_WIDTH, PREF_HEIGHT);
     setMaxSize(PREF_WIDTH, PREF_HEIGHT);
     setStyle("-fx-background-color: #b0d4f1;");
+    loadTileImages();
+  }
+
+  private void loadTileImages() {
+    for (TileType type : TileType.values()) {
+      URL url = getClass().getResource("/images/" + type.name() + ".png");
+      if (url != null) {
+        tileImages.put(type, new Image(url.toExternalForm()));
+      }
+    }
   }
 
   public void setSelectionMode(SelectionMode newMode) {
@@ -97,7 +116,7 @@ public class BoardView extends Pane {
     double cx = tileCenterX(tile);
     double cy = tileCenterY(tile);
     Polygon hex = buildHexPolygon(cx, cy);
-    hex.setFill(tileColor(tile.getTileType()));
+    hex.setFill(tileFill(tile.getTileType(), cx, cy));
     hex.setStroke(Color.SADDLEBROWN);
     getChildren().add(hex);
     if (tile.getNumberToken() != 0) {
@@ -309,6 +328,14 @@ public class BoardView extends Pane {
     double x = Double.parseDouble(parts[0]) * SCALE_X + CENTER_X;
     double y = Double.parseDouble(parts[1]) * SCALE_Y + CENTER_Y;
     return new double[] {x, y};
+  }
+
+  private Paint tileFill(TileType type, double cx, double cy) {
+    Image img = tileImages.get(type);
+    if (img != null) {
+      return new ImagePattern(img, cx - SCALE_X, cy - 2 * SCALE_Y, HEX_IMG_WIDTH, HEX_IMG_HEIGHT, false);
+    }
+    return tileColor(type);
   }
 
   private static Color tileColor(TileType type) {
