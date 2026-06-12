@@ -561,7 +561,22 @@ public class TurnFlowTest {
                 () -> turnFlow.maritimeTrade(players.get(0),
                         Resource.WOOD, 4, Resource.WOOD));
     }
-    
+
+    // TC33 – Maritime trade when bank has 0 of receive resource throws
+    @Test
+    public void testMaritimeTradeWhenBankEmptyThrows() {
+        Bank bank = createBank();
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+
+        bank.distributeResource(Resource.BRICK, 19);
+        players.get(0).addResource(Resource.WOOD, 4);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.maritimeTrade(players.get(0),
+                        Resource.WOOD, 4, Resource.BRICK));
+    }
+
 
     private Tile findDesertTile(Board board) {
         for (Tile tile : board.getTiles()) {

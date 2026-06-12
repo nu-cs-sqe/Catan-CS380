@@ -220,7 +220,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Bank has 0 ORE; player attempts to receive ORE
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between bank stock 0 (blocked) and 1 (allowed)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 
