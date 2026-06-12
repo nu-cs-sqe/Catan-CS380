@@ -725,6 +725,22 @@ public class TurnFlowTest {
         Assertions.assertEquals(0, turnFlow.getCurrentPlayerIndex());
     }
 
+    // TC43 – Cannot endTurn after game is over
+    @Test
+    public void testCannotEndTurnAfterGameOver() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        for (int i = 0; i < 9; i++) {
+            players.get(0).addVictoryPointDevCard();
+        }
+        giveSettlementCost(players.get(0));
+        turnFlow.buildSettlement(players.get(0), new Vertex("win-v"));
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.endTurn(players.get(0)));
+    }
+
 
 
     // TC44 – Build settlement with exact resources succeeds
