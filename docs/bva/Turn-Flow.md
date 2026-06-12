@@ -12,25 +12,25 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has settlement adjacent to FOREST tile with token 5; robber not on tile
 - **Expected output**: Player receives 1 WOOD when 5 is rolled
 - **BVA note**: Boundary between matching roll (produces) and non-matching (nothing)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC2 – Roll does not produce for player without settlement on matching tile
 - **State of the system**: Player has settlement adjacent to tile with token 5; roll is 6
 - **Expected output**: Player receives nothing
 - **BVA note**: Boundary between matching token (produces) and non-matching (nothing)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC3 – City on matching tile yields 2 resources
 - **State of the system**: Player has city adjacent to tile with matching token
 - **Expected output**: Player receives 2 of that resource
 - **BVA note**: Boundary between settlement (1 resource) and city (2 resources)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC4 – Robber blocks resource production on its tile
 - **State of the system**: Robber on tile with token 5; player has settlement adjacent
 - **Expected output**: Player receives nothing when 5 is rolled
 - **BVA note**: Boundary between robber absent (produces) and present (blocked)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 
