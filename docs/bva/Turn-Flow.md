@@ -192,7 +192,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player requests WOOD twice; bank has 2+
 - **Expected output**: Player gains 2 WOOD
 - **BVA note**: Boundary between bank stock 1 (insufficient) and 2 (sufficient)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 

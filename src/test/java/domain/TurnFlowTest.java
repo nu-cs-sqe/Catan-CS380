@@ -518,6 +518,23 @@ public class TurnFlowTest {
                         bank, Resource.WOOD, Resource.ORE));
     }
 
+    // TC29 – YEAR_OF_PLENTY: same resource twice succeeds
+    @Test
+    public void testYearOfPlentySameResourceTwice() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Bank bank = createBank();
+
+        players.get(0).addDevelopmentCard(
+                DevelopmentCard.YEAR_OF_PLENTY);
+
+        turnFlow.playYearOfPlentyCard(players.get(0), bank,
+                Resource.WOOD, Resource.WOOD);
+
+        Assertions.assertEquals(2,
+                players.get(0).getResourceCount(Resource.WOOD));
+    }
+
 
 
     private Bank createBank() {
