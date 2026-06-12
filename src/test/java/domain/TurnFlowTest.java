@@ -710,6 +710,21 @@ public class TurnFlowTest {
         Assertions.assertEquals(1, turnFlow.getCurrentPlayerIndex());
     }
 
+    // TC42 – endTurn wraps from last player to first
+    @Test
+    public void testEndTurnWrapsFromLastToFirstPlayer() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        turnFlow.endTurn(players.get(0));
+        turnFlow.endTurn(players.get(1));
+        Assertions.assertEquals(2, turnFlow.getCurrentPlayerIndex());
+
+        turnFlow.endTurn(players.get(2));
+
+        Assertions.assertEquals(0, turnFlow.getCurrentPlayerIndex());
+    }
+
 
 
     // TC44 – Build settlement with exact resources succeeds
