@@ -20,7 +20,7 @@ public class TurnFlowTest {
     @Test
     public void testRollProducesResourcesForAdjacentSettlement() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
         Robber robber = new Robber();
 
@@ -33,11 +33,54 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.WOOD));
     }
 
+    // TC72 – Production draws the distributed resources from the bank
+    @Test
+    public void testProductionDrawsFromBank() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+        Board board = createBoard();
+
+        players.get(0).placeSettlement(board.getVertex("-3,1"));
+        int before = bank.getStock(Resource.WOOD);
+
+        turnFlow.rollForProduction(board, new Robber(), 5);
+
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.WOOD));
+        Assertions.assertEquals(before - 1,
+                bank.getStock(Resource.WOOD));
+    }
+
+    // TC73 – Production withheld when the bank cannot supply every claimant
+    @Test
+    public void testProductionWithheldWhenBankShort() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+        Board board = createBoard();
+
+        // Two players both produce WOOD from the token-5 forest tile
+        players.get(0).placeSettlement(board.getVertex("-3,1"));
+        players.get(1).placeSettlement(board.getVertex("-4,2"));
+
+        // Leave only 1 WOOD in the bank — not enough for both claimants
+        bank.distributeResource(Resource.WOOD,
+                bank.getStock(Resource.WOOD) - 1);
+
+        turnFlow.rollForProduction(board, new Robber(), 5);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WOOD));
+        Assertions.assertEquals(0,
+                players.get(1).getResourceCount(Resource.WOOD));
+    }
+
     // TC2 – Roll does not produce for non-matching tile
     @Test
     public void testRollDoesNotProduceForNonMatchingTile() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
         Robber robber = new Robber();
 
@@ -54,7 +97,7 @@ public class TurnFlowTest {
     @Test
     public void testCityYields2Resources() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
         Robber robber = new Robber();
 
@@ -72,7 +115,7 @@ public class TurnFlowTest {
     @Test
     public void testRobberBlocksResourceProduction() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
         Robber robber = new Robber();
 
@@ -348,7 +391,7 @@ public class TurnFlowTest {
     @Test
     public void testResolveRollNonSevenProduces() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
         Robber robber = new Robber();
 

@@ -515,7 +515,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **Expected output**: Player gains 1 WOOD **and** the bank's WOOD stock drops by 1
 - **BVA note**: Production must come out of the finite bank supply, not be created
   from nothing
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC73 – Production is withheld when the bank cannot supply every claimant
 - **State of the system**: Two players each have a settlement producing the same
@@ -524,7 +524,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
   bank cannot pay all claimants of a single resource type, none is paid)
 - **BVA note**: Boundary between enough stock for all (everyone paid) and one short
   (no one paid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC74 – Maritime trade rate is bounded by the player's harbors (default 4:1)
 - **State of the system**: Player owns no harbor and attempts a 3:1 (or 2:1) trade

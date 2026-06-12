@@ -8,8 +8,11 @@ import board.TileType;
 import board.Vertex;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class TurnFlow {
 
@@ -80,16 +83,20 @@ public final class TurnFlow {
 
     public void rollForProduction(Board board, Robber robber,
                                   int roll) {
+        Map<Player, Map<Resource, Integer>> gains = new HashMap<>();
+        Map<Resource, Integer> demand = new EnumMap<>(Resource.class);
         for (Vertex vertex : board.getVertices()) {
             if (vertex.getOwner() == null) {
                 continue;
             }
-            distributeForVertex(vertex, robber, roll);
+            collectProduction(vertex, robber, roll, gains, demand);
         }
+        distributeProduction(gains, demand);
     }
 
-    private void distributeForVertex(Vertex vertex,
-                                     Robber robber, int roll) {
+    private void collectProduction(Vertex vertex, Robber robber, int roll,
+                                   Map<Player, Map<Resource, Integer>> gains,
+                                   Map<Resource, Integer> demand) {
         Player owner = findMatchingPlayer(vertex.getOwner());
         if (owner == null) {
             return;
@@ -101,7 +108,32 @@ public final class TurnFlow {
                         tile.getTileType());
                 if (resource != null) {
                     int amount = getProductionAmount(vertex);
-                    owner.addResource(resource, amount);
+                    gains.computeIfAbsent(owner,
+                            p -> new EnumMap<>(Resource.class))
+                            .merge(resource, amount, Integer::sum);
+                    demand.merge(resource, amount, Integer::sum);
+                }
+            }
+        }
+    }
+
+    private void distributeProduction(
+            Map<Player, Map<Resource, Integer>> gains,
+            Map<Resource, Integer> demand) {
+        Set<Resource> payable = EnumSet.noneOf(Resource.class);
+        for (Map.Entry<Resource, Integer> entry : demand.entrySet()) {
+            if (entry.getValue() <= bank.getStock(entry.getKey())) {
+                payable.add(entry.getKey());
+            }
+        }
+        for (Map.Entry<Player, Map<Resource, Integer>> playerGains
+                : gains.entrySet()) {
+            Player player = playerGains.getKey();
+            for (Map.Entry<Resource, Integer> gain
+                    : playerGains.getValue().entrySet()) {
+                if (payable.contains(gain.getKey())) {
+                    bank.distributeResource(gain.getKey(), gain.getValue());
+                    player.addResource(gain.getKey(), gain.getValue());
                 }
             }
         }
