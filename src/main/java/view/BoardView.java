@@ -7,11 +7,13 @@ import board.TileType;
 import board.Vertex;
 import domain.Player;
 import domain.PlayerColor;
+import javafx.scene.Cursor;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Text;
 
 import java.util.function.Consumer;
@@ -35,6 +37,8 @@ public class BoardView extends Pane {
   private static final double TOKEN_LABEL_OFFSET_Y = 5.0;
   private static final int HIGH_PROB_TOKEN_A = 6;
   private static final int HIGH_PROB_TOKEN_B = 8;
+  private static final double VERTEX_ACTIVE_STROKE_WIDTH = 2.0;
+  private static final double VERTEX_HOVER_STROKE_WIDTH = 3.0;
   private static final int HEX_Q_SCALE = 2;
   private static final int HEX_R_SCALE = -3;
   private static final int[][] CORNER_OFFSETS = {
@@ -115,9 +119,17 @@ public class BoardView extends Pane {
     double[][] pts = edgePixelCoords(edge.getId());
     Line line = new Line(pts[0][0], pts[0][1], pts[1][0], pts[1][1]);
     Player owner = edge.getOwner();
+    boolean active = mode == SelectionMode.EDGE && owner == null;
     if (owner != null) {
       line.setStroke(playerColor(owner.getColor()));
       line.setStrokeWidth(ROAD_STROKE);
+    } else if (active) {
+      line.setStroke(Color.WHITE);
+      line.setStrokeWidth(ROAD_ACTIVE_STROKE);
+      line.setStrokeLineCap(StrokeLineCap.SQUARE);
+      line.setCursor(Cursor.HAND);
+      line.setOnMouseEntered(e -> line.setStroke(Color.GOLD));
+      line.setOnMouseExited(e -> line.setStroke(Color.WHITE));
     } else {
       line.setStroke(Color.TRANSPARENT);
       line.setStrokeWidth(ROAD_ACTIVE_STROKE);
@@ -153,7 +165,16 @@ public class BoardView extends Pane {
     } else if (active) {
       circle.setFill(Color.WHITE);
       circle.setStroke(Color.DARKGREEN);
-      circle.setStrokeWidth(2.0);
+      circle.setStrokeWidth(VERTEX_ACTIVE_STROKE_WIDTH);
+      circle.setCursor(Cursor.HAND);
+      circle.setOnMouseEntered(e -> {
+        circle.setFill(Color.LIGHTGREEN);
+        circle.setStrokeWidth(VERTEX_HOVER_STROKE_WIDTH);
+      });
+      circle.setOnMouseExited(e -> {
+        circle.setFill(Color.WHITE);
+        circle.setStrokeWidth(VERTEX_ACTIVE_STROKE_WIDTH);
+      });
     } else {
       circle.setFill(Color.TRANSPARENT);
       circle.setStroke(Color.TRANSPARENT);
