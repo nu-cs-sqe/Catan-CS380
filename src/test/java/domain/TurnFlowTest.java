@@ -629,6 +629,19 @@ public class TurnFlowTest {
         Assertions.assertTrue(turnFlow.checkWin(0));
     }
 
+    // TC37 – checkWin returns false at 9 VP
+    @Test
+    public void testCheckWinAt9VP() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        for (int i = 0; i < 9; i++) {
+            players.get(0).addVictoryPointDevCard();
+        }
+
+        Assertions.assertFalse(turnFlow.checkWin(0));
+    }
+
 
 
     private Tile findDesertTile(Board board) {
