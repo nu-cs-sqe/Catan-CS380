@@ -43,7 +43,7 @@ public class TurnFlowTest {
         Vertex vertex = board.getVertex("-3,1");
         vertex.setOwner(players.get(0));
 
-        turnFlow.rollForProduction(board, robber, 6);
+        turnFlow.rollForProduction(board, robber, 2);
 
         Assertions.assertEquals(0,
                 players.get(0).getResourceCount(Resource.WOOD));
@@ -1091,7 +1091,7 @@ public class TurnFlowTest {
         return Arrays.asList(
                 new Player("Alice", PlayerColor.RED),
                 new Player("Bob", PlayerColor.BLUE),
-                new Player("Carol", PlayerColor.WHITE)
+                new Player("Carol", PlayerColor.PINK)
         );
     }
 
