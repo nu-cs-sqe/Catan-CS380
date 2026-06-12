@@ -70,7 +70,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Robber on tile (0,0); player moves to desert tile
 - **Expected output**: Move succeeds
 - **BVA note**: Desert is a valid target; boundary between producing and non-producing tiles
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC11 – Steal 1 resource from victim with resources
 - **State of the system**: Robber moved; victim has settlement adjacent and holds resources

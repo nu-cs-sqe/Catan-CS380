@@ -9,6 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
+import board.Tile;
+import board.TileType;
+
 public class TurnFlowTest {
 
     // TC1 – Roll produces resources for player with settlement
@@ -159,6 +162,36 @@ public class TurnFlowTest {
 
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> turnFlow.moveRobber(robber, board.getTile(0, 0)));
+    }
+    
+    // TC10 – Robber can move to any other tile including desert
+    @Test
+    public void testRobberCanMoveToDesert() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        robber.setTile(board.getTile(0, 0));
+
+        Tile desertTile = findDesertTile(board);
+        Assertions.assertNotNull(desertTile);
+
+        turnFlow.moveRobber(robber, desertTile);
+
+        Assertions.assertEquals(desertTile.getQ(),
+                robber.getTile().getQ());
+        Assertions.assertEquals(desertTile.getR(),
+                robber.getTile().getR());
+    }
+
+    private Tile findDesertTile(Board board) {
+        for (Tile tile : board.getTiles()) {
+            if (tile.getTileType() == TileType.DESERT) {
+                return tile;
+            }
+        }
+        return null;
     }
 
     private Board createBoard() {
