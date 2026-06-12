@@ -116,7 +116,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player buys dev card; immediately tries to play it
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between cards in hand (playable) and cards in pending (not playable)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC18 – Pending dev card moves to player hand after endTurn
 - **State of the system**: Player bought a dev card; endTurn called

@@ -185,5 +185,13 @@ public final class TurnFlow {
         return pendingCards.size();
     }
 
+    public void playDevelopmentCard(Player player,
+                                    DevelopmentCard card) {
+        if (!player.getDevelopmentCards().contains(card)) {
+            throw new IllegalStateException(
+                    "Player does not have this card in hand");
+        }
+    }
+
 
 }

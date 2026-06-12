@@ -288,6 +288,24 @@ public class TurnFlowTest {
                 () -> turnFlow.buyDevelopmentCard(players.get(0), bank));
     }
 
+    // TC17 – Pending dev card cannot be played this turn
+    @Test
+    public void testCannotPlayPendingDevCard() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addResource(Resource.ORE, 1);
+        players.get(0).addResource(Resource.WHEAT, 1);
+        players.get(0).addResource(Resource.SHEEP, 1);
+
+        turnFlow.buyDevelopmentCard(players.get(0), bank);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.playDevelopmentCard(players.get(0),
+                        DevelopmentCard.KNIGHT));
+    }
+
 
 
     private Bank createBank() {
