@@ -934,6 +934,37 @@ public class TurnFlowTest {
                 () -> turnFlow.buildCity(players.get(0), vertex));
     }
 
+    // TC53 – Cannot upgrade with 0 city pieces remaining
+    @Test
+    public void testCannotUpgradeWith0CityPieces() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex v1 = board.getVertex("-3,1");
+        Vertex v2 = board.getVertex("-4,2");
+        Vertex v3 = board.getVertex("3,-1");
+        Vertex v4 = board.getVertex("3,1");
+        Vertex v5 = board.getVertex("5,1");
+
+        players.get(0).placeSettlement(v1);
+        players.get(0).placeSettlement(v2);
+        players.get(0).placeSettlement(v3);
+        players.get(0).placeSettlement(v4);
+        players.get(0).placeSettlement(v5);
+
+        players.get(0).upgradeSettlementToCity(v1);
+        players.get(0).upgradeSettlementToCity(v2);
+        players.get(0).upgradeSettlementToCity(v3);
+        players.get(0).upgradeSettlementToCity(v4);
+
+        players.get(0).addResource(Resource.ORE, 3);
+        players.get(0).addResource(Resource.WHEAT, 2);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildCity(players.get(0), v5));
+    }
+
 
 
     private void giveSettlementCost(Player player) {

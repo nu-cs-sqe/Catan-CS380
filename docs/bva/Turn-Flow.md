@@ -359,7 +359,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has placed all 4 cities
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 remaining (blocked) and 1+ (allowed)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC54 – Upgrading city frees a settlement piece
 - **State of the system**: Player has 5 settlements, 0 remaining; upgrades one to city
