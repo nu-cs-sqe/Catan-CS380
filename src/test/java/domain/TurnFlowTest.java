@@ -133,6 +133,19 @@ public class TurnFlowTest {
         Assertions.assertEquals(0, turnFlow.getDiscardCount(0));
     }
 
+    // TC8 – Rolling 7: odd card count rounds down
+    @Test
+    public void testRolling7OddCardCountRoundsDown() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        for (int i = 0; i < 9; i++) {
+            players.get(0).addResource(Resource.BRICK, 1);
+        }
+
+        Assertions.assertEquals(4, turnFlow.getDiscardCount(0));
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
