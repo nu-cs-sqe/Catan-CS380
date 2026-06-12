@@ -236,7 +236,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player holds longest road
 - **Expected output**: VP includes +2 for longest road
 - **BVA note**: Boundary between holding bonus (+2) and not (no addition)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC36 – checkWin returns true at exactly 10 VP
 - **State of the system**: Current player has exactly 10 VP

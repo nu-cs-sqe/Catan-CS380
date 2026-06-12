@@ -591,6 +591,31 @@ public class TurnFlowTest {
         Assertions.assertEquals(2, turnFlow.getVictoryPoints(0));
     }
 
+    // TC35 – getVictoryPoints includes longest road bonus
+    @Test
+    public void testVictoryPointsIncludesLongestRoad() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        setEdgeOwner(board, "0,2|1,1", players.get(0));
+        setEdgeOwner(board, "1,-1|1,1", players.get(0));
+        setEdgeOwner(board, "0,-2|1,-1", players.get(0));
+        setEdgeOwner(board, "-1,-1|0,-2", players.get(0));
+        setEdgeOwner(board, "-1,-1|-1,1", players.get(0));
+        turnFlow.updateLongestRoad(board);
+
+        Assertions.assertEquals(2, turnFlow.getVictoryPoints(0));
+    }
+
+    private void setEdgeOwner(Board board, String edgeKey,
+                              Player player) {
+        Edge edge = board.getEdge(edgeKey);
+        if (edge != null) {
+            edge.setOwner(player);
+        }
+    }
+
 
 
     private Tile findDesertTile(Board board) {
