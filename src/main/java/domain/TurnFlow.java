@@ -214,6 +214,19 @@ public final class TurnFlow {
         updateLargestArmy();
     }
 
+    public void playMonopolyCard(Player player, Resource resource) {
+        playDevelopmentCard(player, DevelopmentCard.MONOPOLY);
+        for (Player other : players) {
+            if (!other.equals(player)) {
+                int amount = other.getResourceCount(resource);
+                if (amount > 0) {
+                    other.removeResource(resource, amount);
+                    player.addResource(resource, amount);
+                }
+            }
+        }
+    }
+
     public void endTurn(Player player) {
         player.addDevelopmentCards(pendingCards);
         pendingCards.clear();

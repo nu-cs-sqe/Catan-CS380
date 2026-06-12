@@ -400,6 +400,26 @@ public class TurnFlowTest {
                 players.get(1).getResourceCount(Resource.ORE));
     }
 
+    // TC23 – MONOPOLY: takes all of named resource from other players
+    @Test
+    public void testPlayMonopolyTakesAllOfResource() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addDevelopmentCard(DevelopmentCard.MONOPOLY);
+        players.get(1).addResource(Resource.WHEAT, 2);
+        players.get(2).addResource(Resource.WHEAT, 3);
+
+        turnFlow.playMonopolyCard(players.get(0), Resource.WHEAT);
+
+        Assertions.assertEquals(5,
+                players.get(0).getResourceCount(Resource.WHEAT));
+        Assertions.assertEquals(0,
+                players.get(1).getResourceCount(Resource.WHEAT));
+        Assertions.assertEquals(0,
+                players.get(2).getResourceCount(Resource.WHEAT));
+    }
+
 
 
     private Bank createBank() {
