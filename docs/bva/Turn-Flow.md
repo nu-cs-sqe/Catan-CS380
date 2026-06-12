@@ -46,7 +46,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 8 resource cards; 7 is rolled
 - **Expected output**: Player must discard 4 cards
 - **BVA note**: Boundary between 7 cards (no discard) and 8 (must discard 4)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC7 – Rolling 7: player with 7 cards does not discard
 - **State of the system**: Player has 7 resource cards; 7 is rolled

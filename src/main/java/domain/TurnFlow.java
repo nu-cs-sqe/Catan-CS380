@@ -139,5 +139,9 @@ public final class TurnFlow {
         }
     }
 
+    public int getDiscardCount(int playerIndex) {
+        return players.get(playerIndex).discardOnSevenCount();
+    }
+
 
 }

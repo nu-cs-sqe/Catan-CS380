@@ -107,6 +107,19 @@ public class TurnFlowTest {
         }
     }
 
+    // TC6 – Rolling 7: player with 8+ cards must discard half
+    @Test
+    public void testRolling7PlayerWith8CardsDiscards4() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        for (int i = 0; i < 8; i++) {
+            players.get(0).addResource(Resource.BRICK, 1);
+        }
+
+        Assertions.assertEquals(4, turnFlow.getDiscardCount(0));
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
