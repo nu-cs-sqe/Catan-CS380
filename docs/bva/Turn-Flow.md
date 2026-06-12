@@ -214,7 +214,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player trades WOOD for WOOD
 - **Expected output**: Throws `IllegalArgumentException`
 - **BVA note**: Boundary between different resources (valid) and same (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC33 – Maritime trade when bank has 0 of receive resource throws
 - **State of the system**: Bank has 0 ORE; player attempts to receive ORE
