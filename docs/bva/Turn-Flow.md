@@ -208,7 +208,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player's best rate for WOOD is 2; gives 1
 - **Expected output**: Throws `IllegalArgumentException`
 - **BVA note**: Boundary between 1 (invalid) and 2 (valid minimum)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC32 – Maritime trade same resource give and receive throws
 - **State of the system**: Player trades WOOD for WOOD

@@ -536,6 +536,18 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.BRICK));
     }
 
+    // TC31 – Maritime trade below best rate throws
+    @Test
+    public void testMaritimeTradeBelowRateThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+
+        players.get(0).addResource(Resource.WOOD, 1);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.maritimeTrade(players.get(0),
+                        Resource.WOOD, 1, Resource.BRICK));
+    }
 
     private Tile findDesertTile(Board board) {
         for (Tile tile : board.getTiles()) {
