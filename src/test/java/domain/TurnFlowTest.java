@@ -697,6 +697,19 @@ public class TurnFlowTest {
                 players.get(0).getDevelopmentCards().size());
     }
 
+    // TC41 – endTurn advances to next player
+    @Test
+    public void testEndTurnAdvancesToNextPlayer() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        Assertions.assertEquals(0, turnFlow.getCurrentPlayerIndex());
+
+        turnFlow.endTurn(players.get(0));
+
+        Assertions.assertEquals(1, turnFlow.getCurrentPlayerIndex());
+    }
+
 
 
     // TC44 – Build settlement with exact resources succeeds
