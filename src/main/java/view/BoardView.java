@@ -10,7 +10,10 @@ import domain.Player;
 import domain.PlayerColor;
 import domain.Resource;
 import javafx.scene.Cursor;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -58,6 +61,8 @@ public class BoardView extends Pane {
   private static final double HARBOR_TEXT_HALF_H = 4.0;
   private static final double HEX_IMG_WIDTH = 2 * SCALE_X;
   private static final double HEX_IMG_HEIGHT = 4 * SCALE_Y;
+  private static final double TOKEN_CIRCLE_RADIUS = 12.0;
+  private static final double ROTATE_CCW_90 = -90.0;
   private static final int HEX_Q_SCALE = 2;
   private static final int HEX_R_SCALE = -3;
   private static final int[][] CORNER_OFFSETS = {
@@ -81,7 +86,7 @@ public class BoardView extends Pane {
     for (TileType type : TileType.values()) {
       URL url = getClass().getResource("/images/" + type.name() + ".png");
       if (url != null) {
-        tileImages.put(type, new Image(url.toExternalForm()));
+        tileImages.put(type, rotateCcw90(new Image(url.toExternalForm())));
       }
     }
   }
@@ -134,12 +139,30 @@ public class BoardView extends Pane {
   }
 
   private void addTokenLabel(int token, double cx, double cy) {
+    Circle bg = new Circle(cx, cy, TOKEN_CIRCLE_RADIUS);
+    bg.setFill(Color.IVORY);
+    bg.setStroke(Color.SADDLEBROWN);
+    bg.setStrokeWidth(UNOWNED_STROKE);
+    getChildren().add(bg);
     Text text =
         new Text(cx - TOKEN_LABEL_OFFSET_X, cy + TOKEN_LABEL_OFFSET_Y, String.valueOf(token));
     boolean highProbability = token == HIGH_PROB_TOKEN_A || token == HIGH_PROB_TOKEN_B;
     text.setFill(highProbability ? Color.RED : Color.BLACK);
     text.setStyle("-fx-font-weight: bold;");
     getChildren().add(text);
+  }
+
+  private static Image rotateCcw90(Image src) {
+    double sw = src.getWidth();
+    double sh = src.getHeight();
+    Canvas canvas = new Canvas(sh, sw);
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    gc.translate(0, sw);
+    gc.rotate(ROTATE_CCW_90);
+    gc.drawImage(src, 0, 0);
+    WritableImage out = new WritableImage((int) sh, (int) sw);
+    canvas.snapshot(null, out);
+    return out;
   }
 
   private void drawHarbors(Board board) {
