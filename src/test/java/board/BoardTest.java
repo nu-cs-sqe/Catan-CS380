@@ -777,6 +777,23 @@ class BoardTest {
     verify(shuffler);
   }
 
+  // TC31 – harbor whose vertex2Id matches no vertex: harbor still registered, v2 null branch taken
+  @Test
+  void createHarbors_vertex2NotFound_harborStillRegistered() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    Harbor testHarbor = new Harbor(ResourceType.GENERIC, 3, "-5,-1", "99,99");
+    Board boardWithCustomHarbors = new Board(shuffler, Collections.singletonList(testHarbor));
+    boardWithCustomHarbors.create();
+
+    assertTrue(boardWithCustomHarbors.getHarbors().contains(testHarbor));
+    assertNull(boardWithCustomHarbors.getVertex("99,99"));
+
+    verify(shuffler);
+  }
+
   // TC30 – harbor whose vertex1Id matches no vertex: harbor still registered, v1 null branch taken
   @Test
   void createHarbors_vertex1NotFound_harborStillRegistered() {
