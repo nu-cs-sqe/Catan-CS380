@@ -26,14 +26,14 @@ public class BoardView extends Pane {
 
   private static final double SCALE_X = 50.0;
   private static final double SCALE_Y = 30.0;
-  private static final double CENTER_X = 290.0;
+  private static final double CENTER_X = 350.0;
   private static final double CENTER_Y = 280.0;
   private static final double VERTEX_RADIUS = 8.0;
   private static final double VERTEX_ACTIVE_RADIUS = 13.0;
   private static final double ROAD_STROKE = 4.0;
   private static final double ROAD_ACTIVE_STROKE = 9.0;
   private static final double UNOWNED_STROKE = 1.0;
-  private static final double PREF_WIDTH = 600.0;
+  private static final double PREF_WIDTH = 720.0;
   private static final double PREF_HEIGHT = 580.0;
   private static final double TOKEN_LABEL_OFFSET_X = 6.0;
   private static final double TOKEN_LABEL_OFFSET_Y = 5.0;
