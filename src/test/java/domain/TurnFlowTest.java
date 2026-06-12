@@ -343,6 +343,23 @@ public class TurnFlowTest {
                         DevelopmentCard.KNIGHT));
     }
 
+    // TC20 – Cannot play second dev card same turn
+    @Test
+    public void testCannotPlaySecondDevCardSameTurn() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addDevelopmentCard(DevelopmentCard.KNIGHT);
+        players.get(0).addDevelopmentCard(DevelopmentCard.MONOPOLY);
+
+        turnFlow.playDevelopmentCard(players.get(0),
+                DevelopmentCard.KNIGHT);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.playDevelopmentCard(players.get(0),
+                        DevelopmentCard.MONOPOLY));
+    }
+
 
 
     private Bank createBank() {

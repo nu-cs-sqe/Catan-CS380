@@ -21,11 +21,14 @@ public final class TurnFlow {
     private int largestArmyHolder;
     private int longestRoadHolder;
 
+    private boolean devCardPlayedThisTurn;
+
     public TurnFlow(List<Player> players) {
         this.players = new ArrayList<>(players);
         this.largestArmyHolder = -1;
         this.longestRoadHolder = -1;
         this.pendingCards = new ArrayList<>();
+        this.devCardPlayedThisTurn = false;
     }
 
     public void updateLongestRoad(Board board) {
@@ -191,6 +194,11 @@ public final class TurnFlow {
             throw new IllegalStateException(
                     "Player does not have this card in hand");
         }
+        if (devCardPlayedThisTurn) {
+            throw new IllegalStateException(
+                    "Already played a dev card this turn");
+        }
+        devCardPlayedThisTurn = true;
     }
 
     public void endTurn(Player player) {
