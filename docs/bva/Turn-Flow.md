@@ -331,7 +331,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has placed all 5 settlements (none upgraded to city)
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 remaining (blocked) and 1+ (allowed)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 
@@ -341,7 +341,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 3 ORE, 2 WHEAT; valid vertex with player's settlement
 - **Expected output**: Settlement upgraded to city; resources deducted; checkWin called
 - **BVA note**: Boundary between insufficient resources (cannot upgrade) and exact cost (can upgrade)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC51 – Upgrade settlement to city with insufficient resources throws
 - **State of the system**: Player has 2 ORE, 2 WHEAT

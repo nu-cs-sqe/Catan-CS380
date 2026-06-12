@@ -20,6 +20,11 @@ public final class TurnFlow {
     private static final int WIN_THRESHOLD = 10;
     private static final Map<Resource, Integer> SETTLEMENT_COST =
             settlementCost();
+    private static final Map<Resource, Integer> CITY_COST =
+            cityCost();
+
+    private static final int CITY_ORE_COST = 3;
+
 
     private static Map<Resource, Integer> settlementCost() {
         Map<Resource, Integer> cost = new EnumMap<>(Resource.class);
@@ -27,6 +32,13 @@ public final class TurnFlow {
         cost.put(Resource.BRICK, 1);
         cost.put(Resource.SHEEP, 1);
         cost.put(Resource.WHEAT, 1);
+        return cost;
+    }
+
+    private static Map<Resource, Integer> cityCost() {
+        Map<Resource, Integer> cost = new EnumMap<>(Resource.class);
+        cost.put(Resource.ORE, CITY_ORE_COST);
+        cost.put(Resource.WHEAT, 2);
         return cost;
     }
 
@@ -300,6 +312,16 @@ public final class TurnFlow {
         for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
             player.removeResource(entry.getKey(), entry.getValue());
         }
+    }
+
+    public void buildCity(Player player, Vertex vertex) {
+        if (!player.hasResources(CITY_COST)) {
+            throw new IllegalStateException(
+                    "Insufficient resources for city");
+        }
+        player.upgradeSettlementToCity(vertex);
+        payCost(player, CITY_COST);
+        checkForWinner();
     }
 
     public void updateLongestRoad(Board board) {

@@ -879,6 +879,28 @@ public class TurnFlowTest {
                         v6, board));
     }
 
+    // TC50 – Upgrade settlement to city with exact resources
+    @Test
+    public void testUpgradeSettlementToCityWithExactResources() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex vertex = board.getVertex("-3,1");
+        players.get(0).placeSettlement(vertex);
+
+        players.get(0).addResource(Resource.ORE, 3);
+        players.get(0).addResource(Resource.WHEAT, 2);
+
+        turnFlow.buildCity(players.get(0), vertex);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.ORE));
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WHEAT));
+        Assertions.assertTrue(vertex.getSettlement().isCity());
+    }
+
 
 
     private void giveSettlementCost(Player player) {
