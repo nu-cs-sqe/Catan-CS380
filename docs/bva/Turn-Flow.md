@@ -248,7 +248,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Current player has 9 VP
 - **Expected output**: Game continues
 - **BVA note**: Boundary between 9 (below threshold) and 10 (at threshold)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC38 – checkWin called after every VP-changing action
 - **State of the system**: Player at 9 VP builds a settlement,
@@ -273,25 +273,25 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player bought dev card this turn; endTurn called
 - **Expected output**: Pending list empty; card in player hand
 - **BVA note**: Boundary between mid-turn (locked) and end-of-turn (promoted)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC41 – endTurn advances to next player
 - **State of the system**: Current player is index 0 in turn order
 - **Expected output**: Current player becomes index 1
 - **BVA note**: Boundary between current and next in clockwise order
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC42 – endTurn wraps from last player to first
 - **State of the system**: Current player is last in turn order
 - **Expected output**: Current player wraps to first in turn order
 - **BVA note**: Boundary between last player (wraps) and others (increments)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC43 – Cannot endTurn after game is over
 - **State of the system**: Game is over
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between active game (can end turn) and ended game (cannot)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 
