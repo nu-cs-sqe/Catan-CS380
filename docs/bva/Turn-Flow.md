@@ -122,7 +122,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player bought a dev card; endTurn called
 - **Expected output**: Card removed from pending; added to player's dev card hand
 - **BVA note**: Boundary between mid-turn (card locked) and end-of-turn (card available)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 
@@ -132,7 +132,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has dev card in hand; devCardPlayedThisTurn = false
 - **Expected output**: Card effect executes; devCardPlayedThisTurn set to true
 - **BVA note**: Boundary between 0 cards played (allowed) and 1 played (blocks further)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC20 – Cannot play second dev card same turn
 - **State of the system**: Player already played one dev card this turn

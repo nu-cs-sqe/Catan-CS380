@@ -330,6 +330,21 @@ public class TurnFlowTest {
 
 
 
+    // TC19 – Player plays first dev card this turn; succeeds
+    @Test
+    public void testPlayFirstDevCardSucceeds() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addDevelopmentCard(DevelopmentCard.KNIGHT);
+
+        Assertions.assertDoesNotThrow(
+                () -> turnFlow.playDevelopmentCard(players.get(0),
+                        DevelopmentCard.KNIGHT));
+    }
+
+
+
     private Bank createBank() {
         return new Bank(cards -> { });
     }
