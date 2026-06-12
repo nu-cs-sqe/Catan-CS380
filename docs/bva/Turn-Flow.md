@@ -267,7 +267,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player played dev card this turn; endTurn called
 - **Expected output**: devCardPlayedThisTurn reset to false
 - **BVA note**: Boundary between mid-turn (blocked) and post-endTurn (reset)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC40 – endTurn flushes pending dev cards to player hand
 - **State of the system**: Player bought dev card this turn; endTurn called

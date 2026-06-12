@@ -661,6 +661,24 @@ public class TurnFlowTest {
         Assertions.assertTrue(turnFlow.isGameOver());
     }
 
+    // TC39 – endTurn resets devCardPlayedThisTurn to false
+    @Test
+    public void testEndTurnResetsDevCardPlayedFlag() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addDevelopmentCard(DevelopmentCard.KNIGHT);
+        players.get(0).addDevelopmentCard(DevelopmentCard.MONOPOLY);
+
+        turnFlow.playDevelopmentCard(players.get(0),
+                DevelopmentCard.KNIGHT);
+        turnFlow.endTurn(players.get(0));
+
+        Assertions.assertDoesNotThrow(
+                () -> turnFlow.playDevelopmentCard(players.get(0),
+                        DevelopmentCard.MONOPOLY));
+    }
+
 
 
     // TC44 – Build settlement with exact resources succeeds
