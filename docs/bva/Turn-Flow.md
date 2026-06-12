@@ -180,7 +180,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player plays YEAR_OF_PLENTY requesting WOOD and ORE; bank has both
 - **Expected output**: Player gains 1 WOOD and 1 ORE
 - **BVA note**: Boundary between bank having 0 (throws) and 1+ (succeeds)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC28 – YEAR_OF_PLENTY: bank has 0 of requested resource throws
 - **State of the system**: Player requests ORE; bank has 0

@@ -481,6 +481,25 @@ public class TurnFlowTest {
                         edge1, edge2));
     }
 
+    // TC27 – YEAR_OF_PLENTY: player receives 2 resources from bank
+    @Test
+    public void testPlayYearOfPlentyReceives2Resources() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Bank bank = createBank();
+
+        players.get(0).addDevelopmentCard(
+                DevelopmentCard.YEAR_OF_PLENTY);
+
+        turnFlow.playYearOfPlentyCard(players.get(0), bank,
+                Resource.WOOD, Resource.ORE);
+
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.WOOD));
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.ORE));
+    }   
+
 
 
     private Bank createBank() {

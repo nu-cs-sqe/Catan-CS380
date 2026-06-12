@@ -239,6 +239,15 @@ public final class TurnFlow {
         player.placeRoad(edge2);
     }
 
+    public void playYearOfPlentyCard(Player player, Bank bank,
+                                     Resource res1, Resource res2) {
+        playDevelopmentCard(player, DevelopmentCard.YEAR_OF_PLENTY);
+        bank.distributeResource(res1, 1);
+        player.addResource(res1, 1);
+        bank.distributeResource(res2, 1);
+        player.addResource(res2, 1);
+    }
+
     public void endTurn(Player player) {
         player.addDevelopmentCards(pendingCards);
         pendingCards.clear();
