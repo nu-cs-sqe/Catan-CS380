@@ -17,7 +17,7 @@
 3. [50% done] Adnan Alhabian: Player Class, stores all player information over the course of the game such as
    settlements, resources, event cards. [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/28)
 
-# Week 10 (05/24/2026-05/30/2026)
+# Week 10 (05/31/2026-06/05/2026)
 
 **Planning and Progress Tracking**:
 
@@ -27,5 +27,19 @@
    assigning resources, etc. (PR)[https://github.com/nu-cs-sqe/Catan-CS380/pull/18]
 3. [done] Adnan Alhabian: Player Class, stores all player information over the course of the game such as
    settlements, resources, event cards. [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/28)
+
+# Week 11 (06/07/2026-06/12/2026)
+
+**Planning and Progress Tracking**:
+
+1. [done] Yusuf Ozdemir: Bank class, calculates card counts and allows distribution and trading to
+   players [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/30)
+2. [done] Yusuf Ozdemir: UI implementation [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/39)
+3. [done] Yusuf Ozdemir: Settlement class, stores settlement information (level, who owns
+   it) [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/32)
+4. [done] Yusuf Ozdemir: Project refactoring to fix edge cases and duplications so Classes work together
+   seamlessly [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/33)
+5. 
+
 
 
