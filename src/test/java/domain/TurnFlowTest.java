@@ -845,6 +845,42 @@ public class TurnFlowTest {
                         vertex, board));
     }
 
+    // TC49 – Cannot build settlement with 0 pieces remaining
+    @Test
+    public void testCannotBuildSettlementWith0Remaining() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        // Place 5 settlements directly to exhaust pieces
+        Vertex v1 = board.getVertex("-3,1");
+        Vertex v2 = board.getVertex("-4,2");
+        Vertex v3 = board.getVertex("3,-1");
+        Vertex v4 = board.getVertex("3,1");
+        Vertex v5 = board.getVertex("5,1");
+
+        players.get(0).placeSettlement(v1);
+        players.get(0).placeSettlement(v2);
+        players.get(0).placeSettlement(v3);
+        players.get(0).placeSettlement(v4);
+        players.get(0).placeSettlement(v5);
+
+        Vertex v6 = board.getVertex("-3,-1");
+        Edge road = board.getEdge("-3,-1|-3,1");
+        road.setOwner(players.get(0));
+
+        players.get(0).addResource(Resource.WOOD, 1);
+        players.get(0).addResource(Resource.BRICK, 1);
+        players.get(0).addResource(Resource.SHEEP, 1);
+        players.get(0).addResource(Resource.WHEAT, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildSettlement(players.get(0),
+                        v6, board));
+    }
+
+
+
     private void giveSettlementCost(Player player) {
         player.addResource(Resource.WOOD, 1);
         player.addResource(Resource.BRICK, 1);
