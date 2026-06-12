@@ -165,9 +165,11 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **Implemented**: [x]
 
 ### TC25 – ROAD_BUILDING: places 2 free roads
-- **State of the system**: Player has 2+ roads remaining; plays ROAD_BUILDING
-- **Expected output**: Both roads placed successfully
-- **BVA note**: Boundary between 1 road remaining (cannot place pair) and 2 (can)
+- **State of the system**: Player has 2+ roads remaining and a network to extend;
+  plays ROAD_BUILDING naming two connected edges
+- **Expected output**: Both roads placed successfully (free, no resources spent)
+- **BVA note**: Boundary between 1 road remaining (cannot place pair) and 2 (can);
+  the free roads are still subject to the connectivity rule
 - **Implemented**: [x]
 
 ### TC26 – ROAD_BUILDING with 0 roads remaining throws
@@ -396,3 +398,38 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **BVA note**: Boundary between 0 adjacent owned roads/buildings (invalid)
   and 1+ (valid); a road must extend the player's own network
 - **Implemented**: [x]
+
+### TC59 – ROAD_BUILDING roads must connect to the player's network
+- **State of the system**: Player plays ROAD_BUILDING naming edges not adjacent
+  to any road, settlement, or city they own
+- **Expected output**: Throws `IllegalStateException`
+- **BVA note**: Free roads are still subject to connectivity; boundary between
+  0 adjacent owned roads/buildings (invalid) and 1+ (valid)
+- **Implemented**: [ ]
+
+---
+
+## Setup Placement
+
+### TC60 – Setup settlement is free and needs no adjacent road
+- **State of the system**: Player with no resources and no roads places a setup
+  settlement on an empty vertex that respects the distance rule
+- **Expected output**: Settlement placed; no resources spent; no road required
+- **BVA note**: Boundary between main-phase placement (requires a road + cost)
+  and setup placement (free, no road)
+- **Implemented**: [ ]
+
+### TC61 – Setup settlement violating the distance rule throws
+- **State of the system**: An adjacent vertex already holds a settlement
+- **Expected output**: Throws `IllegalStateException`
+- **BVA note**: The distance rule still applies during setup; boundary between
+  all neighbors empty (valid) and one neighbor occupied (invalid)
+- **Implemented**: [ ]
+
+### TC62 – Setup road is free and must connect to the player's settlement
+- **State of the system**: Player places a setup road on an edge touching their
+  setup settlement while holding no resources
+- **Expected output**: Road placed; no resources spent
+- **BVA note**: Boundary between main-phase road (requires cost) and setup road
+  (free, still connected)
+- **Implemented**: [ ]
