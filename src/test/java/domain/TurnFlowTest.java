@@ -577,6 +577,21 @@ public class TurnFlowTest {
                         Resource.WOOD, 4, Resource.BRICK));
     }
 
+    // TC34 – getVictoryPoints includes largest army bonus
+    @Test
+    public void testVictoryPointsIncludesLargestArmy() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        players.get(0).playKnight();
+        turnFlow.updateLargestArmy();
+
+        Assertions.assertEquals(2, turnFlow.getVictoryPoints(0));
+    }
+
+
 
     private Tile findDesertTile(Board board) {
         for (Tile tile : board.getTiles()) {

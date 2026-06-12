@@ -230,7 +230,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player holds largest army
 - **Expected output**: VP includes +2 for largest army
 - **BVA note**: Boundary between holding bonus (+2) and not (no addition)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC35 – getVictoryPoints includes longest road bonus
 - **State of the system**: Player holds longest road
