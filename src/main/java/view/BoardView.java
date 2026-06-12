@@ -37,8 +37,8 @@ public class BoardView extends Pane {
   private static final double ROAD_STROKE = 4.0;
   private static final double ROAD_ACTIVE_STROKE = 9.0;
   private static final double UNOWNED_STROKE = 1.0;
-  private static final double PREF_WIDTH = 820.0;
-  private static final double PREF_HEIGHT = 580.0;
+  private static final double PREF_WIDTH = 860.0;
+  private static final double PREF_HEIGHT = 700.0;
   private static final double TOKEN_LABEL_OFFSET_X = 6.0;
   private static final double TOKEN_LABEL_OFFSET_Y = 5.0;
   private static final int HIGH_PROB_TOKEN_A = 6;
@@ -63,6 +63,7 @@ public class BoardView extends Pane {
 
   public BoardView() {
     setPrefSize(PREF_WIDTH, PREF_HEIGHT);
+    setMaxSize(PREF_WIDTH, PREF_HEIGHT);
     setStyle("-fx-background-color: #b0d4f1;");
   }
 
