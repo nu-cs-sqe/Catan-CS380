@@ -443,3 +443,64 @@ Manages everything that happens during a player's turn: rolling dice, resource d
   interior vertex (up to 3 tiles); resources derive from the board, not an
   injected list
 - **Implemented**: [x]
+
+---
+
+## Robber / Rolling a 7 Resolution
+
+### TC64 – Discarding the required number of cards succeeds
+- **State of the system**: Player holds 8 cards (must discard 4); bank has stock
+- **Expected output**: The 4 chosen cards are removed from the player and
+  returned to the bank
+- **BVA note**: Boundary between the exact required count (valid) and any other
+  count; the discard executes the count from `getDiscardCount`
+- **Implemented**: [ ]
+
+### TC65 – Discarding the wrong number of cards throws
+- **State of the system**: Player must discard 4 but supplies a set summing to 3
+- **Expected output**: Throws `IllegalArgumentException`; nothing is removed
+- **BVA note**: Boundary between the required count (valid) and one below (invalid)
+- **Implemented**: [ ]
+
+### TC66 – stealCandidates lists players with a building on the robber's tile
+- **State of the system**: Robber on a tile; one opponent has a settlement on a
+  vertex bordering that tile, another opponent does not
+- **Expected output**: The bordering opponent is returned; the non-bordering one
+  is not
+- **BVA note**: Boundary between a vertex that touches the robbed hex (eligible)
+  and one that does not (ineligible)
+- **Implemented**: [ ]
+
+### TC67 – Stealing from a victim who does not border the robber throws
+- **State of the system**: Robber on a tile; victim's only settlement borders a
+  different tile
+- **Expected output**: Throws `IllegalArgumentException`
+- **BVA note**: Boundary between an eligible victim (borders the hex) and an
+  ineligible one
+- **Implemented**: [ ]
+
+### TC68 – Resolving a roll of 7 sets the robber pending and skips production
+- **State of the system**: A 7 is rolled; players have settlements on the board
+- **Expected output**: `isRobberPending()` becomes true; no resources distributed
+- **BVA note**: 7 is the boundary between a production roll and the robber trigger
+- **Implemented**: [ ]
+
+### TC69 – Resolving a non-7 roll distributes production and leaves no robber pending
+- **State of the system**: A 5 is rolled; a player has a settlement on a token-5 tile
+- **Expected output**: Player receives the resource; `isRobberPending()` is false
+- **BVA note**: Boundary between the robber trigger (7) and a production roll
+- **Implemented**: [ ]
+
+### TC70 – Taking another action while the robber is pending throws
+- **State of the system**: A 7 was rolled and the robber has not been moved
+- **Expected output**: `endTurn` (and other actions) throw `IllegalStateException`
+- **BVA note**: Boundary between robber unresolved (blocked) and resolved (allowed)
+- **Implemented**: [ ]
+
+### TC71 – Moving the robber and stealing clears the pending state
+- **State of the system**: A 7 was rolled; victim borders the target tile and holds a resource
+- **Expected output**: Robber moves, one resource transfers to the thief, and
+  `isRobberPending()` becomes false
+- **BVA note**: Boundary between the pending robber (blocks actions) and the
+  resolved robber (unblocks)
+- **Implemented**: [ ]
