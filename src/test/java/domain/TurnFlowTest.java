@@ -309,6 +309,78 @@ public class TurnFlowTest {
                         players.get(1), robber, board));
     }
 
+    // TC68 – Resolving a roll of 7 sets the robber pending, skips production
+    @Test
+    public void testResolveRollSevenSetsRobberPending() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        players.get(0).placeSettlement(board.getVertex("-3,1"));
+
+        turnFlow.resolveRoll(board, robber, 7);
+
+        Assertions.assertTrue(turnFlow.isRobberPending());
+        for (Resource resource : Resource.values()) {
+            Assertions.assertEquals(0,
+                    players.get(0).getResourceCount(resource));
+        }
+    }
+
+    // TC69 – Resolving a non-7 roll produces and leaves no robber pending
+    @Test
+    public void testResolveRollNonSevenProduces() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        players.get(0).placeSettlement(board.getVertex("-3,1"));
+
+        turnFlow.resolveRoll(board, robber, 5);
+
+        Assertions.assertFalse(turnFlow.isRobberPending());
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.WOOD));
+    }
+
+    // TC70 – Taking another action while the robber is pending throws
+    @Test
+    public void testActionWhileRobberPendingThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        turnFlow.resolveRoll(board, robber, 7);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.endTurn(players.get(0)));
+    }
+
+    // TC71 – Moving the robber and stealing clears the pending state
+    @Test
+    public void testMoveRobberAndStealClearsPending() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        players.get(1).placeSettlement(board.getVertex("-3,1"));
+        players.get(1).addResource(Resource.ORE, 1);
+
+        turnFlow.resolveRoll(board, robber, 7);
+        turnFlow.moveRobberAndSteal(robber, board.getTile(-2, 0),
+                players.get(0), players.get(1), board);
+
+        Assertions.assertFalse(turnFlow.isRobberPending());
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.ORE));
+        Assertions.assertEquals(0,
+                players.get(1).getResourceCount(Resource.ORE));
+    }
+
     // TC14 – Buy dev card with exact resources enters pending list
     @Test
     public void testBuyDevCardWithExactResources() {

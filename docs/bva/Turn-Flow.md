@@ -483,19 +483,19 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: A 7 is rolled; players have settlements on the board
 - **Expected output**: `isRobberPending()` becomes true; no resources distributed
 - **BVA note**: 7 is the boundary between a production roll and the robber trigger
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC69 – Resolving a non-7 roll distributes production and leaves no robber pending
 - **State of the system**: A 5 is rolled; a player has a settlement on a token-5 tile
 - **Expected output**: Player receives the resource; `isRobberPending()` is false
 - **BVA note**: Boundary between the robber trigger (7) and a production roll
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC70 – Taking another action while the robber is pending throws
 - **State of the system**: A 7 was rolled and the robber has not been moved
 - **Expected output**: `endTurn` (and other actions) throw `IllegalStateException`
 - **BVA note**: Boundary between robber unresolved (blocked) and resolved (allowed)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC71 – Moving the robber and stealing clears the pending state
 - **State of the system**: A 7 was rolled; victim borders the target tile and holds a resource
@@ -503,4 +503,4 @@ Manages everything that happens during a player's turn: rolling dice, resource d
   `isRobberPending()` becomes false
 - **BVA note**: Boundary between the pending robber (blocks actions) and the
   resolved robber (unblocks)
-- **Implemented**: [ ]
+- **Implemented**: [x]

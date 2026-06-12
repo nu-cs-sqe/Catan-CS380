@@ -18,6 +18,7 @@ public final class TurnFlow {
     private static final int MIN_KNIGHTS_FOR_ARMY = 3;
     private static final int MIN_ROAD_LENGTH = 5;
     private static final int WIN_THRESHOLD = 10;
+    private static final int ROBBER_ROLL = 7;
     private static final Map<Resource, Integer> SETTLEMENT_COST =
             settlementCost();
     private static final Map<Resource, Integer> CITY_COST =
@@ -59,6 +60,7 @@ public final class TurnFlow {
     private int longestRoadHolder;
     private boolean devCardPlayedThisTurn;
     private boolean gameOver;
+    private boolean robberPending;
     private int currentPlayerIndex;
 
     public TurnFlow(List<Player> players) {
@@ -177,6 +179,35 @@ public final class TurnFlow {
         robber.setTile(targetTile);
     }
 
+    public void resolveRoll(Board board, Robber robber, int roll) {
+        if (roll == ROBBER_ROLL) {
+            robberPending = true;
+        } else {
+            rollForProduction(board, robber, roll);
+        }
+    }
+
+    public boolean isRobberPending() {
+        return robberPending;
+    }
+
+    public void moveRobberAndSteal(Robber robber, Tile targetTile,
+                                   Player thief, Player victim,
+                                   Board board) {
+        moveRobber(robber, targetTile);
+        if (victim != null) {
+            stealResource(thief, victim, robber, board);
+        }
+        robberPending = false;
+    }
+
+    private void requireRobberResolved() {
+        if (robberPending) {
+            throw new IllegalStateException(
+                    "Move the robber before taking other actions");
+        }
+    }
+
     public void stealResource(Player thief, Player victim,
                               Robber robber, Board board) {
         if (thief.equals(victim)) {
@@ -233,6 +264,7 @@ public final class TurnFlow {
     }
 
     public void buyDevelopmentCard(Player player) {
+        requireRobberResolved();
         player.removeResource(Resource.ORE, 1);
         player.removeResource(Resource.WHEAT, 1);
         player.removeResource(Resource.SHEEP, 1);
@@ -246,6 +278,7 @@ public final class TurnFlow {
 
     public void playDevelopmentCard(Player player,
                                     DevelopmentCard card) {
+        requireRobberResolved();
         if (card == DevelopmentCard.VICTORY_POINT) {
             throw new IllegalArgumentException(
                     "Victory point cards cannot be played");
@@ -308,12 +341,14 @@ public final class TurnFlow {
 
     public void maritimeTrade(Player player, Resource give,
                               int giveCount, Resource receive) {
+        requireRobberResolved();
         player.removeResource(give, giveCount);
         bank.maritimeTrade(give, giveCount, receive);
         player.addResource(receive, 1);
     }
 
     public void endTurn(Player player) {
+        requireRobberResolved();
         if (gameOver) {
             throw new IllegalStateException(
                     "Cannot end turn after game is over");
@@ -334,6 +369,7 @@ public final class TurnFlow {
 
     public void buildSettlement(Player player, Vertex vertex,
                                 Board board) {
+        requireRobberResolved();
         if (!player.hasResources(SETTLEMENT_COST)) {
             throw new IllegalStateException(
                     "Insufficient resources for settlement");
@@ -392,7 +428,7 @@ public final class TurnFlow {
     }
 
     public void buildCity(Player player, Vertex vertex) {
-
+        requireRobberResolved();
         if (!player.hasResources( CITY_COST )) {
 
             throw new IllegalStateException(
@@ -404,6 +440,7 @@ public final class TurnFlow {
     }
 
     public void buildRoad(Player player, Edge edge, Board board) {
+        requireRobberResolved();
         if (!player.hasResources( ROAD_COST )) {
             throw new IllegalStateException (
                     "Insufficient resources to build road");
