@@ -155,6 +155,10 @@ public final class TurnFlow {
     }
 
     public void stealResource(Player thief, Player victim) {
+        if (thief.equals(victim)) {
+            throw new IllegalArgumentException(
+                    "Cannot steal from yourself");
+        }
         for (Resource resource : Resource.values()) {
             if (resource == Resource.GENERIC) {
                 continue;

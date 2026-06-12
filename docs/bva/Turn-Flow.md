@@ -88,7 +88,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Current player tries to steal from themselves
 - **Expected output**: Throws `IllegalArgumentException`
 - **BVA note**: Boundary between valid victim (different player) and invalid (self)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ---
 

@@ -217,6 +217,19 @@ public class TurnFlowTest {
         }
     }
 
+    // TC13 – Cannot steal from yourself
+    @Test
+    public void testCannotStealFromYourself() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(0).addResource(Resource.BRICK, 1);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.stealResource(players.get(0),
+                        players.get(0)));
+    }
+
     private Tile findDesertTile(Board board) {
         for (Tile tile : board.getTiles()) {
             if (tile.getTileType() == TileType.DESERT) {
