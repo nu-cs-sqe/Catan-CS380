@@ -24,7 +24,7 @@ public class TurnFlowTest {
         Robber robber = new Robber();
 
         Vertex vertex = board.getVertex("-3,1");
-        vertex.setOwner(players.get(0));
+        players.get(0).placeSettlement(vertex);
 
         turnFlow.rollForProduction(board, robber, 5);
 
@@ -41,7 +41,7 @@ public class TurnFlowTest {
         Robber robber = new Robber();
 
         Vertex vertex = board.getVertex("-3,1");
-        vertex.setOwner(players.get(0));
+        players.get(0).placeSettlement(vertex);
 
         turnFlow.rollForProduction(board, robber, 6);
 
@@ -58,7 +58,6 @@ public class TurnFlowTest {
         Robber robber = new Robber();
 
         Vertex vertex = board.getVertex("-3,1");
-        vertex.setOwner(players.get(0));
         players.get(0).placeSettlement(vertex);
         players.get(0).upgradeSettlementToCity(vertex);
 
@@ -77,7 +76,7 @@ public class TurnFlowTest {
         Robber robber = new Robber();
 
         Vertex vertex = board.getVertex("-3,1");
-        vertex.setOwner(players.get(0));
+        players.get(0).placeSettlement(vertex);
 
         robber.setTile(board.getTile(-2, 0));
 
@@ -96,7 +95,7 @@ public class TurnFlowTest {
         Robber robber = new Robber();
 
         Vertex vertex = board.getVertex("-3,1");
-        vertex.setOwner(players.get(0));
+        players.get(0).placeSettlement(vertex);
 
         turnFlow.rollForProduction(board, robber, 7);
 

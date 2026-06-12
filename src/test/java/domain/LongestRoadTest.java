@@ -132,7 +132,7 @@ public class LongestRoadTest {
         turnFlow.updateLongestRoad(board);
         Assertions.assertEquals(0, turnFlow.getLongestRoadHolder());
 
-        board.getVertex("0,-2").setOwner(players.get(1));
+        players.get(1).placeSettlement(board.getVertex("0,-2"));
         turnFlow.updateLongestRoad(board);
         Assertions.assertEquals(-1, turnFlow.getLongestRoadHolder());
     }

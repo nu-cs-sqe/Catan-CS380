@@ -78,11 +78,11 @@ class VertexTest {
     assertNull(vertex.getOwner());
   }
 
-  // TC7 – setOwner stores and getOwner retrieves the player
+  // TC7 – owner is derived from the settlement placed on the vertex
   @Test
-  void setOwner_nonNullPlayer_returnsPlayer() {
+  void getOwner_vertexWithSettlement_returnsSettlementOwner() {
     Vertex vertex = new Vertex("0");
-    vertex.setOwner(player);
+    vertex.setSettlement(new Settlement(player));
 
     assertEquals(player, vertex.getOwner());
   }
