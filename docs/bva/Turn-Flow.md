@@ -40,7 +40,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Dice returns 7; players have settlements on board
 - **Expected output**: No player receives any resources
 - **BVA note**: 7 is the boundary between resource rolls (2–6, 8–12) and robber trigger
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC6 – Rolling 7: player with 8+ cards must discard half
 - **State of the system**: Player has 8 resource cards; 7 is rolled

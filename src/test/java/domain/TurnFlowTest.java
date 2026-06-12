@@ -88,6 +88,25 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.WOOD));
     }
 
+    // TC5 – Rolling 7 produces no resources
+    @Test
+    public void testRolling7ProducesNoResources() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        Vertex vertex = board.getVertex("-3,1");
+        vertex.setOwner(players.get(0));
+
+        turnFlow.rollForProduction(board, robber, 7);
+
+        for (Resource resource : Resource.values()) {
+            Assertions.assertEquals(0,
+                    players.get(0).getResourceCount(resource));
+        }
+    }
+
     private Board createBoard() {
         Shuffler noOp = new Shuffler() {
             @Override
