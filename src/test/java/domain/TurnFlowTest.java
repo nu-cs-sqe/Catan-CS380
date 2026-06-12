@@ -782,6 +782,20 @@ public class TurnFlowTest {
                 () -> turnFlow.buildSettlement(players.get(0), vertex));
     }
 
+    // TC46 – Cannot build settlement on occupied vertex
+    @Test
+    public void testBuildSettlementOnOccupiedVertexThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Vertex vertex = new Vertex("build-v3");
+
+        players.get(1).placeSettlement(vertex);
+        giveSettlementCost(players.get(0));
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildSettlement(players.get(0), vertex));
+    }
+
     private void giveSettlementCost(Player player) {
         player.addResource(Resource.WOOD, 1);
         player.addResource(Resource.BRICK, 1);
