@@ -1,17 +1,16 @@
 package domain;
 
 import board.Board;
+import board.Edge;
 import board.Robber;
 import board.Shuffler;
+import board.Tile;
+import board.TileType;
 import board.Vertex;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
-
-import board.Tile;
-import board.TileType;
-import board.Edge;
 
 public class TurnFlowTest {
 
@@ -24,8 +23,6 @@ public class TurnFlowTest {
         Board board = createBoard();
         Robber robber = new Robber();
 
-        // No-op shuffler: position (-2,0) is FOREST with token 5
-        // Vertex "-3,1" is adjacent to that tile
         Vertex vertex = board.getVertex("-3,1");
         vertex.setOwner(players.get(0));
 
@@ -46,7 +43,6 @@ public class TurnFlowTest {
         Vertex vertex = board.getVertex("-3,1");
         vertex.setOwner(players.get(0));
 
-        // Token on that tile is 5, but we roll 6
         turnFlow.rollForProduction(board, robber, 6);
 
         Assertions.assertEquals(0,
@@ -83,7 +79,6 @@ public class TurnFlowTest {
         Vertex vertex = board.getVertex("-3,1");
         vertex.setOwner(players.get(0));
 
-        // Place robber on FOREST tile at (-2,0) with token 5
         robber.setTile(board.getTile(-2, 0));
 
         turnFlow.rollForProduction(board, robber, 5);
@@ -149,7 +144,6 @@ public class TurnFlowTest {
 
         Assertions.assertEquals(4, turnFlow.getDiscardCount(0));
     }
-
 
     // TC9 – Robber must move to a different tile
     @Test
@@ -235,14 +229,13 @@ public class TurnFlowTest {
     @Test
     public void testBuyDevCardWithExactResources() {
         List<Player> players = createPlayers();
-        Bank bank = createBank();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
 
         players.get(0).addResource(Resource.ORE, 1);
         players.get(0).addResource(Resource.WHEAT, 1);
         players.get(0).addResource(Resource.SHEEP, 1);
 
-        turnFlow.buyDevelopmentCard(players.get(0), bank);
+        turnFlow.buyDevelopmentCard(players.get(0));
 
         Assertions.assertEquals(0,
                 players.get(0).getResourceCount(Resource.ORE));
@@ -259,24 +252,22 @@ public class TurnFlowTest {
     @Test
     public void testCannotBuyDevCardWithInsufficientResources() {
         List<Player> players = createPlayers();
-        Bank bank = createBank();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
 
         players.get(0).addResource(Resource.ORE, 1);
         players.get(0).addResource(Resource.WHEAT, 1);
 
         Assertions.assertThrows(IllegalStateException.class,
-                () -> turnFlow.buyDevelopmentCard(players.get(0), bank));
+                () -> turnFlow.buyDevelopmentCard(players.get(0)));
     }
 
     // TC16 – Cannot buy dev card when deck is empty
     @Test
     public void testCannotBuyDevCardWhenDeckEmpty() {
-        List<Player> players = createPlayers();
         Bank bank = createBank();
-        TurnFlow turnFlow = new TurnFlow(players);
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
 
-        // Draw all 25 cards to empty the deck
         for (int i = 0; i < 25; i++) {
             bank.drawDevelopmentCard();
         }
@@ -286,21 +277,20 @@ public class TurnFlowTest {
         players.get(0).addResource(Resource.SHEEP, 1);
 
         Assertions.assertThrows(IllegalStateException.class,
-                () -> turnFlow.buyDevelopmentCard(players.get(0), bank));
+                () -> turnFlow.buyDevelopmentCard(players.get(0)));
     }
 
     // TC17 – Pending dev card cannot be played this turn
     @Test
     public void testCannotPlayPendingDevCard() {
         List<Player> players = createPlayers();
-        Bank bank = createBank();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
 
         players.get(0).addResource(Resource.ORE, 1);
         players.get(0).addResource(Resource.WHEAT, 1);
         players.get(0).addResource(Resource.SHEEP, 1);
 
-        turnFlow.buyDevelopmentCard(players.get(0), bank);
+        turnFlow.buyDevelopmentCard(players.get(0));
 
         Assertions.assertThrows(IllegalStateException.class,
                 () -> turnFlow.playDevelopmentCard(players.get(0),
@@ -311,14 +301,13 @@ public class TurnFlowTest {
     @Test
     public void testPendingCardMovesToHandAfterEndTurn() {
         List<Player> players = createPlayers();
-        Bank bank = createBank();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
 
         players.get(0).addResource(Resource.ORE, 1);
         players.get(0).addResource(Resource.WHEAT, 1);
         players.get(0).addResource(Resource.SHEEP, 1);
 
-        turnFlow.buyDevelopmentCard(players.get(0), bank);
+        turnFlow.buyDevelopmentCard(players.get(0));
         Assertions.assertTrue(
                 players.get(0).getDevelopmentCards().isEmpty());
 
@@ -328,8 +317,6 @@ public class TurnFlowTest {
                 players.get(0).getDevelopmentCards().isEmpty());
         Assertions.assertEquals(0, turnFlow.getPendingCardCount());
     }
-
-
 
     // TC19 – Player plays first dev card this turn; succeeds
     @Test
@@ -392,7 +379,8 @@ public class TurnFlowTest {
         turnFlow.playKnightCard(players.get(0), robber,
                 targetTile, players.get(1));
 
-        Assertions.assertEquals(1, players.get(0).getKnightsPlayed());
+        Assertions.assertEquals(1,
+                players.get(0).getKnightsPlayed());
         Assertions.assertEquals(targetTile.getQ(),
                 robber.getTile().getQ());
         Assertions.assertEquals(1,
@@ -463,7 +451,6 @@ public class TurnFlowTest {
         players.get(0).addDevelopmentCard(
                 DevelopmentCard.ROAD_BUILDING);
 
-        // Place all 15 roads
         int edgeIndex = 0;
         for (Edge edge : board.getEdges()) {
             if (edgeIndex >= 15) {
@@ -485,13 +472,12 @@ public class TurnFlowTest {
     @Test
     public void testPlayYearOfPlentyReceives2Resources() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
-        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
 
         players.get(0).addDevelopmentCard(
                 DevelopmentCard.YEAR_OF_PLENTY);
 
-        turnFlow.playYearOfPlentyCard(players.get(0), bank,
+        turnFlow.playYearOfPlentyCard(players.get(0),
                 Resource.WOOD, Resource.ORE);
 
         Assertions.assertEquals(1,
@@ -503,43 +489,53 @@ public class TurnFlowTest {
     // TC28 – YEAR_OF_PLENTY: bank has 0 of requested resource throws
     @Test
     public void testYearOfPlentyBankEmpty() {
-        List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
         Bank bank = createBank();
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
 
         players.get(0).addDevelopmentCard(
                 DevelopmentCard.YEAR_OF_PLENTY);
 
-        // Drain all ORE from bank
         bank.distributeResource(Resource.ORE, 19);
 
         Assertions.assertThrows(IllegalStateException.class,
                 () -> turnFlow.playYearOfPlentyCard(players.get(0),
-                        bank, Resource.WOOD, Resource.ORE));
+                        Resource.WOOD, Resource.ORE));
     }
 
     // TC29 – YEAR_OF_PLENTY: same resource twice succeeds
     @Test
     public void testYearOfPlentySameResourceTwice() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
-        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
 
         players.get(0).addDevelopmentCard(
                 DevelopmentCard.YEAR_OF_PLENTY);
 
-        turnFlow.playYearOfPlentyCard(players.get(0), bank,
+        turnFlow.playYearOfPlentyCard(players.get(0),
                 Resource.WOOD, Resource.WOOD);
 
         Assertions.assertEquals(2,
                 players.get(0).getResourceCount(Resource.WOOD));
     }
 
+    // TC30 – Maritime trade at exact harbor rate succeeds
+    @Test
+    public void testMaritimeTradeAtExactRate() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
 
+        players.get(0).addResource(Resource.WOOD, 4);
 
-    private Bank createBank() {
-        return new Bank(cards -> { });
+        turnFlow.maritimeTrade(players.get(0),
+                Resource.WOOD, 4, Resource.BRICK);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WOOD));
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.BRICK));
     }
+
 
     private Tile findDesertTile(Board board) {
         for (Tile tile : board.getTiles()) {
@@ -567,5 +563,9 @@ public class TurnFlowTest {
                 new Player("Bob", PlayerColor.BLUE),
                 new Player("Carol", PlayerColor.WHITE)
         );
+    }
+
+    private Bank createBank() {
+        return new Bank(cards -> { });
     }
 }

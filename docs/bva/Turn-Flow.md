@@ -202,7 +202,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 2:1 WOOD harbor; gives 2 WOOD for 1 BRICK
 - **Expected output**: Player loses 2 WOOD, gains 1 BRICK
 - **BVA note**: Boundary between below rate (invalid) and exact rate (valid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC31 – Maritime trade below best rate throws
 - **State of the system**: Player's best rate for WOOD is 2; gives 1

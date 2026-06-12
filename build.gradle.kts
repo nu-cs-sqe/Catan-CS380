@@ -73,6 +73,7 @@ spotbugs {
     maxHeapSize = "1g"
     extraArgs = listOf("-nested:false")
     //jvmArgs = listOf("-Duser.language=ja") // set user language to japanese
+    excludeFilter = file("config/spotbugs/exclude.xml")
 }
 
 tasks.spotbugsMain {

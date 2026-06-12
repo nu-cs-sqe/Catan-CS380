@@ -6,7 +6,6 @@ import board.Robber;
 import board.Tile;
 import board.TileType;
 import board.Vertex;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,67 +15,25 @@ public final class TurnFlow {
     private static final int LONGEST_ROAD_VP = 2;
     private static final int MIN_KNIGHTS_FOR_ARMY = 3;
     private static final int MIN_ROAD_LENGTH = 5;
-    private final List<DevelopmentCard> pendingCards;
 
     private final List<Player> players;
+    private final Bank bank;
+    private final List<DevelopmentCard> pendingCards;
     private int largestArmyHolder;
     private int longestRoadHolder;
-
     private boolean devCardPlayedThisTurn;
 
     public TurnFlow(List<Player> players) {
+        this(players, null);
+    }
+
+    public TurnFlow(List<Player> players, Bank bank) {
         this.players = new ArrayList<>(players);
+        this.bank = bank;
         this.largestArmyHolder = -1;
         this.longestRoadHolder = -1;
         this.pendingCards = new ArrayList<>();
         this.devCardPlayedThisTurn = false;
-    }
-
-    public void updateLongestRoad(Board board) {
-        int maxLength = MIN_ROAD_LENGTH - 1;
-        int newHolder = -1;
-        for (int i = 0; i < players.size(); i++) {
-            int length = LongestRoadCalculator.calculateForPlayer(
-                    board, players.get(i));
-            if (length > maxLength) {
-                maxLength = length;
-                newHolder = i;
-            }
-        }
-        longestRoadHolder = newHolder;
-    }
-
-    public int getLongestRoadHolder() {
-        return longestRoadHolder;
-    }
-
-    public void updateLargestArmy() {
-        int maxKnights = MIN_KNIGHTS_FOR_ARMY - 1;
-        if (largestArmyHolder >= 0) {
-            maxKnights = players.get(largestArmyHolder)
-                    .getKnightsPlayed();
-        }
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getKnightsPlayed() > maxKnights) {
-                largestArmyHolder = i;
-                return;
-            }
-        }
-    }
-
-    public int getLargestArmyHolder() {
-        return largestArmyHolder;
-    }
-
-    public int getVictoryPoints(int playerIndex) {
-        int vp = players.get(playerIndex).getVictoryPoints();
-        if (playerIndex == largestArmyHolder) {
-            vp += LARGEST_ARMY_VP;
-        }
-        if (playerIndex == longestRoadHolder) {
-            vp += LONGEST_ROAD_VP;
-        }
-        return vp;
     }
 
     public void rollForProduction(Board board, Robber robber,
@@ -177,7 +134,7 @@ public final class TurnFlow {
         }
     }
 
-    public void buyDevelopmentCard(Player player, Bank bank) {
+    public void buyDevelopmentCard(Player player) {
         player.removeResource(Resource.ORE, 1);
         player.removeResource(Resource.WHEAT, 1);
         player.removeResource(Resource.SHEEP, 1);
@@ -239,7 +196,7 @@ public final class TurnFlow {
         player.placeRoad(edge2);
     }
 
-    public void playYearOfPlentyCard(Player player, Bank bank,
+    public void playYearOfPlentyCard(Player player,
                                      Resource res1, Resource res2) {
         playDevelopmentCard(player, DevelopmentCard.YEAR_OF_PLENTY);
         bank.distributeResource(res1, 1);
@@ -248,10 +205,63 @@ public final class TurnFlow {
         player.addResource(res2, 1);
     }
 
+    public void maritimeTrade(Player player, Resource give,
+                              int giveCount, Resource receive) {
+        player.removeResource(give, giveCount);
+        bank.maritimeTrade(give, giveCount, receive);
+        player.addResource(receive, 1);
+    }
+
     public void endTurn(Player player) {
         player.addDevelopmentCards(pendingCards);
         pendingCards.clear();
+        devCardPlayedThisTurn = false;
     }
 
+    public void updateLongestRoad(Board board) {
+        int maxLength = MIN_ROAD_LENGTH - 1;
+        int newHolder = -1;
+        for (int i = 0; i < players.size(); i++) {
+            int length = LongestRoadCalculator.calculateForPlayer(
+                    board, players.get(i));
+            if (length > maxLength) {
+                maxLength = length;
+                newHolder = i;
+            }
+        }
+        longestRoadHolder = newHolder;
+    }
 
+    public int getLongestRoadHolder() {
+        return longestRoadHolder;
+    }
+
+    public void updateLargestArmy() {
+        int maxKnights = MIN_KNIGHTS_FOR_ARMY - 1;
+        if (largestArmyHolder >= 0) {
+            maxKnights = players.get(largestArmyHolder)
+                    .getKnightsPlayed();
+        }
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getKnightsPlayed() > maxKnights) {
+                largestArmyHolder = i;
+                return;
+            }
+        }
+    }
+
+    public int getLargestArmyHolder() {
+        return largestArmyHolder;
+    }
+
+    public int getVictoryPoints(int playerIndex) {
+        int vp = players.get(playerIndex).getVictoryPoints();
+        if (playerIndex == largestArmyHolder) {
+            vp += LARGEST_ARMY_VP;
+        }
+        if (playerIndex == longestRoadHolder) {
+            vp += LONGEST_ROAD_VP;
+        }
+        return vp;
+    }
 }
