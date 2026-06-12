@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Collections;
 
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
@@ -772,6 +773,23 @@ class BoardTest {
     Harbor harbor = board.getHarbor("-5,-1", "-5,1");
     assertNotNull(harbor);
     assertEquals(ResourceType.GENERIC, harbor.getHarborType());
+
+    verify(shuffler);
+  }
+
+  // TC30 – harbor whose vertex1Id matches no vertex: harbor still registered, v1 null branch taken
+  @Test
+  void createHarbors_vertex1NotFound_harborStillRegistered() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    Harbor testHarbor = new Harbor(ResourceType.GENERIC, 3, "99,99", "-5,1");
+    Board boardWithCustomHarbors = new Board(shuffler, Collections.singletonList(testHarbor));
+    boardWithCustomHarbors.create();
+
+    assertTrue(boardWithCustomHarbors.getHarbors().contains(testHarbor));
+    assertNull(boardWithCustomHarbors.getVertex("99,99"));
 
     verify(shuffler);
   }
