@@ -918,6 +918,22 @@ public class TurnFlowTest {
                 () -> turnFlow.buildCity(players.get(0), vertex));
     }
 
+    // TC52 – Cannot upgrade vertex without player's settlement
+    @Test
+    public void testCannotUpgradeWithoutSettlement() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex vertex = board.getVertex("-3,1");
+
+        players.get(0).addResource(Resource.ORE, 3);
+        players.get(0).addResource(Resource.WHEAT, 2);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildCity(players.get(0), vertex));
+    }
+
 
 
     private void giveSettlementCost(Player player) {

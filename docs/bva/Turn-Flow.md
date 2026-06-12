@@ -353,7 +353,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Vertex has no settlement or has another player's settlement
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between player's settlement (valid) and no settlement (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC53 – Cannot upgrade with 0 city pieces remaining
 - **State of the system**: Player has placed all 4 cities
