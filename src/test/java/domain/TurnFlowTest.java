@@ -1003,6 +1003,7 @@ public class TurnFlowTest {
         Board board = createBoard();
 
         Edge edge = board.getEdge("0,2|1,1");
+        players.get(0).placeSettlement(board.getVertex("0,2"));
 
         players.get(0).addResource(Resource.WOOD, 1);
         players.get(0).addResource(Resource.BRICK, 1);
@@ -1015,6 +1016,22 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.BRICK));
         Assertions.assertEquals(14,
                 players.get(0).getRemainingRoads());
+    }
+
+    // TC58 – Cannot build road disconnected from player's network
+    @Test
+    public void testCannotBuildRoadDisconnectedFromNetwork() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Edge edge = board.getEdge("0,2|1,1");
+
+        players.get(0).addResource(Resource.WOOD, 1);
+        players.get(0).addResource(Resource.BRICK, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildRoad(players.get(0), edge, board));
     }
 
     // TC56 – Build road with insufficient resources throws

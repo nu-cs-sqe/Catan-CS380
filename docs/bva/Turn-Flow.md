@@ -395,4 +395,4 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between 0 adjacent owned roads/buildings (invalid)
   and 1+ (valid); a road must extend the player's own network
-- **Implemented**: [ ]
+- **Implemented**: [x]

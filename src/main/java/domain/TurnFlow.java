@@ -341,9 +341,57 @@ public final class TurnFlow {
             throw new IllegalStateException (
                     "Insufficient resources to build road");
         }
+        checkRoadConnectivity(player, edge, board);
         player.placeRoad(edge);
         payCost(player, ROAD_COST);
         updateLongestRoad(board);
+    }
+
+    private void checkRoadConnectivity(Player player, Edge edge,
+                                       Board board) {
+        String[] verts = edge.getId().split("\\|");
+        if (touchesOwnBuilding(player, verts, board)
+                || touchesOwnRoad(player, verts, edge, board)) {
+            return;
+        }
+        throw new IllegalStateException(
+                "Road must connect to your own road or settlement");
+    }
+
+    private boolean touchesOwnBuilding(Player player, String[] verts,
+                                       Board board) {
+        for (String vertexKey : verts) {
+            Vertex vertex = board.getVertex(vertexKey);
+            if (vertex != null && player.equals(vertex.getOwner())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean touchesOwnRoad(Player player, String[] verts,
+                                   Edge edge, Board board) {
+        for (Edge other : board.getEdges()) {
+            if (other.getId().equals(edge.getId())
+                    || !player.equals(other.getOwner())) {
+                continue;
+            }
+            if (sharesVertex(verts, other.getId().split("\\|"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean sharesVertex(String[] verts, String[] otherVerts) {
+        for (String v : verts) {
+            for (String other : otherVerts) {
+                if (v.equals(other)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void updateLongestRoad(Board board) {
