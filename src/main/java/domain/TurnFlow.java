@@ -154,5 +154,18 @@ public final class TurnFlow {
         robber.setTile(targetTile);
     }
 
+    public void stealResource(Player thief, Player victim) {
+        for (Resource resource : Resource.values()) {
+            if (resource == Resource.GENERIC) {
+                continue;
+            }
+            if (victim.getResourceCount(resource) > 0) {
+                victim.removeResource(resource, 1);
+                thief.addResource(resource, 1);
+                return;
+            }
+        }
+    }
+
 
 }

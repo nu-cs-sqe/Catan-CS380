@@ -163,7 +163,7 @@ public class TurnFlowTest {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> turnFlow.moveRobber(robber, board.getTile(0, 0)));
     }
-    
+
     // TC10 – Robber can move to any other tile including desert
     @Test
     public void testRobberCanMoveToDesert() {
@@ -183,6 +183,22 @@ public class TurnFlowTest {
                 robber.getTile().getQ());
         Assertions.assertEquals(desertTile.getR(),
                 robber.getTile().getR());
+    }
+
+    // TC11 – Steal 1 resource from victim with resources
+    @Test
+    public void testStealResourceFromVictim() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        players.get(1).addResource(Resource.ORE, 1);
+
+        turnFlow.stealResource(players.get(0), players.get(1));
+
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.ORE));
+        Assertions.assertEquals(0,
+                players.get(1).getResourceCount(Resource.ORE));
     }
 
     private Tile findDesertTile(Board board) {
