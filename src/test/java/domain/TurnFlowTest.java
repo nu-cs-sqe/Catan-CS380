@@ -1018,6 +1018,21 @@ public class TurnFlowTest {
                 players.get(0).getRemainingRoads());
     }
 
+    // TC56 – Build road with insufficient resources throws
+    @Test
+    public void testBuildRoadInsufficientResources() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Edge edge = board.getEdge("0,2|1,1");
+
+        players.get(0).addResource(Resource.WOOD, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildRoad(players.get(0), edge, board));
+    }
+
 
 
     private void giveSettlementCost(Player player) {

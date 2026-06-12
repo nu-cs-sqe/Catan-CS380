@@ -381,7 +381,7 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **State of the system**: Player has 1 WOOD, 0 BRICK
 - **Expected output**: Throws `IllegalStateException`
 - **BVA note**: Boundary between exact cost (valid) and 1 short (invalid)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC57 – Cannot build road with 0 pieces remaining
 - **State of the system**: Player has placed all 15 roads

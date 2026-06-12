@@ -337,9 +337,9 @@ public final class TurnFlow {
     }
 
     public void buildRoad(Player player, Edge edge, Board board) {
-        if (!player.hasResources(ROAD_COST)) {
-            throw new IllegalStateException(
-                    "Insufficient resources for road");
+        if (!player.hasResources( ROAD_COST )) {
+            throw new IllegalStateException (
+                    "Insufficient resources to build road");
         }
         player.placeRoad(edge);
         payCost(player, ROAD_COST);
