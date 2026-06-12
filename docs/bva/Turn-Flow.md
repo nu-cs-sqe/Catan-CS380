@@ -432,4 +432,4 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **Expected output**: Road placed; no resources spent
 - **BVA note**: Boundary between main-phase road (requires cost) and setup road
   (free, still connected)
-- **Implemented**: [ ]
+- **Implemented**: [x]

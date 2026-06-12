@@ -354,6 +354,10 @@ public final class TurnFlow {
         updateLongestRoad(board);
     }
 
+    public void buildSetupRoad(Player player, Edge edge, Board board) {
+        placeConnectedRoad(player, edge, board);
+    }
+
     private void placeConnectedRoad(Player player, Edge edge,
                                     Board board) {
         checkRoadConnectivity(player, edge, board);

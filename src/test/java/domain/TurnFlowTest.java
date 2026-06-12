@@ -934,6 +934,27 @@ public class TurnFlowTest {
                         vertex2, board));
     }
 
+    // TC62 – Setup road is free and must connect to player's settlement
+    @Test
+    public void testBuildSetupRoadFreeAndConnected() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex vertex = board.getVertex("0,2");
+        turnFlow.buildSetupSettlement(players.get(0), vertex, board);
+
+        Edge edge = board.getEdge("0,2|1,1");
+        turnFlow.buildSetupRoad(players.get(0), edge, board);
+
+        Assertions.assertEquals(14,
+                players.get(0).getRemainingRoads());
+        for (Resource resource : Resource.values()) {
+            Assertions.assertEquals(0,
+                    players.get(0).getResourceCount(resource));
+        }
+    }
+
     // TC50 – Upgrade settlement to city with exact resources
     @Test
     public void testUpgradeSettlementToCityWithExactResources() {
