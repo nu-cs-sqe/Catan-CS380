@@ -42,6 +42,8 @@ public class BoardView extends Pane {
   private static final double VERTEX_ACTIVE_STROKE_WIDTH = 2.0;
   private static final double VERTEX_HOVER_STROKE_WIDTH = 3.0;
   private static final double HARBOR_STROKE = 5.0;
+  private static final double HARBOR_BOAT_OFFSET = 25.0;
+  private static final double HARBOR_BOAT_RADIUS = 6.0;
   private static final double HARBOR_TEXT_HALF_W = 8.0;
   private static final double HARBOR_TEXT_HALF_H = 4.0;
   private static final int HEX_Q_SCALE = 2;
@@ -129,11 +131,33 @@ public class BoardView extends Pane {
     pier.setStrokeWidth(HARBOR_STROKE);
     pier.setStrokeLineCap(StrokeLineCap.ROUND);
     getChildren().add(pier);
-    double mx = (p1[0] + p2[0]) / 2;
-    double my = (p1[1] + p2[1]) / 2;
-    Text label = new Text(mx - HARBOR_TEXT_HALF_W, my + HARBOR_TEXT_HALF_H, harborLabel(harbor));
+    double[] boat = harborBoatPoint(p1, p2);
+    Circle boatDot = new Circle(boat[0], boat[1], HARBOR_BOAT_RADIUS);
+    boatDot.setFill(harborColor(harbor.getHarborType()));
+    boatDot.setStroke(Color.BLACK);
+    boatDot.setStrokeWidth(UNOWNED_STROKE);
+    getChildren().add(boatDot);
+    Text label = new Text(
+        boat[0] - HARBOR_TEXT_HALF_W,
+        boat[1] + HARBOR_BOAT_RADIUS + HARBOR_TEXT_HALF_H,
+        harborLabel(harbor));
     label.setStyle("-fx-font-size: 9px; -fx-font-weight: bold;");
     getChildren().add(label);
+  }
+
+  private double[] harborBoatPoint(double[] p1, double[] p2) {
+    double mx = (p1[0] + p2[0]) / 2;
+    double my = (p1[1] + p2[1]) / 2;
+    double dx = p2[0] - p1[0];
+    double dy = p2[1] - p1[1];
+    double len = Math.hypot(dx, dy);
+    double perpX = -dy / len;
+    double perpY = dx / len;
+    if (perpX * (mx - CENTER_X) + perpY * (my - CENTER_Y) < 0) {
+      perpX = -perpX;
+      perpY = -perpY;
+    }
+    return new double[]{mx + perpX * HARBOR_BOAT_OFFSET, my + perpY * HARBOR_BOAT_OFFSET};
   }
 
   private static String harborLabel(Harbor harbor) {
@@ -199,6 +223,10 @@ public class BoardView extends Pane {
     final Vertex vRef = vertex;
     circle.setOnMouseClicked(e -> onVertexClicked(vRef));
     getChildren().add(circle);
+    Text idLabel = new Text(px[0] - VERTEX_RADIUS, px[1] - VERTEX_RADIUS, vertex.getId());
+    idLabel.setFill(Color.RED);
+    idLabel.setStyle("-fx-font-size: 7px;");
+    getChildren().add(idLabel);
   }
 
   private void applyVertexStyle(Circle circle, Vertex vertex, boolean active) {
