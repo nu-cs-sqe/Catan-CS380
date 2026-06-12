@@ -22,18 +22,22 @@ import java.util.function.Consumer;
 
 public class BoardView extends Pane {
 
-  public enum SelectionMode { NONE, VERTEX, EDGE }
+  public enum SelectionMode {
+    NONE,
+    VERTEX,
+    EDGE
+  }
 
   private static final double SCALE_X = 50.0;
   private static final double SCALE_Y = 30.0;
-  private static final double CENTER_X = 350.0;
+  private static final double CENTER_X = 270.0;
   private static final double CENTER_Y = 280.0;
   private static final double VERTEX_RADIUS = 8.0;
   private static final double VERTEX_ACTIVE_RADIUS = 13.0;
   private static final double ROAD_STROKE = 4.0;
   private static final double ROAD_ACTIVE_STROKE = 9.0;
   private static final double UNOWNED_STROKE = 1.0;
-  private static final double PREF_WIDTH = 720.0;
+  private static final double PREF_WIDTH = 820.0;
   private static final double PREF_HEIGHT = 580.0;
   private static final double TOKEN_LABEL_OFFSET_X = 6.0;
   private static final double TOKEN_LABEL_OFFSET_Y = 5.0;
@@ -110,7 +114,8 @@ public class BoardView extends Pane {
   }
 
   private void addTokenLabel(int token, double cx, double cy) {
-    Text text = new Text(cx - TOKEN_LABEL_OFFSET_X, cy + TOKEN_LABEL_OFFSET_Y, String.valueOf(token));
+    Text text =
+        new Text(cx - TOKEN_LABEL_OFFSET_X, cy + TOKEN_LABEL_OFFSET_Y, String.valueOf(token));
     boolean highProbability = token == HIGH_PROB_TOKEN_A || token == HIGH_PROB_TOKEN_B;
     text.setFill(highProbability ? Color.RED : Color.BLACK);
     text.setStyle("-fx-font-weight: bold;");
@@ -142,10 +147,11 @@ public class BoardView extends Pane {
     boatDot.setStroke(Color.BLACK);
     boatDot.setStrokeWidth(UNOWNED_STROKE);
     getChildren().add(boatDot);
-    Text label = new Text(
-        boat[0] - HARBOR_TEXT_HALF_W,
-        boat[1] + HARBOR_BOAT_RADIUS + HARBOR_TEXT_HALF_H,
-        harborLabel(harbor));
+    Text label =
+        new Text(
+            boat[0] - HARBOR_TEXT_HALF_W,
+            boat[1] + HARBOR_BOAT_RADIUS + HARBOR_TEXT_HALF_H,
+            harborLabel(harbor));
     label.setStyle("-fx-font-size: 9px; -fx-font-weight: bold;");
     getChildren().add(label);
   }
@@ -162,7 +168,7 @@ public class BoardView extends Pane {
       perpX = -perpX;
       perpY = -perpY;
     }
-    return new double[]{mx + perpX * HARBOR_BOAT_OFFSET, my + perpY * HARBOR_BOAT_OFFSET};
+    return new double[] {mx + perpX * HARBOR_BOAT_OFFSET, my + perpY * HARBOR_BOAT_OFFSET};
   }
 
   private static String harborLabel(Harbor harbor) {
@@ -174,12 +180,18 @@ public class BoardView extends Pane {
 
   private static Color harborColor(Resource resource) {
     switch (resource) {
-      case WOOD: return Color.web("#228B22");
-      case BRICK: return Color.FIREBRICK;
-      case SHEEP: return Color.LAWNGREEN;
-      case WHEAT: return Color.GOLDENROD;
-      case ORE: return Color.SLATEGRAY;
-      default: return Color.WHITE;
+      case WOOD:
+        return Color.web("#228B22");
+      case BRICK:
+        return Color.FIREBRICK;
+      case SHEEP:
+        return Color.LAWNGREEN;
+      case WHEAT:
+        return Color.GOLDENROD;
+      case ORE:
+        return Color.SLATEGRAY;
+      default:
+        return Color.WHITE;
     }
   }
 
@@ -228,10 +240,6 @@ public class BoardView extends Pane {
     final Vertex vRef = vertex;
     circle.setOnMouseClicked(e -> onVertexClicked(vRef));
     getChildren().add(circle);
-    Text idLabel = new Text(px[0] - VERTEX_RADIUS, px[1] - VERTEX_RADIUS, vertex.getId());
-    idLabel.setFill(Color.RED);
-    idLabel.setStyle("-fx-font-size: 7px;");
-    getChildren().add(idLabel);
   }
 
   private void applyVertexStyle(Circle circle, Vertex vertex, boolean active) {
@@ -245,14 +253,16 @@ public class BoardView extends Pane {
       circle.setStroke(Color.DARKGREEN);
       circle.setStrokeWidth(VERTEX_ACTIVE_STROKE_WIDTH);
       circle.setCursor(Cursor.HAND);
-      circle.setOnMouseEntered(e -> {
-        circle.setFill(Color.LIGHTGREEN);
-        circle.setStrokeWidth(VERTEX_HOVER_STROKE_WIDTH);
-      });
-      circle.setOnMouseExited(e -> {
-        circle.setFill(Color.WHITE);
-        circle.setStrokeWidth(VERTEX_ACTIVE_STROKE_WIDTH);
-      });
+      circle.setOnMouseEntered(
+          e -> {
+            circle.setFill(Color.LIGHTGREEN);
+            circle.setStrokeWidth(VERTEX_HOVER_STROKE_WIDTH);
+          });
+      circle.setOnMouseExited(
+          e -> {
+            circle.setFill(Color.WHITE);
+            circle.setStrokeWidth(VERTEX_ACTIVE_STROKE_WIDTH);
+          });
     } else {
       circle.setFill(Color.TRANSPARENT);
       circle.setStroke(Color.TRANSPARENT);
@@ -283,42 +293,54 @@ public class BoardView extends Pane {
     String[] parts = vertexId.split(",");
     double vx = Double.parseDouble(parts[0]);
     double vy = Double.parseDouble(parts[1]);
-    return new double[]{vx * SCALE_X + CENTER_X, vy * SCALE_Y + CENTER_Y};
+    return new double[] {vx * SCALE_X + CENTER_X, vy * SCALE_Y + CENTER_Y};
   }
 
   private double[][] edgePixelCoords(String edgeId) {
     String[] endpoints = edgeId.split("\\|");
     double[] p1 = parsePoint(endpoints[0]);
     double[] p2 = parsePoint(endpoints[1]);
-    return new double[][]{p1, p2};
+    return new double[][] {p1, p2};
   }
 
   private double[] parsePoint(String coord) {
     String[] parts = coord.split(",");
     double x = Double.parseDouble(parts[0]) * SCALE_X + CENTER_X;
     double y = Double.parseDouble(parts[1]) * SCALE_Y + CENTER_Y;
-    return new double[]{x, y};
+    return new double[] {x, y};
   }
 
   private static Color tileColor(TileType type) {
     switch (type) {
-      case FOREST: return Color.web("#228B22");
-      case PASTURE: return Color.web("#90EE90");
-      case FIELDS: return Color.web("#FFD700");
-      case HILLS: return Color.web("#CD853F");
-      case MOUNTAINS: return Color.web("#808080");
-      case DESERT: return Color.web("#F5DEB3");
-      default: return Color.LIGHTGRAY;
+      case FOREST:
+        return Color.web("#228B22");
+      case PASTURE:
+        return Color.web("#90EE90");
+      case FIELDS:
+        return Color.web("#FFD700");
+      case HILLS:
+        return Color.web("#CD853F");
+      case MOUNTAINS:
+        return Color.web("#808080");
+      case DESERT:
+        return Color.web("#F5DEB3");
+      default:
+        return Color.LIGHTGRAY;
     }
   }
 
   static Color playerColor(PlayerColor color) {
     switch (color) {
-      case RED: return Color.CRIMSON;
-      case BLUE: return Color.DODGERBLUE;
-      case WHITE: return Color.LIGHTYELLOW;
-      case ORANGE: return Color.DARKORANGE;
-      default: return Color.GRAY;
+      case RED:
+        return Color.CRIMSON;
+      case BLUE:
+        return Color.DODGERBLUE;
+      case WHITE:
+        return Color.LIGHTYELLOW;
+      case ORANGE:
+        return Color.DARKORANGE;
+      default:
+        return Color.GRAY;
     }
   }
 }

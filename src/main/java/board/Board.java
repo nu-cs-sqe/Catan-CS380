@@ -51,7 +51,7 @@ public class Board {
           TileType.DESERT);
 
   private static final List<Integer> TOKEN_DISTRIBUTION =
-      Arrays.asList(5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11);
+      Arrays.asList(5, 2, 3, 6, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11);
 
   private static final List<Harbor> HARBOR_DEFINITIONS =
       Arrays.asList(
