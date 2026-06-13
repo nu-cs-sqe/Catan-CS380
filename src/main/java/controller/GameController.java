@@ -208,9 +208,9 @@ public class GameController {
     Player current = getMainPlayer();
     gameView.logMessage(current.getName() + " rolled a " + roll + ".");
     if (roll == ROBBER_ROLL) {
-      gameView.logMessage("Robber! (not yet implemented)");
+      handleRobberRoll();
     } else {
-      turnFlow.rollForProduction(board, robber, roll);
+      turnFlow.resolveRoll(board, robber, roll);
     }
     phase = GamePhase.MAIN_POST_ROLL;
     gameView.setRollEnabled(false);
@@ -218,6 +218,13 @@ public class GameController {
     gameView.setBuildActionsEnabled(true);
     gameView.setStatusMessage(current.getName() + " — Take your actions");
     refreshViews();
+  }
+
+  private void handleRobberRoll() {
+    // The full robber resolution (discard for 8+ cards, move the robber via
+    // turnFlow.moveRobberAndSteal, choose a victim from stealCandidates) is
+    // added with the robber UI task; production is correctly skipped on a 7.
+    gameView.logMessage("Rolled a 7 — robber handling coming soon.");
   }
 
   public void onEndTurn() {
