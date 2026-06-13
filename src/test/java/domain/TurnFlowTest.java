@@ -854,8 +854,8 @@ public class TurnFlowTest {
         TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
 
-        // "3,5" sits on the 2:1 ORE harbor
-        players.get(0).placeSettlement(board.getVertex("3,5"));
+        // "-2,8" sits on the 2:1 ORE harbor
+        players.get(0).placeSettlement(board.getVertex("-2,8"));
         players.get(0).addResource(Resource.ORE, 2);
 
         turnFlow.maritimeTrade(Resource.ORE, 2, Resource.WHEAT, board);
