@@ -97,16 +97,16 @@ public class GameController {
       try {
         turnFlow.buildSettlement(current, vertex, board);
         gameView.logMessage(current.getName() + " built a settlement.");
-      } catch (IllegalStateException e) {
-        gameView.logMessage(e.getMessage());
+      } catch (RuntimeException e) {
+        gameView.logMessage(e.getMessage() + " — pick another spot.");
         return;
       }
     } else if (buildMode == BuildMode.CITY) {
       try {
         turnFlow.buildCity(current, vertex);
         gameView.logMessage(current.getName() + " upgraded to a city.");
-      } catch (IllegalStateException e) {
-        gameView.logMessage(e.getMessage());
+      } catch (RuntimeException e) {
+        gameView.logMessage(e.getMessage() + " — pick another spot.");
         return;
       }
     } else {
@@ -170,8 +170,8 @@ public class GameController {
     try {
       turnFlow.buildRoad(current, edge, board);
       gameView.logMessage(current.getName() + " built a road.");
-    } catch (IllegalStateException e) {
-      gameView.logMessage(e.getMessage());
+    } catch (RuntimeException e) {
+      gameView.logMessage(e.getMessage() + " — pick another edge.");
       return;
     }
     buildMode = BuildMode.NONE;
