@@ -854,8 +854,8 @@ public class TurnFlowTest {
         TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
 
-        // "3,5" sits on the 2:1 ORE harbor
-        players.get(0).placeSettlement(board.getVertex("3,5"));
+        // "-2,8" sits on the 2:1 ORE harbor
+        players.get(0).placeSettlement(board.getVertex("-2,8"));
         players.get(0).addResource(Resource.ORE, 2);
 
         turnFlow.maritimeTrade(Resource.ORE, 2, Resource.WHEAT, board);
@@ -1468,6 +1468,97 @@ public class TurnFlowTest {
     }
 
 
+
+    // TC80 – canBuildRoad reflects occupancy + connectivity
+    @Test
+    public void testCanBuildRoadReflectsConnectivity() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        players.get(0).placeSettlement(board.getVertex("0,2"));
+
+        Assertions.assertTrue(turnFlow.canBuildRoad(players.get(0),
+                board.getEdge("0,2|1,1"), board));
+        Assertions.assertFalse(turnFlow.canBuildRoad(players.get(0),
+                board.getEdge("-5,-1|-4,-2"), board));
+    }
+
+    // TC81 – canBuildSettlement reflects distance + adjacent-road rules
+    @Test
+    public void testCanBuildSettlementReflectsRules() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        board.getEdge("-3,1|-2,2").setOwner(players.get(0));
+
+        Assertions.assertTrue(turnFlow.canBuildSettlement(players.get(0),
+                board.getVertex("-3,1"), board));
+        Assertions.assertFalse(turnFlow.canBuildSettlement(players.get(0),
+                board.getVertex("3,1"), board));
+    }
+
+    // TC82 – canBuildSetupSettlement reflects only the distance rule
+    @Test
+    public void testCanBuildSetupSettlementReflectsDistanceRule() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Assertions.assertTrue(turnFlow.canBuildSetupSettlement(
+                board.getVertex("-3,1"), board));
+
+        players.get(0).placeSettlement(board.getVertex("-3,1"));
+
+        Assertions.assertFalse(turnFlow.canBuildSetupSettlement(
+                board.getVertex("-3,-1"), board));
+    }
+
+    // TC83 – canBuildCity requires the player's own non-city settlement
+    @Test
+    public void testCanBuildCityRequiresOwnSettlement() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Vertex vertex = board.getVertex("-3,1");
+
+        Assertions.assertFalse(turnFlow.canBuildCity(players.get(0), vertex));
+
+        players.get(0).placeSettlement(vertex);
+        Assertions.assertTrue(turnFlow.canBuildCity(players.get(0), vertex));
+
+        players.get(0).upgradeSettlementToCity(vertex);
+        Assertions.assertFalse(turnFlow.canBuildCity(players.get(0), vertex));
+    }
+
+    // TC85 – bestTradeRate is 4:1 by default and 2:1 with the matching harbor
+    @Test
+    public void testBestTradeRateReflectsHarbors() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+        Board board = createBoard();
+
+        Assertions.assertEquals(4, turnFlow.bestTradeRate(players.get(0),
+                Resource.ORE, board));
+
+        players.get(0).placeSettlement(board.getVertex("-2,8"));
+        Assertions.assertEquals(2, turnFlow.bestTradeRate(players.get(0),
+                Resource.ORE, board));
+    }
+
+    // TC84 – setCurrentPlayer aligns the turn cursor with the game's order
+    @Test
+    public void testSetCurrentPlayer() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        turnFlow.setCurrentPlayer(2);
+        Assertions.assertEquals(2, turnFlow.getCurrentPlayerIndex());
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.setCurrentPlayer(3));
+    }
 
     private void giveSettlementCost(Player player) {
         player.addResource(Resource.WOOD, 1);

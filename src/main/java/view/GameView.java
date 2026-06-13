@@ -30,6 +30,8 @@ public class GameView {
   private final Button buildRoadButton;
   private final Button buildCityButton;
   private final Button buyDevCardButton;
+  private final Button playDevCardButton;
+  private final Button tradeButton;
 
   public GameView() {
     boardView = new BoardView();
@@ -43,6 +45,8 @@ public class GameView {
     buildRoadButton = new Button("Build Road");
     buildCityButton = new Button("Build City");
     buyDevCardButton = new Button("Buy Dev Card");
+    playDevCardButton = new Button("Play Dev Card");
+    tradeButton = new Button("Trade");
     BorderPane root = buildLayout();
     scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
   }
@@ -79,7 +83,8 @@ public class GameView {
   private HBox buildBottomPanel() {
     HBox bar = new HBox(BUTTON_SPACING,
         rollButton, buildSettlementButton, buildRoadButton,
-        buildCityButton, buyDevCardButton, endTurnButton);
+        buildCityButton, buyDevCardButton, playDevCardButton,
+        tradeButton, endTurnButton);
     bar.setPadding(new Insets(BOTTOM_PADDING));
     return bar;
   }
@@ -103,6 +108,8 @@ public class GameView {
   public void logMessage(String message) {
     logArea.appendText(message + "\n");
     trimLog();
+    logArea.positionCaret(logArea.getLength());
+    logArea.setScrollTop(Double.MAX_VALUE);
   }
 
   private void trimLog() {
@@ -129,6 +136,8 @@ public class GameView {
     buildRoadButton.setDisable(!enabled);
     buildCityButton.setDisable(!enabled);
     buyDevCardButton.setDisable(!enabled);
+    playDevCardButton.setDisable(!enabled);
+    tradeButton.setDisable(!enabled);
   }
 
   public void setOnRollDice(Runnable handler) {
@@ -153,5 +162,13 @@ public class GameView {
 
   public void setOnBuyDevCard(Runnable handler) {
     buyDevCardButton.setOnAction(e -> handler.run());
+  }
+
+  public void setOnPlayDevCard(Runnable handler) {
+    playDevCardButton.setOnAction(e -> handler.run());
+  }
+
+  public void setOnTrade(Runnable handler) {
+    tradeButton.setOnAction(e -> handler.run());
   }
 }
