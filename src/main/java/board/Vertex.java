@@ -9,14 +9,12 @@ public class Vertex {
   private final String id;
   private final List<Tile> adjacentTiles;
   private Settlement settlement;
-  private Player owner;
   private Harbor harbor;
 
   public Vertex(String id) {
     this.id = id;
     this.adjacentTiles = new ArrayList<>(0);
     this.settlement = null;
-    this.owner = null;
   }
 
   public void addTile(Tile tile) {
@@ -32,11 +30,7 @@ public class Vertex {
   }
 
   public Player getOwner() {
-    return (owner != null) ? new Player(owner) : null;
-  }
-
-  public void setOwner(Player owner) {
-    this.owner = (owner != null) ? new Player(owner) : null;
+    return (settlement != null) ? settlement.getOwner() : null;
   }
 
   public Settlement getSettlement() {

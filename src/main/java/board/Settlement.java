@@ -1,8 +1,19 @@
 package board;
 
+import domain.Player;
+
 public class Settlement {
 
+    private final Player owner;
     private boolean city = false;
+
+    public Settlement(Player owner) {
+        this.owner = (owner != null) ? new Player(owner) : null;
+    }
+
+    public Player getOwner() {
+        return (owner != null) ? new Player(owner) : null;
+    }
 
     public void upgrade() {
         if (city) {

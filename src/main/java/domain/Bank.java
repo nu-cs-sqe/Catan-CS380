@@ -67,7 +67,7 @@ public class Bank {
     if (amount <= 0) {
       throw new IllegalArgumentException();
     }
-    stock.put(type, stock.get(type) + amount);
+    stock.put(type, Math.min(INITIAL_STOCK, stock.get(type) + amount));
   }
 
   public boolean canDistribute(Resource type, int amount) {

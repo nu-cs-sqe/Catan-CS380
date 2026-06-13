@@ -64,6 +64,7 @@
 | TC28 | 3 settlements + 2 cities + longest road + largest army         | VP = 11, hasWon = true                       | yes           |
 | TC29 | award then revoke longest road                                 | VP returns to pre-award value                | yes           |
 | TC30 | 5 VP dev cards held                                            | VP = 5                                       | yes           |
+| TC59 | buy/hold one VICTORY_POINT development card                     | VP increases by 1 (a held VP card scores)    | yes           |
 
 
 ### Method under test: `placeSettlement(Vertex v)`
@@ -93,6 +94,7 @@
 |------|----------------------------------|-----------------------|--------------|
 | TC34 | placed 15 roads, place a 16th    | IllegalStateException | yes          |
 | TC43 | edge = null                      | NullPointerException  | yes          |
+| TC58 | edge already owned by a player   | IllegalStateException (cannot build on an occupied edge) | yes |
 
 
 ### Method under test: `playKnight()` / `getKnightsPlayed()`

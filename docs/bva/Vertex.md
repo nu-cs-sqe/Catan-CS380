@@ -21,12 +21,16 @@
 
 ---
 
-### Method under test: `setOwner(Player)` / `getOwner()`
+### Method under test: `getOwner()`
 
-|     | System under test                           | Expected output                                            | Implemented? |
-|-----|---------------------------------------------|------------------------------------------------------------|--------------|
-| TC6 | `new Vertex`, no `setOwner` called          | `getOwner() == null` (BVA: null boundary - unowned vertex) | :x:          |
-| TC7 | `setOwner(player)` with a non-null `Player` | `getOwner() == player`                                     | :x:          |
+Ownership is derived from the settlement placed on the vertex; there is no
+separate `setOwner`. A vertex is owned by the player who owns its settlement,
+so owner and settlement can never disagree.
+
+|     | System under test                                          | Expected output                                            | Implemented? |
+|-----|------------------------------------------------------------|------------------------------------------------------------|--------------|
+| TC6 | `new Vertex`, no settlement placed                         | `getOwner() == null` (BVA: null boundary - unowned vertex) | :x:          |
+| TC7 | `setSettlement(new Settlement(player))` then `getOwner()`  | `getOwner() == player` (owner derived from settlement)     | :x:          |
 
 ---
 
