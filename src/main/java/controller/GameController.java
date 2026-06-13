@@ -47,7 +47,7 @@ public class GameController {
     this.bank = bank;
     this.diceRoller = new RandomDiceRoller();
     this.turnFlow = new TurnFlow(game.getPlayers(), bank);
-    this.robber = createInitialRobber();
+    this.robber = board.createRobber();
     this.phase = GamePhase.SETUP_SETTLEMENT;
     this.buildMode = BuildMode.NONE;
     this.setupRound = 1;
@@ -67,17 +67,6 @@ public class GameController {
     gameView.setOnBuildRoad(this::onBuildRoad);
     gameView.setOnBuildCity(this::onBuildCity);
     gameView.setOnBuyDevCard(this::onBuyDevCard);
-  }
-
-  private Robber createInitialRobber() {
-    Robber r = new Robber();
-    for (Tile tile : board.getTiles()) {
-      if (tile.getTileType() == TileType.DESERT) {
-        r.setTile(tile);
-        break;
-      }
-    }
-    return r;
   }
 
   private void enterSetupSettlement() {
