@@ -12,6 +12,7 @@ import domain.Player;
 import domain.RandomDiceRoller;
 import domain.Resource;
 import domain.TurnFlow;
+import i18n.Messages;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
@@ -79,7 +80,7 @@ public class GameController {
         v -> turnFlow.canBuildSetupSettlement(v, board));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
     Player current = game.getCurrentSetupPlayer();
-    gameView.setStatusMessage("Setup — " + current.getName() + ": Place a settlement");
+    gameView.setStatusMessage(Messages.get("status.setup.settlement", current.getName()));
     refreshBoard();
   }
 
@@ -93,7 +94,7 @@ public class GameController {
 
   private void handleSetupVertexClick(Vertex vertex) {
     if (vertex.getSettlement() != null) {
-      gameView.logMessage("That spot is already occupied.");
+      gameView.logMessage(Messages.get("log.occupied"));
       return;
     }
     pendingSetupVertex = vertex;
@@ -102,8 +103,7 @@ public class GameController {
     gameView.getBoardView().setEdgeValidator(
         e -> e.getOwner() == null && edgeTouches(e, pendingSetupVertex));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.EDGE);
-    gameView.setStatusMessage("Setup — " + current.getName()
-        + ": Place a road touching that settlement");
+    gameView.setStatusMessage(Messages.get("status.setup.road", current.getName()));
     refreshBoard();
   }
 
@@ -112,17 +112,17 @@ public class GameController {
     if (buildMode == BuildMode.SETTLEMENT) {
       try {
         turnFlow.buildSettlement(current, vertex, board);
-        gameView.logMessage(current.getName() + " built a settlement.");
+        gameView.logMessage(Messages.get("log.built.settlement", current.getName()));
       } catch (RuntimeException e) {
-        gameView.logMessage(e.getMessage() + " — pick another spot.");
+        gameView.logMessage(Messages.get("log.build.retry.spot", e.getMessage()));
         return;
       }
     } else if (buildMode == BuildMode.CITY) {
       try {
         turnFlow.buildCity(current, vertex);
-        gameView.logMessage(current.getName() + " upgraded to a city.");
+        gameView.logMessage(Messages.get("log.upgraded.city", current.getName()));
       } catch (RuntimeException e) {
-        gameView.logMessage(e.getMessage() + " — pick another spot.");
+        gameView.logMessage(Messages.get("log.build.retry.spot", e.getMessage()));
         return;
       }
     } else {
@@ -130,7 +130,7 @@ public class GameController {
     }
     buildMode = BuildMode.NONE;
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.NONE);
-    gameView.setStatusMessage(current.getName() + " — Take your actions");
+    gameView.setStatusMessage(Messages.get("status.takeActions", current.getName()));
     refreshViews();
   }
 
@@ -144,11 +144,11 @@ public class GameController {
 
   private void handleSetupEdgeClick(Edge edge) {
     if (edge.getOwner() != null) {
-      gameView.logMessage("That edge already has a road.");
+      gameView.logMessage(Messages.get("log.edge.occupied"));
       return;
     }
     if (!edgeTouches(edge, pendingSetupVertex)) {
-      gameView.logMessage("The road must connect to your new settlement.");
+      gameView.logMessage(Messages.get("log.road.mustconnect"));
       return;
     }
     Player current = game.getCurrentSetupPlayer();
@@ -161,7 +161,7 @@ public class GameController {
       enterSetupSettlement();
       return;
     }
-    gameView.logMessage(current.getName() + " placed a settlement and road.");
+    gameView.logMessage(Messages.get("log.placed.settlementroad", current.getName()));
     pendingSetupVertex = null;
     advanceSetup();
   }
@@ -185,14 +185,14 @@ public class GameController {
     Player current = getMainPlayer();
     try {
       turnFlow.buildRoad(current, edge, board);
-      gameView.logMessage(current.getName() + " built a road.");
+      gameView.logMessage(Messages.get("log.built.road", current.getName()));
     } catch (RuntimeException e) {
-      gameView.logMessage(e.getMessage() + " — pick another edge.");
+      gameView.logMessage(Messages.get("log.build.retry.edge", e.getMessage()));
       return;
     }
     buildMode = BuildMode.NONE;
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.NONE);
-    gameView.setStatusMessage(current.getName() + " — Take your actions");
+    gameView.setStatusMessage(Messages.get("status.takeActions", current.getName()));
     refreshViews();
   }
 
@@ -208,7 +208,7 @@ public class GameController {
   private void startMainGame() {
     phase = GamePhase.MAIN_PRE_ROLL;
     turnFlow.setCurrentPlayer(game.getCurrentPlayerIndex());
-    gameView.logMessage("Setup complete! Game begins.");
+    gameView.logMessage(Messages.get("log.setup.complete"));
     gameView.setRollEnabled(true);
     gameView.setEndTurnEnabled(false);
     gameView.setBuildActionsEnabled(false);
@@ -223,7 +223,7 @@ public class GameController {
     }
     int roll = diceRoller.roll();
     Player current = getMainPlayer();
-    gameView.logMessage(current.getName() + " rolled a " + roll + ".");
+    gameView.logMessage(Messages.get("log.rolled", current.getName(), roll));
     if (roll == ROBBER_ROLL) {
       handleRobberRoll();
     } else {
@@ -233,12 +233,12 @@ public class GameController {
     gameView.setRollEnabled(false);
     gameView.setEndTurnEnabled(true);
     gameView.setBuildActionsEnabled(true);
-    gameView.setStatusMessage(current.getName() + " — Take your actions");
+    gameView.setStatusMessage(Messages.get("status.takeActions", current.getName()));
     refreshViews();
   }
 
   private void handleRobberRoll() {
-    gameView.logMessage("Rolled a 7 — robber activated.");
+    gameView.logMessage(Messages.get("log.robber.activated"));
     performDiscards();
     moveRobberInteractive();
   }
@@ -250,7 +250,7 @@ public class GameController {
       if (count > 0) {
         Player player = players.get(i);
         turnFlow.discard(player, chooseDiscards(player, count));
-        gameView.logMessage(player.getName() + " discarded " + count + " cards.");
+        gameView.logMessage(Messages.get("log.discarded", player.getName(), count));
       }
     }
   }
@@ -282,13 +282,14 @@ public class GameController {
     List<Player> candidates = turnFlow.stealCandidates(robber, board);
     candidates.remove(current);
     if (candidates.isEmpty()) {
-      gameView.logMessage("No players to steal from.");
+      gameView.logMessage(Messages.get("log.steal.none"));
       return;
     }
     Player victim = chooseVictim(candidates);
     if (victim != null) {
       turnFlow.stealResource(current, victim, robber, board);
-      gameView.logMessage(current.getName() + " stole from " + victim.getName() + ".");
+      gameView.logMessage(
+          Messages.get("log.stole", current.getName(), victim.getName()));
       refreshViews();
     }
   }
@@ -308,9 +309,9 @@ public class GameController {
     }
     String first = options.keySet().iterator().next();
     ChoiceDialog<String> dialog = new ChoiceDialog<>(first, options.keySet());
-    dialog.setTitle("Move Robber");
-    dialog.setHeaderText("Choose a tile to move the robber to");
-    dialog.setContentText("Tile:");
+    dialog.setTitle(Messages.get("dialog.robber.title"));
+    dialog.setHeaderText(Messages.get("dialog.robber.header"));
+    dialog.setContentText(Messages.get("dialog.robber.content"));
     Optional<String> result = dialog.showAndWait();
     return options.get(result.orElse(first));
   }
@@ -322,9 +323,9 @@ public class GameController {
     }
     String first = options.keySet().iterator().next();
     ChoiceDialog<String> dialog = new ChoiceDialog<>(first, options.keySet());
-    dialog.setTitle("Steal");
-    dialog.setHeaderText("Choose a player to steal from");
-    dialog.setContentText("Player:");
+    dialog.setTitle(Messages.get("dialog.steal.title"));
+    dialog.setHeaderText(Messages.get("dialog.steal.header"));
+    dialog.setContentText(Messages.get("dialog.steal.content"));
     Optional<String> result = dialog.showAndWait();
     return options.get(result.orElse(first));
   }
@@ -361,7 +362,8 @@ public class GameController {
     gameView.getBoardView().setVertexValidator(
         v -> turnFlow.canBuildSettlement(getMainPlayer(), v, board));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
-    gameView.setStatusMessage(getMainPlayer().getName() + ": Click a vertex to place settlement");
+    gameView.setStatusMessage(
+        Messages.get("status.click.settlement", getMainPlayer().getName()));
     refreshBoard();
   }
 
@@ -373,7 +375,8 @@ public class GameController {
     gameView.getBoardView().setEdgeValidator(
         e -> turnFlow.canBuildRoad(getMainPlayer(), e, board));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.EDGE);
-    gameView.setStatusMessage(getMainPlayer().getName() + ": Click an edge to place road");
+    gameView.setStatusMessage(
+        Messages.get("status.click.road", getMainPlayer().getName()));
     refreshBoard();
   }
 
@@ -385,7 +388,8 @@ public class GameController {
     gameView.getBoardView().setVertexValidator(
         v -> turnFlow.canBuildCity(getMainPlayer(), v));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
-    gameView.setStatusMessage(getMainPlayer().getName() + ": Click your settlement to upgrade to city");
+    gameView.setStatusMessage(
+        Messages.get("status.click.city", getMainPlayer().getName()));
     refreshBoard();
   }
 
@@ -396,7 +400,7 @@ public class GameController {
     Player current = getMainPlayer();
     try {
       turnFlow.buyDevelopmentCard(current);
-      gameView.logMessage(current.getName() + " bought a development card.");
+      gameView.logMessage(Messages.get("log.bought.devcard", current.getName()));
       refreshViews();
     } catch (Exception e) {
       gameView.logMessage(e.getMessage());
@@ -408,18 +412,18 @@ public class GameController {
       return;
     }
     Player current = getMainPlayer();
-    Resource give = chooseResource("Give which resource?");
+    Resource give = chooseResource(Messages.get("trade.give"));
     int rate = turnFlow.bestTradeRate(current, give, board);
     if (current.getResourceCount(give) < rate) {
-      gameView.logMessage("Need " + rate + " " + give + " to trade (have "
-          + current.getResourceCount(give) + ").");
+      gameView.logMessage(Messages.get("log.trade.insufficient", rate,
+          resourceName(give), current.getResourceCount(give)));
       return;
     }
-    Resource receive = chooseResource("Receive which resource?");
+    Resource receive = chooseResource(Messages.get("trade.receive"));
     try {
       turnFlow.maritimeTrade(give, rate, receive, board);
-      gameView.logMessage(current.getName() + " traded " + rate + " " + give
-          + " for 1 " + receive + ".");
+      gameView.logMessage(Messages.get("log.traded", current.getName(), rate,
+          resourceName(give), resourceName(receive)));
       refreshViews();
     } catch (RuntimeException e) {
       gameView.logMessage(e.getMessage());
@@ -438,11 +442,11 @@ public class GameController {
       }
     }
     if (playable.isEmpty()) {
-      gameView.logMessage("No playable development cards.");
+      gameView.logMessage(Messages.get("log.devcard.none"));
       return;
     }
-    DevelopmentCard card = chooseChoice("Play Development Card",
-        "Choose a card to play", playable);
+    DevelopmentCard card = chooseChoice(Messages.get("dialog.playdev.title"),
+        Messages.get("dialog.playdev.header"), playable);
     try {
       playDevCard(current, card);
       refreshViews();
@@ -457,15 +461,16 @@ public class GameController {
         playKnight(current);
         break;
       case MONOPOLY:
-        Resource monopolised = chooseResource("Choose a resource to monopolise");
+        Resource monopolised = chooseResource(Messages.get("devcard.monopoly.prompt"));
         turnFlow.playMonopolyCard(current, monopolised);
-        gameView.logMessage(current.getName() + " played Monopoly on " + monopolised + ".");
+        gameView.logMessage(Messages.get("log.devcard.monopoly",
+            current.getName(), resourceName(monopolised)));
         break;
       case YEAR_OF_PLENTY:
-        Resource first = chooseResource("Choose the first resource");
-        Resource second = chooseResource("Choose the second resource");
+        Resource first = chooseResource(Messages.get("devcard.yop.first"));
+        Resource second = chooseResource(Messages.get("devcard.yop.second"));
         turnFlow.playYearOfPlentyCard(current, first, second);
-        gameView.logMessage(current.getName() + " played Year of Plenty.");
+        gameView.logMessage(Messages.get("log.devcard.yop", current.getName()));
         break;
       case ROAD_BUILDING:
         playRoadBuilding(current);
@@ -487,13 +492,13 @@ public class GameController {
     List<Player> candidates = turnFlow.stealCandidates(robber, board);
     candidates.remove(current);
     if (candidates.isEmpty()) {
-      gameView.logMessage(current.getName() + " played a Knight.");
+      gameView.logMessage(Messages.get("log.devcard.knight", current.getName()));
       return;
     }
     Player victim = chooseVictim(candidates);
     turnFlow.stealResource(current, victim, robber, board);
-    gameView.logMessage(current.getName() + " played a Knight and stole from "
-        + victim.getName() + ".");
+    gameView.logMessage(Messages.get("log.devcard.knight.steal",
+        current.getName(), victim.getName()));
   }
 
   private void playRoadBuilding(Player current) {
@@ -504,14 +509,14 @@ public class GameController {
       }
     }
     if (legal.size() < 2) {
-      gameView.logMessage("Not enough legal road spots for Road Building.");
+      gameView.logMessage(Messages.get("log.devcard.roadbuilding.none"));
       return;
     }
     Edge first = chooseEdge(legal);
     legal.remove(first);
     Edge second = chooseEdge(legal);
     turnFlow.playRoadBuildingCard(current, first, second, board);
-    gameView.logMessage(current.getName() + " played Road Building.");
+    gameView.logMessage(Messages.get("log.devcard.roadbuilding", current.getName()));
   }
 
   private Resource chooseResource(String header) {
@@ -521,7 +526,7 @@ public class GameController {
         options.add(resource);
       }
     }
-    return chooseChoice("Development Card", header, options);
+    return chooseChoice(Messages.get("dialog.devcard.title"), header, options);
   }
 
   private Edge chooseEdge(List<Edge> legal) {
@@ -531,9 +536,9 @@ public class GameController {
     }
     String first = options.keySet().iterator().next();
     ChoiceDialog<String> dialog = new ChoiceDialog<>(first, options.keySet());
-    dialog.setTitle("Road Building");
-    dialog.setHeaderText("Choose a road to place");
-    dialog.setContentText("Edge:");
+    dialog.setTitle(Messages.get("dialog.roadbuilding.title"));
+    dialog.setHeaderText(Messages.get("dialog.roadbuilding.header"));
+    dialog.setContentText(Messages.get("dialog.roadbuilding.content"));
     return options.get(dialog.showAndWait().orElse(first));
   }
 
@@ -542,7 +547,7 @@ public class GameController {
     ChoiceDialog<T> dialog = new ChoiceDialog<>(first, options);
     dialog.setTitle(title);
     dialog.setHeaderText(header);
-    dialog.setContentText("Choice:");
+    dialog.setContentText(Messages.get("dialog.choice.content"));
     return dialog.showAndWait().orElse(first);
   }
 
@@ -560,9 +565,9 @@ public class GameController {
 
   private void showWinner(Player player, int vp) {
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle("Game Over");
-    alert.setHeaderText(player.getName() + " wins!");
-    alert.setContentText(player.getName() + " has " + vp + " victory points.");
+    alert.setTitle(Messages.get("win.title"));
+    alert.setHeaderText(Messages.get("win.header", player.getName()));
+    alert.setContentText(Messages.get("win.content", player.getName(), vp));
     alert.showAndWait();
   }
 
@@ -591,10 +596,14 @@ public class GameController {
 
   private void updateMainGameStatus() {
     Player current = getMainPlayer();
-    gameView.setStatusMessage(current.getName() + "'s turn — Roll the dice");
+    gameView.setStatusMessage(Messages.get("status.turn.roll", current.getName()));
   }
 
   private Player getMainPlayer() {
     return game.getPlayers().get(game.getCurrentPlayerIndex());
+  }
+
+  private static String resourceName(Resource resource) {
+    return Messages.get("resource." + resource.name());
   }
 }
