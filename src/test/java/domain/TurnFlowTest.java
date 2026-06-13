@@ -1469,6 +1469,69 @@ public class TurnFlowTest {
 
 
 
+    // TC80 – canBuildRoad reflects occupancy + connectivity
+    @Test
+    public void testCanBuildRoadReflectsConnectivity() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        players.get(0).placeSettlement(board.getVertex("0,2"));
+
+        Assertions.assertTrue(turnFlow.canBuildRoad(players.get(0),
+                board.getEdge("0,2|1,1"), board));
+        Assertions.assertFalse(turnFlow.canBuildRoad(players.get(0),
+                board.getEdge("-5,-1|-4,-2"), board));
+    }
+
+    // TC81 – canBuildSettlement reflects distance + adjacent-road rules
+    @Test
+    public void testCanBuildSettlementReflectsRules() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        board.getEdge("-3,1|-2,2").setOwner(players.get(0));
+
+        Assertions.assertTrue(turnFlow.canBuildSettlement(players.get(0),
+                board.getVertex("-3,1"), board));
+        Assertions.assertFalse(turnFlow.canBuildSettlement(players.get(0),
+                board.getVertex("3,1"), board));
+    }
+
+    // TC82 – canBuildSetupSettlement reflects only the distance rule
+    @Test
+    public void testCanBuildSetupSettlementReflectsDistanceRule() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Assertions.assertTrue(turnFlow.canBuildSetupSettlement(
+                board.getVertex("-3,1"), board));
+
+        players.get(0).placeSettlement(board.getVertex("-3,1"));
+
+        Assertions.assertFalse(turnFlow.canBuildSetupSettlement(
+                board.getVertex("-3,-1"), board));
+    }
+
+    // TC83 – canBuildCity requires the player's own non-city settlement
+    @Test
+    public void testCanBuildCityRequiresOwnSettlement() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Vertex vertex = board.getVertex("-3,1");
+
+        Assertions.assertFalse(turnFlow.canBuildCity(players.get(0), vertex));
+
+        players.get(0).placeSettlement(vertex);
+        Assertions.assertTrue(turnFlow.canBuildCity(players.get(0), vertex));
+
+        players.get(0).upgradeSettlementToCity(vertex);
+        Assertions.assertFalse(turnFlow.canBuildCity(players.get(0), vertex));
+    }
+
     private void giveSettlementCost(Player player) {
         player.addResource(Resource.WOOD, 1);
         player.addResource(Resource.BRICK, 1);

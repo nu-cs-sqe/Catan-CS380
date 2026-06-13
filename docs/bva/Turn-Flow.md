@@ -572,3 +572,38 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **BVA note**: Boundary between reaching 10 VP off-turn (not yet a win) and on your
   own turn (win)
 - **Implemented**: [x]
+---
+
+## Build Legality Queries (UI highlighting)
+
+These non-mutating queries let the UI show only legal placement targets; they
+reuse the same predicates the build/setup methods throw on.
+
+### TC80 – canBuildRoad reflects occupancy + connectivity
+- **State of the system**: Player owns a settlement; one edge touches it, another
+  is on a disjoint part of the board
+- **Expected output**: `true` for the connected edge, `false` for the disconnected one
+- **BVA note**: Boundary between an edge adjacent to the player's network (legal)
+  and one that is not (illegal)
+- **Implemented**: [x]
+
+### TC81 – canBuildSettlement reflects the distance + adjacent-road rules
+- **State of the system**: Player owns a road touching an empty vertex; another
+  empty vertex has no adjacent owned road
+- **Expected output**: `true` for the road-adjacent vertex, `false` otherwise
+- **BVA note**: Boundary between a vertex meeting both rules (legal) and one missing
+  the adjacent road (illegal)
+- **Implemented**: [x]
+
+### TC82 – canBuildSetupSettlement reflects only the distance rule
+- **State of the system**: An empty vertex (no road needed); then a neighbour is settled
+- **Expected output**: `true` initially, `false` once an adjacent vertex holds a settlement
+- **BVA note**: Boundary between all neighbours empty (legal) and one occupied (illegal)
+- **Implemented**: [x]
+
+### TC83 – canBuildCity requires the player's own non-city settlement
+- **State of the system**: An empty vertex, then the player's settlement, then a city
+- **Expected output**: `false` (empty), `true` (own settlement), `false` (already a city)
+- **BVA note**: Boundary between an upgradeable settlement (legal) and an empty or
+  already-upgraded vertex (illegal)
+- **Implemented**: [x]

@@ -63,6 +63,8 @@ public class GameController {
     gameView.setRollEnabled(false);
     gameView.setEndTurnEnabled(false);
     gameView.setBuildActionsEnabled(false);
+    gameView.getBoardView().setVertexValidator(
+        v -> turnFlow.canBuildSetupSettlement(v, board));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
     Player current = game.getCurrentSetupPlayer();
     gameView.setStatusMessage("Setup — " + current.getName() + ": Place a settlement");
@@ -85,6 +87,8 @@ public class GameController {
     pendingSetupVertex = vertex;
     Player current = game.getCurrentSetupPlayer();
     phase = GamePhase.SETUP_ROAD;
+    gameView.getBoardView().setEdgeValidator(
+        e -> e.getOwner() == null && edgeTouches(e, pendingSetupVertex));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.EDGE);
     gameView.setStatusMessage("Setup — " + current.getName()
         + ": Place a road touching that settlement");
@@ -255,6 +259,8 @@ public class GameController {
       return;
     }
     buildMode = BuildMode.SETTLEMENT;
+    gameView.getBoardView().setVertexValidator(
+        v -> turnFlow.canBuildSettlement(getMainPlayer(), v, board));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
     gameView.setStatusMessage(getMainPlayer().getName() + ": Click a vertex to place settlement");
     refreshBoard();
@@ -265,6 +271,8 @@ public class GameController {
       return;
     }
     buildMode = BuildMode.ROAD;
+    gameView.getBoardView().setEdgeValidator(
+        e -> turnFlow.canBuildRoad(getMainPlayer(), e, board));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.EDGE);
     gameView.setStatusMessage(getMainPlayer().getName() + ": Click an edge to place road");
     refreshBoard();
@@ -275,6 +283,8 @@ public class GameController {
       return;
     }
     buildMode = BuildMode.CITY;
+    gameView.getBoardView().setVertexValidator(
+        v -> turnFlow.canBuildCity(getMainPlayer(), v));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
     gameView.setStatusMessage(getMainPlayer().getName() + ": Click your settlement to upgrade to city");
     refreshBoard();
