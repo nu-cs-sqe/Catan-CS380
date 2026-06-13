@@ -103,6 +103,8 @@ public class GameView {
   public void logMessage(String message) {
     logArea.appendText(message + "\n");
     trimLog();
+    logArea.positionCaret(logArea.getLength());
+    logArea.setScrollTop(Double.MAX_VALUE);
   }
 
   private void trimLog() {
