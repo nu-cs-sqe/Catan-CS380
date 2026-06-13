@@ -576,7 +576,9 @@ public class GameController {
         || phase == GamePhase.SETUP_ROAD) ? game.getCurrentSetupPlayer() : getMainPlayer();
     int idx = game.getPlayers().indexOf(current);
     if (idx >= 0) {
-      gameView.getPlayerInfoView().refresh(current, turnFlow.getVictoryPoints(idx));
+      gameView.getPlayerInfoView().refresh(current, turnFlow.getVictoryPoints(idx),
+          turnFlow.getLongestRoadHolder() == idx,
+          turnFlow.getLargestArmyHolder() == idx);
     }
   }
 

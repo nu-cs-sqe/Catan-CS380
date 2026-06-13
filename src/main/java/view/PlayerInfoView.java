@@ -25,6 +25,7 @@ public class PlayerInfoView extends VBox {
   private final Label nameLabel;
   private final Rectangle colorIndicator;
   private final Label vpLabel;
+  private final Label specialLabel;
   private final Label settlementsLabel;
   private final Label citiesLabel;
   private final Label roadsLabel;
@@ -41,6 +42,8 @@ public class PlayerInfoView extends VBox {
     nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
     colorIndicator = new Rectangle(COLOR_BOX_SIZE, COLOR_BOX_SIZE);
     vpLabel = new Label("VP: 0");
+    specialLabel = new Label("");
+    specialLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8a6d00;");
     settlementsLabel = new Label("Settlements: 5");
     citiesLabel = new Label("Cities: 4");
     roadsLabel = new Label("Roads: 15");
@@ -69,7 +72,7 @@ public class PlayerInfoView extends VBox {
     Label piecesHeader = new Label("Pieces:");
     piecesHeader.setStyle("-fx-font-weight: bold;");
     getChildren().addAll(
-        nameRow, vpLabel, resourceHeader, resourceGrid,
+        nameRow, vpLabel, specialLabel, resourceHeader, resourceGrid,
         piecesHeader, settlementsLabel, citiesLabel, roadsLabel, knightsLabel,
         devCardsLabel);
   }
@@ -107,11 +110,13 @@ public class PlayerInfoView extends VBox {
     return grid;
   }
 
-  public void refresh(Player player, int vp) {
+  public void refresh(Player player, int vp,
+      boolean hasLongestRoad, boolean hasLargestArmy) {
     nameLabel.setText(player.getName());
     colorIndicator.setFill(playerColorFx(player.getColor()));
     colorIndicator.setStroke(Color.BLACK);
     vpLabel.setText("VP: " + vp);
+    specialLabel.setText(specialText(hasLongestRoad, hasLargestArmy));
     for (Map.Entry<Resource, Label> entry : resourceLabels.entrySet()) {
       int count = player.getResourceCount(entry.getKey());
       entry.getValue().setText(String.valueOf(count));
@@ -121,6 +126,20 @@ public class PlayerInfoView extends VBox {
     roadsLabel.setText("Roads: " + player.getRemainingRoads());
     knightsLabel.setText("Knights: " + player.getKnightsPlayed());
     devCardsLabel.setText(devCardsText(player));
+  }
+
+  private static String specialText(boolean hasLongestRoad, boolean hasLargestArmy) {
+    StringBuilder text = new StringBuilder();
+    if (hasLongestRoad) {
+      text.append("★ Longest Road");
+    }
+    if (hasLargestArmy) {
+      if (text.length() > 0) {
+        text.append("   ");
+      }
+      text.append("★ Largest Army");
+    }
+    return text.toString();
   }
 
   private static Color playerColorFx(PlayerColor color) {
