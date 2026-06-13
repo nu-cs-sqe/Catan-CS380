@@ -137,3 +137,4 @@ $RECYCLE.BIN/
 .bsp/
 project/.bloop/
 metals.sbt
+.metals/
