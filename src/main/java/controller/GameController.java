@@ -3,14 +3,11 @@ package controller;
 import board.Board;
 import board.Edge;
 import board.Robber;
-import board.Tile;
-import board.TileType;
 import board.Vertex;
 import domain.Bank;
 import domain.Game;
 import domain.Player;
 import domain.RandomDiceRoller;
-import domain.Resource;
 import domain.TurnFlow;
 import javafx.scene.control.Alert;
 import view.BoardView;
@@ -36,8 +33,7 @@ public class GameController {
 
   private GamePhase phase;
   private BuildMode buildMode;
-  private int setupRound;
-  private int setupIdx;
+  private Vertex pendingSetupVertex;
   private int currentTurnIdx;
 
   public GameController(GameView gameView, Game game, Board board, Bank bank) {
@@ -50,8 +46,6 @@ public class GameController {
     this.robber = board.createRobber();
     this.phase = GamePhase.SETUP_SETTLEMENT;
     this.buildMode = BuildMode.NONE;
-    this.setupRound = 1;
-    this.setupIdx = 0;
     this.currentTurnIdx = 0;
     wireActions();
     enterSetupSettlement();
@@ -74,9 +68,8 @@ public class GameController {
     gameView.setEndTurnEnabled(false);
     gameView.setBuildActionsEnabled(false);
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
-    Player current = getSetupPlayer();
-    String round = "Round " + setupRound;
-    gameView.setStatusMessage(round + " — " + current.getName() + ": Place a settlement");
+    Player current = game.getCurrentSetupPlayer();
+    gameView.setStatusMessage("Setup — " + current.getName() + ": Place a settlement");
     refreshBoard();
   }
 
@@ -93,16 +86,12 @@ public class GameController {
       gameView.logMessage("That spot is already occupied.");
       return;
     }
-    Player current = getSetupPlayer();
-    current.placeSettlement(vertex);
-    if (setupRound == 2) {
-      distributeSetupResources(current, vertex);
-    }
-    gameView.logMessage(current.getName() + " placed a settlement.");
+    pendingSetupVertex = vertex;
+    Player current = game.getCurrentSetupPlayer();
     phase = GamePhase.SETUP_ROAD;
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.EDGE);
-    gameView.setStatusMessage("Round " + setupRound
-        + " — " + current.getName() + ": Place a road");
+    gameView.setStatusMessage("Setup — " + current.getName()
+        + ": Place a road touching that settlement");
     refreshBoard();
   }
 
@@ -146,11 +135,35 @@ public class GameController {
       gameView.logMessage("That edge already has a road.");
       return;
     }
-    Player current = getSetupPlayer();
-    current.placeRoad(edge);
-    gameView.logMessage(current.getName() + " placed a road.");
+    if (!edgeTouches(edge, pendingSetupVertex)) {
+      gameView.logMessage("The road must connect to your new settlement.");
+      return;
+    }
+    Player current = game.getCurrentSetupPlayer();
+    try {
+      game.placeSetupSettlement(pendingSetupVertex, edge, board, bank);
+    } catch (RuntimeException e) {
+      gameView.logMessage(e.getMessage());
+      pendingSetupVertex = null;
+      phase = GamePhase.SETUP_SETTLEMENT;
+      enterSetupSettlement();
+      return;
+    }
+    gameView.logMessage(current.getName() + " placed a settlement and road.");
+    pendingSetupVertex = null;
     advanceSetup();
-    refreshBoard();
+  }
+
+  private boolean edgeTouches(Edge edge, Vertex vertex) {
+    if (vertex == null) {
+      return false;
+    }
+    for (String endpoint : edge.getId().split("\\|")) {
+      if (endpoint.equals(vertex.getId())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private void handleMainEdgeClick(Edge edge) {
@@ -172,17 +185,11 @@ public class GameController {
   }
 
   private void advanceSetup() {
-    setupIdx++;
-    if (setupIdx < game.getPlayers().size()) {
-      phase = GamePhase.SETUP_SETTLEMENT;
-      enterSetupSettlement();
-    } else if (setupRound == 1) {
-      setupRound = 2;
-      setupIdx = 0;
-      phase = GamePhase.SETUP_SETTLEMENT;
-      enterSetupSettlement();
-    } else {
+    if (game.isSetupComplete()) {
       startMainGame();
+    } else {
+      phase = GamePhase.SETUP_SETTLEMENT;
+      enterSetupSettlement();
     }
   }
 
@@ -282,16 +289,6 @@ public class GameController {
     }
   }
 
-  private void distributeSetupResources(Player player, Vertex vertex) {
-    for (Tile tile : vertex.getAdjacentTiles()) {
-      Resource res = tileToResource(tile.getTileType());
-      if (res != null && bank.canDistribute(res, 1)) {
-        player.addResource(res, 1);
-        bank.distributeResource(res, 1);
-      }
-    }
-  }
-
   private void checkWinCondition() {
     turnFlow.updateLongestRoad(board);
     turnFlow.updateLargestArmy();
@@ -319,7 +316,7 @@ public class GameController {
   private void refreshViews() {
     refreshBoard();
     Player current = (phase == GamePhase.SETUP_SETTLEMENT
-        || phase == GamePhase.SETUP_ROAD) ? getSetupPlayer() : getMainPlayer();
+        || phase == GamePhase.SETUP_ROAD) ? game.getCurrentSetupPlayer() : getMainPlayer();
     int idx = game.getPlayers().indexOf(current);
     if (idx >= 0) {
       gameView.getPlayerInfoView().refresh(current, turnFlow.getVictoryPoints(idx));
@@ -331,23 +328,7 @@ public class GameController {
     gameView.setStatusMessage(current.getName() + "'s turn — Roll the dice");
   }
 
-  private Player getSetupPlayer() {
-    int[] order = (setupRound == 1) ? game.getTurnOrder() : game.getRoundTwoOrder();
-    return game.getPlayers().get(order[setupIdx]);
-  }
-
   private Player getMainPlayer() {
     return game.getPlayers().get(game.getTurnOrder()[currentTurnIdx]);
-  }
-
-  private static Resource tileToResource(TileType type) {
-    switch (type) {
-      case FOREST: return Resource.WOOD;
-      case PASTURE: return Resource.SHEEP;
-      case FIELDS: return Resource.WHEAT;
-      case HILLS: return Resource.BRICK;
-      case MOUNTAINS: return Resource.ORE;
-      default: return null;
-    }
   }
 }
