@@ -9,6 +9,7 @@ import board.Vertex;
 import domain.Player;
 import domain.PlayerColor;
 import domain.Resource;
+import i18n.Messages;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -235,9 +236,11 @@ public class BoardView extends Pane {
 
   private static String harborLabel(Harbor harbor) {
     if (harbor.getHarborType() == Resource.GENERIC) {
-      return "3:1";
+      return Messages.get("harbor.generic");
     }
-    return "2:1\n" + harbor.getHarborType().name();
+    String resourceName =
+        Messages.get("resource." + harbor.getHarborType().name());
+    return Messages.get("harbor.specific") + "\n" + resourceName;
   }
 
   private static Color harborColor(Resource resource) {
