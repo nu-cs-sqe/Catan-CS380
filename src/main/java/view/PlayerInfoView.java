@@ -13,6 +13,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Label;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerInfoView extends VBox {
@@ -31,6 +32,7 @@ public class PlayerInfoView extends VBox {
   private final Label roadsLabel;
   private final Label knightsLabel;
   private final Label devCardsLabel;
+  private final VBox summaryBox;
   private final Map<Resource, Label> resourceLabels;
 
   public PlayerInfoView() {
@@ -50,6 +52,7 @@ public class PlayerInfoView extends VBox {
     knightsLabel = new Label("Knights: 0");
     devCardsLabel = new Label("Dev Cards: none");
     devCardsLabel.setWrapText(true);
+    summaryBox = new VBox(2.0);
     resourceLabels = buildResourceLabels();
     buildLayout();
   }
@@ -71,10 +74,44 @@ public class PlayerInfoView extends VBox {
     GridPane resourceGrid = buildResourceGrid();
     Label piecesHeader = new Label("Pieces:");
     piecesHeader.setStyle("-fx-font-weight: bold;");
+    Label summaryHeader = new Label("All Players:");
+    summaryHeader.setStyle("-fx-font-weight: bold;");
     getChildren().addAll(
         nameRow, vpLabel, specialLabel, resourceHeader, resourceGrid,
         piecesHeader, settlementsLabel, citiesLabel, roadsLabel, knightsLabel,
-        devCardsLabel);
+        devCardsLabel, summaryHeader, summaryBox);
+  }
+
+  public void refreshSummary(List<Player> players, int[] victoryPoints,
+      int longestRoadHolder, int largestArmyHolder) {
+    summaryBox.getChildren().clear();
+    for (int i = 0; i < players.size(); i++) {
+      Player player = players.get(i);
+      StringBuilder row = new StringBuilder();
+      row.append(player.getName())
+          .append(" — VP ").append(victoryPoints[i])
+          .append(", cards ").append(totalResourceCards(player))
+          .append(", dev ").append(player.getDevelopmentCards().size());
+      if (i == longestRoadHolder) {
+        row.append(" [LR]");
+      }
+      if (i == largestArmyHolder) {
+        row.append(" [LA]");
+      }
+      Label label = new Label(row.toString());
+      label.setTextFill(playerColorFx(player.getColor()));
+      summaryBox.getChildren().add(label);
+    }
+  }
+
+  private static int totalResourceCards(Player player) {
+    int total = 0;
+    for (Resource resource : Resource.values()) {
+      if (resource != Resource.GENERIC) {
+        total += player.getResourceCount(resource);
+      }
+    }
+    return total;
   }
 
   private static String devCardsText(Player player) {

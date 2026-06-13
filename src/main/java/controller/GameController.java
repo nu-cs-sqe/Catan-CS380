@@ -580,6 +580,13 @@ public class GameController {
           turnFlow.getLongestRoadHolder() == idx,
           turnFlow.getLargestArmyHolder() == idx);
     }
+    List<Player> players = game.getPlayers();
+    int[] vps = new int[players.size()];
+    for (int i = 0; i < players.size(); i++) {
+      vps[i] = turnFlow.getVictoryPoints(i);
+    }
+    gameView.getPlayerInfoView().refreshSummary(players, vps,
+        turnFlow.getLongestRoadHolder(), turnFlow.getLargestArmyHolder());
   }
 
   private void updateMainGameStatus() {
