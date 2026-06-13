@@ -89,3 +89,11 @@
 |------|------------------------------------------------------------------|------------------------------------------------------------------|--------------|
 | TC45 | Board created; query known harbor vertex pair `"-5,-1"`, `"-5,1"` | Returns non-null `Harbor` with type GENERIC                      | :white_check_mark: |
 | TC46 | Board created; query an interior vertex pair that has no harbor   | Returns `null` (BVA: null boundary - no harbor at this location) | :white_check_mark: |
+
+---
+
+### Method under test: `createRobber()`
+
+|      | System under test                       | Expected output                                                        | Implemented? |
+|------|-----------------------------------------|------------------------------------------------------------------------|--------------|
+| TC47 | Board created; call `createRobber()`    | Returns a `Robber` whose tile is the DESERT tile (the robber's start)  | :white_check_mark: |

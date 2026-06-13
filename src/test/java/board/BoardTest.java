@@ -190,6 +190,22 @@ class BoardTest {
     verify(shuffler);
   }
 
+  // TC47 – createRobber places the robber on the desert tile
+  @Test
+  void createRobber_placesRobberOnDesert() {
+    shuffler.shuffle(EasyMock.anyObject());
+    expectLastCall().anyTimes();
+    replay(shuffler);
+
+    board.create();
+
+    Robber robber = board.createRobber();
+
+    assertEquals(TileType.DESERT, robber.getTile().getTileType());
+
+    verify(shuffler);
+  }
+
   // TC9 – Desert tile has no number token (token = 0)
   @Test
   void create_desertTile_hasNoNumberToken() {

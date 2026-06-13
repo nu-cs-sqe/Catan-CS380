@@ -106,7 +106,6 @@ public class GameController {
     }
     Player current = getSetupPlayer();
     current.placeSettlement(vertex);
-    vertex.setOwner(current);
     if (setupRound == 2) {
       distributeSetupResources(current, vertex);
     }
@@ -123,7 +122,6 @@ public class GameController {
     if (buildMode == BuildMode.SETTLEMENT) {
       try {
         turnFlow.buildSettlement(current, vertex, board);
-        vertex.setOwner(current);
         gameView.logMessage(current.getName() + " built a settlement.");
       } catch (IllegalStateException e) {
         gameView.logMessage(e.getMessage());

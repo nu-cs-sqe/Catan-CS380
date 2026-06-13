@@ -331,10 +331,26 @@ class PlayerTest {
     assertThrows(IllegalStateException.class, () -> player.placeRoad(new Edge("overflow")));
   }
 
+  // BVA TC58
+  @Test
+  void shouldThrowIllegalState_whenPlacingRoadOnOccupiedEdge() {
+    Edge edge = new Edge("shared");
+    player.placeRoad(edge);
+    Player other = new Player("Bob", PlayerColor.BLUE);
+    assertThrows(IllegalStateException.class, () -> other.placeRoad(edge));
+  }
+
   // BVA TC41
   @Test
   void shouldThrowNullPointer_whenUpgradeSettlementToCityVertexIsNull() {
     assertThrows(NullPointerException.class, () -> player.upgradeSettlementToCity(null));
+  }
+
+  // BVA TC59
+  @Test
+  void shouldCountVictoryPointDevCardInHand_towardVictoryPoints() {
+    player.addDevelopmentCard(DevelopmentCard.VICTORY_POINT);
+    assertEquals(1, player.getVictoryPoints());
   }
 
   // BVA TC37
