@@ -3,6 +3,7 @@ package view;
 import board.Board;
 import board.Edge;
 import board.Harbor;
+import board.Robber;
 import board.Tile;
 import board.TileType;
 import board.Vertex;
@@ -67,6 +68,9 @@ public class BoardView extends Pane {
   private static final double HARBOR_BOAT_RADIUS = 6.0;
   private static final double HARBOR_TEXT_HALF_W = 8.0;
   private static final double HARBOR_TEXT_HALF_H = 4.0;
+  private static final double ROBBER_RADIUS = 11.0;
+  private static final double ROBBER_OFFSET_Y = 16.0;
+  private static final double ROBBER_STROKE = 2.0;
   private static final double HEX_IMG_WIDTH = 2 * SCALE_X;
   private static final double HEX_IMG_HEIGHT = 4 * SCALE_Y;
   private static final double TOKEN_CIRCLE_RADIUS = 12.0;
@@ -135,12 +139,27 @@ public class BoardView extends Pane {
     this.edgeValidator = (validator != null) ? validator : e -> true;
   }
 
-  public void refresh(Board board) {
+  public void refresh(Board board, Robber robber) {
     getChildren().clear();
     drawTiles(board);
     drawHarbors(board);
     drawEdges(board);
     drawVertices(board);
+    drawRobber(robber);
+  }
+
+  private void drawRobber(Robber robber) {
+    if (robber == null || robber.getTile() == null) {
+      return;
+    }
+    Tile tile = robber.getTile();
+    double cx = tileCenterX(tile);
+    double cy = tileCenterY(tile) + ROBBER_OFFSET_Y;
+    Circle marker = new Circle(cx, cy, ROBBER_RADIUS);
+    marker.setFill(Color.web("#202020"));
+    marker.setStroke(Color.WHITE);
+    marker.setStrokeWidth(ROBBER_STROKE);
+    getChildren().add(marker);
   }
 
   private void drawTiles(Board board) {

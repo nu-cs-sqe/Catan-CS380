@@ -327,7 +327,7 @@ public class GameController {
   }
 
   private void refreshBoard() {
-    gameView.getBoardView().refresh(board);
+    gameView.getBoardView().refresh(board, robber);
   }
 
   private void refreshViews() {
