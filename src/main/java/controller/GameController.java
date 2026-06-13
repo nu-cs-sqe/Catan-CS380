@@ -68,6 +68,7 @@ public class GameController {
     gameView.setOnBuildCity(this::onBuildCity);
     gameView.setOnBuyDevCard(this::onBuyDevCard);
     gameView.setOnPlayDevCard(this::onPlayDevCard);
+    gameView.setOnTrade(this::onTrade);
   }
 
   private void enterSetupSettlement() {
@@ -398,6 +399,29 @@ public class GameController {
       gameView.logMessage(current.getName() + " bought a development card.");
       refreshViews();
     } catch (Exception e) {
+      gameView.logMessage(e.getMessage());
+    }
+  }
+
+  private void onTrade() {
+    if (phase != GamePhase.MAIN_POST_ROLL) {
+      return;
+    }
+    Player current = getMainPlayer();
+    Resource give = chooseResource("Give which resource?");
+    int rate = turnFlow.bestTradeRate(current, give, board);
+    if (current.getResourceCount(give) < rate) {
+      gameView.logMessage("Need " + rate + " " + give + " to trade (have "
+          + current.getResourceCount(give) + ").");
+      return;
+    }
+    Resource receive = chooseResource("Receive which resource?");
+    try {
+      turnFlow.maritimeTrade(give, rate, receive, board);
+      gameView.logMessage(current.getName() + " traded " + rate + " " + give
+          + " for 1 " + receive + ".");
+      refreshViews();
+    } catch (RuntimeException e) {
       gameView.logMessage(e.getMessage());
     }
   }

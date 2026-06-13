@@ -403,7 +403,7 @@ public final class TurnFlow {
         player.addResource(receive, 1);
     }
 
-    private int bestTradeRate(Player player, Resource give, Board board) {
+    public int bestTradeRate(Player player, Resource give, Board board) {
         int best = MAX_TRADE_RATE;
         for (Vertex vertex : board.getVertices()) {
             if (!player.equals(vertex.getOwner())

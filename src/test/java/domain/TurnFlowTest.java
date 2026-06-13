@@ -1532,6 +1532,21 @@ public class TurnFlowTest {
         Assertions.assertFalse(turnFlow.canBuildCity(players.get(0), vertex));
     }
 
+    // TC85 – bestTradeRate is 4:1 by default and 2:1 with the matching harbor
+    @Test
+    public void testBestTradeRateReflectsHarbors() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+        Board board = createBoard();
+
+        Assertions.assertEquals(4, turnFlow.bestTradeRate(players.get(0),
+                Resource.ORE, board));
+
+        players.get(0).placeSettlement(board.getVertex("-2,8"));
+        Assertions.assertEquals(2, turnFlow.bestTradeRate(players.get(0),
+                Resource.ORE, board));
+    }
+
     // TC84 – setCurrentPlayer aligns the turn cursor with the game's order
     @Test
     public void testSetCurrentPlayer() {

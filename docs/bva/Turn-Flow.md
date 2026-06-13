@@ -615,3 +615,12 @@ reuse the same predicates the build/setup methods throw on.
 - **BVA note**: Lets the UI keep TurnFlow's actor (used by knight/robber/trade and
   win-gating) in step with Game's turn-order-based current player
 - **Implemented**: [x]
+
+### TC85 – bestTradeRate reflects the player's harbors
+- **State of the system**: Player with no harbor; then with a settlement on the
+  2:1 ORE harbor
+- **Expected output**: 4 (default) for ORE without a harbor, 2 once the ORE harbor
+  is owned
+- **BVA note**: Boundary between the default 4:1 rate and a 2:1 harbor rate; exposed
+  so the UI can show the rate before a maritime trade
+- **Implemented**: [x]
