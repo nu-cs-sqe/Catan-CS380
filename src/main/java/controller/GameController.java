@@ -34,7 +34,6 @@ public class GameController {
   private GamePhase phase;
   private BuildMode buildMode;
   private Vertex pendingSetupVertex;
-  private int currentTurnIdx;
 
   public GameController(GameView gameView, Game game, Board board, Bank bank) {
     this.gameView = gameView;
@@ -46,7 +45,6 @@ public class GameController {
     this.robber = board.createRobber();
     this.phase = GamePhase.SETUP_SETTLEMENT;
     this.buildMode = BuildMode.NONE;
-    this.currentTurnIdx = 0;
     wireActions();
     enterSetupSettlement();
   }
@@ -195,7 +193,6 @@ public class GameController {
 
   private void startMainGame() {
     phase = GamePhase.MAIN_PRE_ROLL;
-    currentTurnIdx = 0;
     gameView.logMessage("Setup complete! Game begins.");
     gameView.setRollEnabled(true);
     gameView.setEndTurnEnabled(false);
@@ -234,7 +231,7 @@ public class GameController {
       return;
     }
     turnFlow.endTurn(getMainPlayer());
-    currentTurnIdx = (currentTurnIdx + 1) % game.getPlayers().size();
+    game.endTurn();
     phase = GamePhase.MAIN_PRE_ROLL;
     buildMode = BuildMode.NONE;
     gameView.setRollEnabled(true);
@@ -329,6 +326,6 @@ public class GameController {
   }
 
   private Player getMainPlayer() {
-    return game.getPlayers().get(game.getTurnOrder()[currentTurnIdx]);
+    return game.getPlayers().get(game.getCurrentPlayerIndex());
   }
 }
