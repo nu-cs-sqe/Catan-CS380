@@ -52,6 +52,7 @@ public class BoardView extends Pane {
   private static final double VERTEX_ACTIVE_RADIUS = 13.0;
   private static final double OWNED_VERTEX_RADIUS = 10.0;
   private static final double OWNED_VERTEX_STROKE = 2.5;
+  private static final double CITY_INNER_RADIUS = 4.0;
   private static final double ROAD_STROKE = 4.0;
   private static final double ROAD_ACTIVE_STROKE = 9.0;
   private static final double UNOWNED_STROKE = 1.0;
@@ -349,6 +350,14 @@ public class BoardView extends Pane {
       circle.setOnMouseClicked(e -> onVertexClicked(vRef));
     }
     getChildren().add(circle);
+    if (owned && vertex.getSettlement() != null
+        && vertex.getSettlement().isCity()) {
+      Circle inner = new Circle(px[0], px[1], CITY_INNER_RADIUS);
+      inner.setFill(Color.WHITE);
+      inner.setStroke(Color.BLACK);
+      inner.setStrokeWidth(UNOWNED_STROKE);
+      getChildren().add(inner);
+    }
   }
 
   private void applyVertexStyle(Circle circle, Vertex vertex, boolean active) {
