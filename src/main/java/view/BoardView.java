@@ -48,6 +48,8 @@ public class BoardView extends Pane {
   private static final double CENTER_Y = 280.0;
   private static final double VERTEX_RADIUS = 8.0;
   private static final double VERTEX_ACTIVE_RADIUS = 13.0;
+  private static final double OWNED_VERTEX_RADIUS = 10.0;
+  private static final double OWNED_VERTEX_STROKE = 2.5;
   private static final double ROAD_STROKE = 4.0;
   private static final double ROAD_ACTIVE_STROKE = 9.0;
   private static final double UNOWNED_STROKE = 1.0;
@@ -289,14 +291,26 @@ public class BoardView extends Pane {
 
   private void drawVertices(Board board) {
     for (Vertex vertex : board.getVertices()) {
-      drawVertex(vertex);
+      if (vertex.getOwner() == null) {
+        drawVertex(vertex);
+      }
+    }
+    // Placed settlements/cities are drawn last so they stay visible on top of
+    // candidate highlights in every selection mode.
+    for (Vertex vertex : board.getVertices()) {
+      if (vertex.getOwner() != null) {
+        drawVertex(vertex);
+      }
     }
   }
 
   private void drawVertex(Vertex vertex) {
     double[] px = vertexPixelCoords(vertex.getId());
-    boolean active = mode == SelectionMode.VERTEX && vertex.getSettlement() == null;
-    double radius = active ? VERTEX_ACTIVE_RADIUS : VERTEX_RADIUS;
+    boolean owned = vertex.getOwner() != null;
+    boolean active = mode == SelectionMode.VERTEX && !owned
+        && vertex.getSettlement() == null;
+    double radius = owned ? OWNED_VERTEX_RADIUS
+        : (active ? VERTEX_ACTIVE_RADIUS : VERTEX_RADIUS);
     Circle circle = new Circle(px[0], px[1], radius);
     applyVertexStyle(circle, vertex, active);
     final Vertex vRef = vertex;
@@ -309,7 +323,7 @@ public class BoardView extends Pane {
     if (owner != null) {
       circle.setFill(playerColor(owner.getColor()));
       circle.setStroke(Color.BLACK);
-      circle.setStrokeWidth(UNOWNED_STROKE);
+      circle.setStrokeWidth(OWNED_VERTEX_STROKE);
     } else if (active) {
       circle.setFill(Color.WHITE);
       circle.setStroke(Color.DARKGREEN);
