@@ -51,19 +51,19 @@ public class Board {
           TileType.DESERT);
 
   private static final List<Integer> TOKEN_DISTRIBUTION =
-      Arrays.asList(5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11);
+      Arrays.asList(5, 2, 3, 6, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11);
 
   private static final List<Harbor> HARBOR_DEFINITIONS =
       Arrays.asList(
-          new Harbor(Resource.GENERIC, 3, "-5,-1", "-5,1"),
-          new Harbor(Resource.WHEAT, 2, "-4,-4", "-4,-2"),
-          new Harbor(Resource.GENERIC, 3, "-3,-7", "-3,-5"),
-          new Harbor(Resource.WOOD, 2, "-1,-5", "0,-4"),
-          new Harbor(Resource.GENERIC, 3, "2,-4", "3,-5"),
-          new Harbor(Resource.BRICK, 2, "3,-1", "4,-2"),
-          new Harbor(Resource.ORE, 2, "3,5", "3,7"),
-          new Harbor(Resource.GENERIC, 3, "-2,4", "-1,5"),
-          new Harbor(Resource.SHEEP, 2, "-4,2", "-3,1"));
+          new Harbor(Resource.GENERIC, 3, "-3,-7", "-2,-8"),
+          new Harbor(Resource.WHEAT, 2, "0,-8", "1,-7"),
+          new Harbor(Resource.GENERIC, 3, "3,-5", "4,-4"),
+          new Harbor(Resource.WOOD, 2, "5,-1", "5,1"),
+          new Harbor(Resource.GENERIC, 3, "4,4", "3,5"),
+          new Harbor(Resource.BRICK, 2, "1,7", "0,8"),
+          new Harbor(Resource.ORE, 2, "-2,8", "-3,7"),
+          new Harbor(Resource.GENERIC, 3, "-4,2", "-4,4"),
+          new Harbor(Resource.SHEEP, 2, "-4,-4", "-4,-2"));
 
   private final Shuffler shuffler;
   private final List<Harbor> harborDefinitions;

@@ -3,6 +3,8 @@ import com.github.spotbugs.snom.Effort
 
 plugins {
     id("java")
+    id("application")
+    id("org.openjfx.javafxplugin") version "0.1.0"
     checkstyle
     id("com.github.spotbugs") version "6.0.25"
     jacoco
@@ -16,7 +18,18 @@ repositories {
     mavenCentral()
 }
 
+javafx {
+    version = "21"
+    modules = listOf("javafx.controls")
+}
+
+application {
+    mainClass.set("ui.Main")
+}
+
 dependencies {
+    implementation("io.github.mkpaz:atlantafx-base:2.0.1")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.platform:junit-platform-suite")
@@ -31,12 +44,16 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 tasks.compileJava {
-    options.release = 11
+    options.release = 21
+}
+
+tasks.compileTestJava {
+    options.release = 21
 }
 
 tasks.test {
@@ -67,6 +84,7 @@ spotbugs {
     showProgress = true
     effort = Effort.DEFAULT
     reportLevel = Confidence.DEFAULT
+    excludeFilter = file("config/spotbugs/exclude.xml")
     //omitVisitors = listOf("FindNonShortCircuit")
     reportsDir = file("spotbugs")
     //onlyAnalyze = listOf("com.foobar.MyClass", "com.foobar.mypkg.*")

@@ -188,7 +188,7 @@ public class LongestRoadTest {
         return Arrays.asList(
                 new Player("Alice", PlayerColor.RED),
                 new Player("Bob", PlayerColor.BLUE),
-                new Player("Carol", PlayerColor.WHITE)
+                new Player("Carol", PlayerColor.PINK)
         );
     }
 }

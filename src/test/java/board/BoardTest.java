@@ -260,8 +260,8 @@ class BoardTest {
         Arrays.asList(
             FIRST_TOKEN,
             MIN_TOKEN,
-            TOKEN_SIX,
             TOKEN_THREE,
+            TOKEN_SIX,
             TOKEN_EIGHT,
             TOKEN_TEN,
             TOKEN_NINE,
@@ -783,7 +783,7 @@ class BoardTest {
 
     board.create();
 
-    Harbor harbor = board.getHarbor("-5,-1", "-5,1");
+    Harbor harbor = board.getHarbor("-3,-7", "-2,-8");
     assertNotNull(harbor);
     assertEquals(Resource.GENERIC, harbor.getHarborType());
 
