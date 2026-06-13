@@ -13,8 +13,6 @@ import javafx.scene.control.Alert;
 import view.BoardView;
 import view.GameView;
 
-import java.util.List;
-
 public class GameController {
 
   private static final int ROBBER_ROLL = 7;
@@ -226,8 +224,11 @@ public class GameController {
     if (phase != GamePhase.MAIN_POST_ROLL) {
       return;
     }
-    checkWinCondition();
-    if (turnFlow.isGameOver()) {
+    if (checkWinCondition()) {
+      gameView.setRollEnabled(false);
+      gameView.setEndTurnEnabled(false);
+      gameView.setBuildActionsEnabled(false);
+      gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.NONE);
       return;
     }
     turnFlow.endTurn(getMainPlayer());
@@ -286,16 +287,16 @@ public class GameController {
     }
   }
 
-  private void checkWinCondition() {
+  private boolean checkWinCondition() {
     turnFlow.updateLongestRoad(board);
     turnFlow.updateLargestArmy();
-    List<Player> players = game.getPlayers();
-    for (int i = 0; i < players.size(); i++) {
-      if (turnFlow.getVictoryPoints(i) >= WIN_THRESHOLD) {
-        showWinner(players.get(i), turnFlow.getVictoryPoints(i));
-        return;
-      }
+    int idx = game.getCurrentPlayerIndex();
+    int vp = turnFlow.getVictoryPoints(idx);
+    if (vp >= WIN_THRESHOLD) {
+      showWinner(game.getPlayers().get(idx), vp);
+      return true;
     }
+    return false;
   }
 
   private void showWinner(Player player, int vp) {
