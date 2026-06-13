@@ -2,6 +2,7 @@ package ui;
 
 import atlantafx.base.theme.PrimerLight;
 import controller.SetupController;
+import i18n.Messages;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import view.SetupView;
@@ -17,7 +18,7 @@ public class Main extends Application {
     Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
     SetupView setupView = new SetupView();
     new SetupController(setupView, primaryStage);
-    primaryStage.setTitle("Catan");
+    primaryStage.setTitle(Messages.get("app.title"));
     primaryStage.setScene(setupView.getScene());
     primaryStage.show();
   }
