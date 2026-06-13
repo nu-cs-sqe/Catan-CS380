@@ -1532,6 +1532,19 @@ public class TurnFlowTest {
         Assertions.assertFalse(turnFlow.canBuildCity(players.get(0), vertex));
     }
 
+    // TC84 – setCurrentPlayer aligns the turn cursor with the game's order
+    @Test
+    public void testSetCurrentPlayer() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+
+        turnFlow.setCurrentPlayer(2);
+        Assertions.assertEquals(2, turnFlow.getCurrentPlayerIndex());
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.setCurrentPlayer(3));
+    }
+
     private void giveSettlementCost(Player player) {
         player.addResource(Resource.WOOD, 1);
         player.addResource(Resource.BRICK, 1);

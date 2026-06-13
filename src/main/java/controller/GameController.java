@@ -195,6 +195,7 @@ public class GameController {
 
   private void startMainGame() {
     phase = GamePhase.MAIN_PRE_ROLL;
+    turnFlow.setCurrentPlayer(game.getCurrentPlayerIndex());
     gameView.logMessage("Setup complete! Game begins.");
     gameView.setRollEnabled(true);
     gameView.setEndTurnEnabled(false);
@@ -244,6 +245,7 @@ public class GameController {
     }
     turnFlow.endTurn(getMainPlayer());
     game.endTurn();
+    turnFlow.setCurrentPlayer(game.getCurrentPlayerIndex());
     phase = GamePhase.MAIN_PRE_ROLL;
     buildMode = BuildMode.NONE;
     gameView.setRollEnabled(true);

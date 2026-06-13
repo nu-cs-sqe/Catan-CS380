@@ -436,6 +436,13 @@ public final class TurnFlow {
         return currentPlayerIndex;
     }
 
+    public void setCurrentPlayer(int index) {
+        if (index < 0 || index >= players.size()) {
+            throw new IllegalArgumentException("Invalid player index");
+        }
+        currentPlayerIndex = index;
+    }
+
     public void buildSettlement(Player player, Vertex vertex) {
         buildSettlement(player, vertex, null);
     }

@@ -607,3 +607,11 @@ reuse the same predicates the build/setup methods throw on.
 - **BVA note**: Boundary between an upgradeable settlement (legal) and an empty or
   already-upgraded vertex (illegal)
 - **Implemented**: [x]
+
+### TC84 – setCurrentPlayer aligns the turn cursor with the game's turn order
+- **State of the system**: A 3-player TurnFlow (cursor at 0)
+- **Expected output**: `setCurrentPlayer(2)` makes `getCurrentPlayerIndex()` return 2;
+  an out-of-range index throws `IllegalArgumentException`
+- **BVA note**: Lets the UI keep TurnFlow's actor (used by knight/robber/trade and
+  win-gating) in step with Game's turn-order-based current player
+- **Implemented**: [x]
