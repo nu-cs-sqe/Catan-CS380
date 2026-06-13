@@ -3,13 +3,21 @@ package controller;
 import board.Board;
 import board.Edge;
 import board.Robber;
+import board.Tile;
 import board.Vertex;
 import domain.Bank;
 import domain.Game;
 import domain.Player;
 import domain.RandomDiceRoller;
+import domain.Resource;
 import domain.TurnFlow;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceDialog;
 import view.BoardView;
 import view.GameView;
 
@@ -226,10 +234,95 @@ public class GameController {
   }
 
   private void handleRobberRoll() {
-    // The full robber resolution (discard for 8+ cards, move the robber via
-    // turnFlow.moveRobberAndSteal, choose a victim from stealCandidates) is
-    // added with the robber UI task; production is correctly skipped on a 7.
-    gameView.logMessage("Rolled a 7 — robber handling coming soon.");
+    gameView.logMessage("Rolled a 7 — robber activated.");
+    performDiscards();
+    moveRobberInteractive();
+  }
+
+  private void performDiscards() {
+    List<Player> players = game.getPlayers();
+    for (int i = 0; i < players.size(); i++) {
+      int count = turnFlow.getDiscardCount(i);
+      if (count > 0) {
+        Player player = players.get(i);
+        turnFlow.discard(player, chooseDiscards(player, count));
+        gameView.logMessage(player.getName() + " discarded " + count + " cards.");
+      }
+    }
+  }
+
+  private Map<Resource, Integer> chooseDiscards(Player player, int count) {
+    Map<Resource, Integer> chosen = new EnumMap<>(Resource.class);
+    int remaining = count;
+    for (Resource resource : Resource.values()) {
+      if (resource == Resource.GENERIC || remaining == 0) {
+        continue;
+      }
+      int take = Math.min(player.getResourceCount(resource), remaining);
+      if (take > 0) {
+        chosen.put(resource, take);
+        remaining -= take;
+      }
+    }
+    return chosen;
+  }
+
+  private void moveRobberInteractive() {
+    Tile target = chooseRobberTile();
+    if (target == null) {
+      return;
+    }
+    turnFlow.moveRobber(robber, target, board);
+    refreshBoard();
+    Player current = getMainPlayer();
+    List<Player> candidates = turnFlow.stealCandidates(robber, board);
+    candidates.remove(current);
+    if (candidates.isEmpty()) {
+      gameView.logMessage("No players to steal from.");
+      return;
+    }
+    Player victim = chooseVictim(candidates);
+    if (victim != null) {
+      turnFlow.stealResource(current, victim, robber, board);
+      gameView.logMessage(current.getName() + " stole from " + victim.getName() + ".");
+      refreshViews();
+    }
+  }
+
+  private Tile chooseRobberTile() {
+    Map<String, Tile> options = new LinkedHashMap<>();
+    Tile currentTile = robber.getTile();
+    for (Tile tile : board.getTiles()) {
+      if (currentTile != null && tile.getQ() == currentTile.getQ()
+          && tile.getR() == currentTile.getR()) {
+        continue;
+      }
+      options.put(tile.getTileType() + " (" + tile.getQ() + "," + tile.getR() + ")", tile);
+    }
+    if (options.isEmpty()) {
+      return null;
+    }
+    String first = options.keySet().iterator().next();
+    ChoiceDialog<String> dialog = new ChoiceDialog<>(first, options.keySet());
+    dialog.setTitle("Move Robber");
+    dialog.setHeaderText("Choose a tile to move the robber to");
+    dialog.setContentText("Tile:");
+    Optional<String> result = dialog.showAndWait();
+    return options.get(result.orElse(first));
+  }
+
+  private Player chooseVictim(List<Player> candidates) {
+    Map<String, Player> options = new LinkedHashMap<>();
+    for (Player player : candidates) {
+      options.put(player.getName(), player);
+    }
+    String first = options.keySet().iterator().next();
+    ChoiceDialog<String> dialog = new ChoiceDialog<>(first, options.keySet());
+    dialog.setTitle("Steal");
+    dialog.setHeaderText("Choose a player to steal from");
+    dialog.setContentText("Player:");
+    Optional<String> result = dialog.showAndWait();
+    return options.get(result.orElse(first));
   }
 
   public void onEndTurn() {
