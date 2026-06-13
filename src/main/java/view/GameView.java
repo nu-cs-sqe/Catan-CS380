@@ -1,5 +1,6 @@
 package view;
 
+import i18n.Messages;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -34,15 +35,15 @@ public class GameView {
   public GameView() {
     boardView = new BoardView();
     playerInfoView = new PlayerInfoView();
-    statusLabel = new Label("Initialising...");
+    statusLabel = new Label(Messages.get("status.initialising"));
     statusLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
     logArea = buildLogArea();
-    rollButton = new Button("Roll Dice");
-    endTurnButton = new Button("End Turn");
-    buildSettlementButton = new Button("Build Settlement");
-    buildRoadButton = new Button("Build Road");
-    buildCityButton = new Button("Build City");
-    buyDevCardButton = new Button("Buy Dev Card");
+    rollButton = new Button(Messages.get("button.roll"));
+    endTurnButton = new Button(Messages.get("button.endTurn"));
+    buildSettlementButton = new Button(Messages.get("button.buildSettlement"));
+    buildRoadButton = new Button(Messages.get("button.buildRoad"));
+    buildCityButton = new Button(Messages.get("button.buildCity"));
+    buyDevCardButton = new Button(Messages.get("button.buyDevCard"));
     BorderPane root = buildLayout();
     scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
   }
