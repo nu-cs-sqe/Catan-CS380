@@ -5,6 +5,7 @@ import domain.Bank;
 import domain.Game;
 import domain.Player;
 import domain.PlayerColor;
+import i18n.Messages;
 import javafx.stage.Stage;
 import view.GameView;
 import view.SetupView;
@@ -62,10 +63,10 @@ public class SetupController {
   private String validatePlayer(int index, String name,
       PlayerColor color, Set<PlayerColor> usedColors) {
     if (name.isEmpty()) {
-      return "Player " + (index + 1) + " name cannot be empty.";
+      return Messages.get("error.name.empty", index + 1);
     }
     if (usedColors.contains(color)) {
-      return "Player " + (index + 1) + " color is already taken.";
+      return Messages.get("error.color.taken", index + 1);
     }
     return null;
   }
