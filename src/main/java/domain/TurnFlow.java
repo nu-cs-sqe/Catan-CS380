@@ -2,6 +2,7 @@ package domain;
 
 import board.Board;
 import board.Edge;
+import board.Harbor;
 import board.Robber;
 import board.Tile;
 import board.TileType;
@@ -22,6 +23,7 @@ public final class TurnFlow {
     private static final int MIN_ROAD_LENGTH = 5;
     private static final int WIN_THRESHOLD = 10;
     private static final int ROBBER_ROLL = 7;
+    private static final int MAX_TRADE_RATE = 4;
     private static final Map<Resource, Integer> SETTLEMENT_COST =
             settlementCost();
     private static final Map<Resource, Integer> CITY_COST =
@@ -388,12 +390,33 @@ public final class TurnFlow {
         player.addResource(res2, 1);
     }
 
-    public void maritimeTrade(Player player, Resource give,
-                              int giveCount, Resource receive) {
+    public void maritimeTrade(Resource give, int giveCount,
+                              Resource receive, Board board) {
         requireRobberResolved();
+        Player player = players.get(currentPlayerIndex);
+        if (giveCount < bestTradeRate(player, give, board)) {
+            throw new IllegalArgumentException(
+                    "Below the player's best trade rate");
+        }
         player.removeResource(give, giveCount);
         bank.maritimeTrade(give, giveCount, receive);
         player.addResource(receive, 1);
+    }
+
+    private int bestTradeRate(Player player, Resource give, Board board) {
+        int best = MAX_TRADE_RATE;
+        for (Vertex vertex : board.getVertices()) {
+            if (!player.equals(vertex.getOwner())
+                    || vertex.getHarbor() == null) {
+                continue;
+            }
+            Harbor harbor = vertex.getHarbor();
+            if (harbor.getHarborType() == Resource.GENERIC
+                    || harbor.getHarborType() == give) {
+                best = Math.min(best, harbor.getExchangeRate());
+            }
+        }
+        return best;
     }
 
     public void endTurn(Player player) {

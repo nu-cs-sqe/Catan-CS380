@@ -532,14 +532,14 @@ Manages everything that happens during a player's turn: rolling dice, resource d
 - **BVA note**: Boundary between the best rate the player has earned (valid) and a
   better rate they have not (invalid); harbor ownership, not a caller-supplied
   number, sets the rate
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC75 – Owning a 2:1 harbor enables that harbor's rate
 - **State of the system**: Player owns a settlement on a 2:1 ORE harbor and gives 2 ORE
 - **Expected output**: Trade succeeds at 2:1 for ORE
 - **BVA note**: Boundary between a resource the player has a 2:1 harbor for (2:1 valid)
   and one they do not (still 4:1)
-- **Implemented**: [ ]
+- **Implemented**: [x]
 
 ### TC76 – Buying a dev card with insufficient resources changes nothing
 - **State of the system**: Player has 1 ORE and 1 WHEAT but 0 SHEEP

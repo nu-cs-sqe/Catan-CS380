@@ -780,8 +780,8 @@ public class TurnFlowTest {
 
         players.get(0).addResource(Resource.WOOD, 4);
 
-        turnFlow.maritimeTrade(players.get(0),
-                Resource.WOOD, 4, Resource.BRICK);
+        Board board = createBoard();
+        turnFlow.maritimeTrade(Resource.WOOD, 4, Resource.BRICK, board);
 
         Assertions.assertEquals(0,
                 players.get(0).getResourceCount(Resource.WOOD));
@@ -796,10 +796,11 @@ public class TurnFlowTest {
         TurnFlow turnFlow = new TurnFlow(players, createBank());
 
         players.get(0).addResource(Resource.WOOD, 1);
+        Board board = createBoard();
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> turnFlow.maritimeTrade(players.get(0),
-                        Resource.WOOD, 1, Resource.BRICK));
+                () -> turnFlow.maritimeTrade(Resource.WOOD, 1,
+                        Resource.BRICK, board));
     }
 
     // TC32 – Maritime trade same resource give and receive throws
@@ -809,10 +810,11 @@ public class TurnFlowTest {
         TurnFlow turnFlow = new TurnFlow(players, createBank());
 
         players.get(0).addResource(Resource.WOOD, 4);
+        Board board = createBoard();
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> turnFlow.maritimeTrade(players.get(0),
-                        Resource.WOOD, 4, Resource.WOOD));
+                () -> turnFlow.maritimeTrade(Resource.WOOD, 4,
+                        Resource.WOOD, board));
     }
 
     // TC33 – Maritime trade when bank has 0 of receive resource throws
@@ -824,10 +826,44 @@ public class TurnFlowTest {
 
         bank.distributeResource(Resource.BRICK, 19);
         players.get(0).addResource(Resource.WOOD, 4);
+        Board board = createBoard();
 
         Assertions.assertThrows(IllegalStateException.class,
-                () -> turnFlow.maritimeTrade(players.get(0),
-                        Resource.WOOD, 4, Resource.BRICK));
+                () -> turnFlow.maritimeTrade(Resource.WOOD, 4,
+                        Resource.BRICK, board));
+    }
+
+    // TC74 – Maritime trade below the player's best rate (no harbor) throws
+    @Test
+    public void testMaritimeTradeBelowBestRateWithoutHarborThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+        Board board = createBoard();
+
+        players.get(0).addResource(Resource.ORE, 3);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.maritimeTrade(Resource.ORE, 3,
+                        Resource.WHEAT, board));
+    }
+
+    // TC75 – Owning a 2:1 harbor enables that harbor's rate
+    @Test
+    public void testMaritimeTradeWithTwoToOneHarbor() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+        Board board = createBoard();
+
+        // "3,5" sits on the 2:1 ORE harbor
+        players.get(0).placeSettlement(board.getVertex("3,5"));
+        players.get(0).addResource(Resource.ORE, 2);
+
+        turnFlow.maritimeTrade(Resource.ORE, 2, Resource.WHEAT, board);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.ORE));
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.WHEAT));
     }
 
     // TC34 – getVictoryPoints includes largest army bonus
