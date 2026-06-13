@@ -4,15 +4,21 @@
 # CATAN-2.0
 
 ## Contributors
+
 - Yusuf Ozdemir
 - Adnan Alhabian
 - Abdullah Itani
 
 ## Dependencies
+
 - JDK 11
 - JUnit 5.10
 - Gradle 8.10
 - EasyMock 5.4
 
 ## Acknowledgements
-REFERENCES, SOURCE OF HELP ETC
+
+Tile images sourced
+from [this GitHub repository](https://github.com/BryantCabrera/Settlers-of-Catan/tree/master/resources/imgs).
+
+Used [Atlanta-fx](https://github.com/mkpaz/atlantafx) for more modern UI design.

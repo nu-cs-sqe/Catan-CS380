@@ -39,7 +39,14 @@
    it) [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/32)
 4. [done] Yusuf Ozdemir: Project refactoring to fix edge cases and duplications so Classes work together
    seamlessly [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/33)
-5. 
+5. [done] Yusuf Ozdemir: Missing feature implementation and sloppy code revamp
+   [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/47)
+6. [done] Adnan Alhabian: TurnFlow tests TC37-TC46, covering how a single player's turn flows from roll to actions to
+   end of turn [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/40)
+7. [done] Adnan Alhabian: Locale implementation, all user-facing strings moved to ResourceBundle with English and
+   Turkish [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/41)
+8. [done] Adnan Alhabian: Three integration tests (Trade, Setup-to-Turn, Turn-to-Win) using real classes and no
+   mocks [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/51)
 
 
 
