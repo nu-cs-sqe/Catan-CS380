@@ -6,11 +6,13 @@ import board.Robber;
 import board.Tile;
 import board.Vertex;
 import domain.Bank;
+import domain.DevelopmentCard;
 import domain.Game;
 import domain.Player;
 import domain.RandomDiceRoller;
 import domain.Resource;
 import domain.TurnFlow;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,6 +67,7 @@ public class GameController {
     gameView.setOnBuildRoad(this::onBuildRoad);
     gameView.setOnBuildCity(this::onBuildCity);
     gameView.setOnBuyDevCard(this::onBuyDevCard);
+    gameView.setOnPlayDevCard(this::onPlayDevCard);
   }
 
   private void enterSetupSettlement() {
@@ -397,6 +400,126 @@ public class GameController {
     } catch (Exception e) {
       gameView.logMessage(e.getMessage());
     }
+  }
+
+  private void onPlayDevCard() {
+    if (phase != GamePhase.MAIN_POST_ROLL) {
+      return;
+    }
+    Player current = getMainPlayer();
+    List<DevelopmentCard> playable = new ArrayList<>();
+    for (DevelopmentCard card : current.getDevelopmentCards()) {
+      if (card != DevelopmentCard.VICTORY_POINT && !playable.contains(card)) {
+        playable.add(card);
+      }
+    }
+    if (playable.isEmpty()) {
+      gameView.logMessage("No playable development cards.");
+      return;
+    }
+    DevelopmentCard card = chooseChoice("Play Development Card",
+        "Choose a card to play", playable);
+    try {
+      playDevCard(current, card);
+      refreshViews();
+    } catch (RuntimeException e) {
+      gameView.logMessage(e.getMessage());
+    }
+  }
+
+  private void playDevCard(Player current, DevelopmentCard card) {
+    switch (card) {
+      case KNIGHT:
+        playKnight(current);
+        break;
+      case MONOPOLY:
+        Resource monopolised = chooseResource("Choose a resource to monopolise");
+        turnFlow.playMonopolyCard(current, monopolised);
+        gameView.logMessage(current.getName() + " played Monopoly on " + monopolised + ".");
+        break;
+      case YEAR_OF_PLENTY:
+        Resource first = chooseResource("Choose the first resource");
+        Resource second = chooseResource("Choose the second resource");
+        turnFlow.playYearOfPlentyCard(current, first, second);
+        gameView.logMessage(current.getName() + " played Year of Plenty.");
+        break;
+      case ROAD_BUILDING:
+        playRoadBuilding(current);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private void playKnight(Player current) {
+    turnFlow.playDevelopmentCard(current, DevelopmentCard.KNIGHT);
+    Tile target = chooseRobberTile();
+    if (target != null) {
+      turnFlow.moveRobber(robber, target, board);
+    }
+    current.playKnight();
+    turnFlow.updateLargestArmy();
+    refreshBoard();
+    List<Player> candidates = turnFlow.stealCandidates(robber, board);
+    candidates.remove(current);
+    if (candidates.isEmpty()) {
+      gameView.logMessage(current.getName() + " played a Knight.");
+      return;
+    }
+    Player victim = chooseVictim(candidates);
+    turnFlow.stealResource(current, victim, robber, board);
+    gameView.logMessage(current.getName() + " played a Knight and stole from "
+        + victim.getName() + ".");
+  }
+
+  private void playRoadBuilding(Player current) {
+    List<Edge> legal = new ArrayList<>();
+    for (Edge edge : board.getEdges()) {
+      if (turnFlow.canBuildRoad(current, edge, board)) {
+        legal.add(edge);
+      }
+    }
+    if (legal.size() < 2) {
+      gameView.logMessage("Not enough legal road spots for Road Building.");
+      return;
+    }
+    Edge first = chooseEdge(legal);
+    legal.remove(first);
+    Edge second = chooseEdge(legal);
+    turnFlow.playRoadBuildingCard(current, first, second, board);
+    gameView.logMessage(current.getName() + " played Road Building.");
+  }
+
+  private Resource chooseResource(String header) {
+    List<Resource> options = new ArrayList<>();
+    for (Resource resource : Resource.values()) {
+      if (resource != Resource.GENERIC) {
+        options.add(resource);
+      }
+    }
+    return chooseChoice("Development Card", header, options);
+  }
+
+  private Edge chooseEdge(List<Edge> legal) {
+    Map<String, Edge> options = new LinkedHashMap<>();
+    for (Edge edge : legal) {
+      options.put(edge.getId(), edge);
+    }
+    String first = options.keySet().iterator().next();
+    ChoiceDialog<String> dialog = new ChoiceDialog<>(first, options.keySet());
+    dialog.setTitle("Road Building");
+    dialog.setHeaderText("Choose a road to place");
+    dialog.setContentText("Edge:");
+    return options.get(dialog.showAndWait().orElse(first));
+  }
+
+  private <T> T chooseChoice(String title, String header, List<T> options) {
+    T first = options.get(0);
+    ChoiceDialog<T> dialog = new ChoiceDialog<>(first, options);
+    dialog.setTitle(title);
+    dialog.setHeaderText(header);
+    dialog.setContentText("Choice:");
+    return dialog.showAndWait().orElse(first);
   }
 
   private boolean checkWinCondition() {
