@@ -8,11 +8,11 @@ public class Settlement {
     private boolean city = false;
 
     public Settlement(Player owner) {
-        this.owner = owner;
+        this.owner = (owner != null) ? new Player(owner) : null;
     }
 
     public Player getOwner() {
-        return owner;
+        return (owner != null) ? new Player(owner) : null;
     }
 
     public void upgrade() {
