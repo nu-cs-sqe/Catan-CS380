@@ -1,5 +1,6 @@
 package view;
 
+import domain.DevelopmentCard;
 import domain.Player;
 import domain.PlayerColor;
 import domain.Resource;
@@ -28,6 +29,7 @@ public class PlayerInfoView extends VBox {
   private final Label citiesLabel;
   private final Label roadsLabel;
   private final Label knightsLabel;
+  private final Label devCardsLabel;
   private final Map<Resource, Label> resourceLabels;
 
   public PlayerInfoView() {
@@ -43,6 +45,8 @@ public class PlayerInfoView extends VBox {
     citiesLabel = new Label("Cities: 4");
     roadsLabel = new Label("Roads: 15");
     knightsLabel = new Label("Knights: 0");
+    devCardsLabel = new Label("Dev Cards: none");
+    devCardsLabel.setWrapText(true);
     resourceLabels = buildResourceLabels();
     buildLayout();
   }
@@ -66,7 +70,28 @@ public class PlayerInfoView extends VBox {
     piecesHeader.setStyle("-fx-font-weight: bold;");
     getChildren().addAll(
         nameRow, vpLabel, resourceHeader, resourceGrid,
-        piecesHeader, settlementsLabel, citiesLabel, roadsLabel, knightsLabel);
+        piecesHeader, settlementsLabel, citiesLabel, roadsLabel, knightsLabel,
+        devCardsLabel);
+  }
+
+  private static String devCardsText(Player player) {
+    Map<DevelopmentCard, Integer> counts = new EnumMap<>(DevelopmentCard.class);
+    for (DevelopmentCard card : player.getDevelopmentCards()) {
+      counts.merge(card, 1, Integer::sum);
+    }
+    if (counts.isEmpty()) {
+      return "Dev Cards: none";
+    }
+    StringBuilder text = new StringBuilder("Dev Cards: ");
+    boolean firstEntry = true;
+    for (Map.Entry<DevelopmentCard, Integer> entry : counts.entrySet()) {
+      if (!firstEntry) {
+        text.append(", ");
+      }
+      text.append(entry.getKey().name()).append(" x").append(entry.getValue());
+      firstEntry = false;
+    }
+    return text.toString();
   }
 
   private GridPane buildResourceGrid() {
@@ -95,6 +120,7 @@ public class PlayerInfoView extends VBox {
     citiesLabel.setText("Cities: " + player.getRemainingCities());
     roadsLabel.setText("Roads: " + player.getRemainingRoads());
     knightsLabel.setText("Knights: " + player.getKnightsPlayed());
+    devCardsLabel.setText(devCardsText(player));
   }
 
   private static Color playerColorFx(PlayerColor color) {
