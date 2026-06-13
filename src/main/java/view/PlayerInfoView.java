@@ -1,5 +1,6 @@
 package view;
 
+import domain.DevelopmentCard;
 import domain.Player;
 import domain.PlayerColor;
 import domain.Resource;
@@ -13,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Label;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerInfoView extends VBox {
@@ -28,10 +30,13 @@ public class PlayerInfoView extends VBox {
   private final Label nameLabel;
   private final Rectangle colorIndicator;
   private final Label vpLabel;
+  private final Label specialLabel;
   private final Label settlementsLabel;
   private final Label citiesLabel;
   private final Label roadsLabel;
   private final Label knightsLabel;
+  private final Label devCardsLabel;
+  private final VBox summaryBox;
   private final Map<Resource, Label> resourceLabels;
 
   public PlayerInfoView() {
@@ -43,11 +48,16 @@ public class PlayerInfoView extends VBox {
     nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
     colorIndicator = new Rectangle(COLOR_BOX_SIZE, COLOR_BOX_SIZE);
     vpLabel = new Label(Messages.get("info.vp", 0));
+    specialLabel = new Label("");
+    specialLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #8a6d00;");
     settlementsLabel = new Label(
         Messages.get("info.settlements", INITIAL_SETTLEMENTS));
     citiesLabel = new Label(Messages.get("info.cities", INITIAL_CITIES));
     roadsLabel = new Label(Messages.get("info.roads", INITIAL_ROADS));
     knightsLabel = new Label(Messages.get("info.knights", 0));
+    devCardsLabel = new Label(Messages.get("info.devcards.none"));
+    devCardsLabel.setWrapText(true);
+    summaryBox = new VBox(2.0);
     resourceLabels = buildResourceLabels();
     buildLayout();
   }
@@ -69,9 +79,63 @@ public class PlayerInfoView extends VBox {
     GridPane resourceGrid = buildResourceGrid();
     Label piecesHeader = new Label(Messages.get("info.pieces"));
     piecesHeader.setStyle("-fx-font-weight: bold;");
+    Label summaryHeader = new Label(Messages.get("info.summary.header"));
+    summaryHeader.setStyle("-fx-font-weight: bold;");
     getChildren().addAll(
-        nameRow, vpLabel, resourceHeader, resourceGrid,
-        piecesHeader, settlementsLabel, citiesLabel, roadsLabel, knightsLabel);
+        nameRow, vpLabel, specialLabel, resourceHeader, resourceGrid,
+        piecesHeader, settlementsLabel, citiesLabel, roadsLabel, knightsLabel,
+        devCardsLabel, summaryHeader, summaryBox);
+  }
+
+  public void refreshSummary(List<Player> players, int[] victoryPoints,
+      int longestRoadHolder, int largestArmyHolder) {
+    summaryBox.getChildren().clear();
+    for (int i = 0; i < players.size(); i++) {
+      Player player = players.get(i);
+      StringBuilder row = new StringBuilder();
+      row.append(Messages.get("info.summary.row", player.getName(),
+          victoryPoints[i], totalResourceCards(player),
+          player.getDevelopmentCards().size()));
+      if (i == longestRoadHolder) {
+        row.append(" ").append(Messages.get("info.summary.lr"));
+      }
+      if (i == largestArmyHolder) {
+        row.append(" ").append(Messages.get("info.summary.la"));
+      }
+      Label label = new Label(row.toString());
+      label.setTextFill(playerColorFx(player.getColor()));
+      summaryBox.getChildren().add(label);
+    }
+  }
+
+  private static int totalResourceCards(Player player) {
+    int total = 0;
+    for (Resource resource : Resource.values()) {
+      if (resource != Resource.GENERIC) {
+        total += player.getResourceCount(resource);
+      }
+    }
+    return total;
+  }
+
+  private static String devCardsText(Player player) {
+    Map<DevelopmentCard, Integer> counts = new EnumMap<>(DevelopmentCard.class);
+    for (DevelopmentCard card : player.getDevelopmentCards()) {
+      counts.merge(card, 1, Integer::sum);
+    }
+    if (counts.isEmpty()) {
+      return Messages.get("info.devcards.none");
+    }
+    StringBuilder text = new StringBuilder(Messages.get("info.devcards")).append(" ");
+    boolean firstEntry = true;
+    for (Map.Entry<DevelopmentCard, Integer> entry : counts.entrySet()) {
+      if (!firstEntry) {
+        text.append(", ");
+      }
+      text.append(entry.getKey().name()).append(" x").append(entry.getValue());
+      firstEntry = false;
+    }
+    return text.toString();
   }
 
   private GridPane buildResourceGrid() {
@@ -88,11 +152,13 @@ public class PlayerInfoView extends VBox {
     return grid;
   }
 
-  public void refresh(Player player, int vp) {
+  public void refresh(Player player, int vp,
+      boolean hasLongestRoad, boolean hasLargestArmy) {
     nameLabel.setText(player.getName());
     colorIndicator.setFill(playerColorFx(player.getColor()));
     colorIndicator.setStroke(Color.BLACK);
     vpLabel.setText(Messages.get("info.vp", vp));
+    specialLabel.setText(specialText(hasLongestRoad, hasLargestArmy));
     for (Map.Entry<Resource, Label> entry : resourceLabels.entrySet()) {
       int count = player.getResourceCount(entry.getKey());
       entry.getValue().setText(String.valueOf(count));
@@ -102,6 +168,21 @@ public class PlayerInfoView extends VBox {
     citiesLabel.setText(Messages.get("info.cities", player.getRemainingCities()));
     roadsLabel.setText(Messages.get("info.roads", player.getRemainingRoads()));
     knightsLabel.setText(Messages.get("info.knights", player.getKnightsPlayed()));
+    devCardsLabel.setText(devCardsText(player));
+  }
+
+  private static String specialText(boolean hasLongestRoad, boolean hasLargestArmy) {
+    StringBuilder text = new StringBuilder();
+    if (hasLongestRoad) {
+      text.append(Messages.get("special.longestRoad"));
+    }
+    if (hasLargestArmy) {
+      if (text.length() > 0) {
+        text.append("   ");
+      }
+      text.append(Messages.get("special.largestArmy"));
+    }
+    return text.toString();
   }
 
   private static Color playerColorFx(PlayerColor color) {

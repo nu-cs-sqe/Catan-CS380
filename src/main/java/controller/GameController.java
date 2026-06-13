@@ -4,20 +4,25 @@ import board.Board;
 import board.Edge;
 import board.Robber;
 import board.Tile;
-import board.TileType;
 import board.Vertex;
 import domain.Bank;
+import domain.DevelopmentCard;
 import domain.Game;
 import domain.Player;
 import domain.RandomDiceRoller;
 import domain.Resource;
 import domain.TurnFlow;
 import i18n.Messages;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceDialog;
 import view.BoardView;
 import view.GameView;
-
-import java.util.List;
 
 public class GameController {
 
@@ -37,9 +42,7 @@ public class GameController {
 
   private GamePhase phase;
   private BuildMode buildMode;
-  private int setupRound;
-  private int setupIdx;
-  private int currentTurnIdx;
+  private Vertex pendingSetupVertex;
 
   public GameController(GameView gameView, Game game, Board board, Bank bank) {
     this.gameView = gameView;
@@ -48,12 +51,9 @@ public class GameController {
     this.bank = bank;
     this.diceRoller = new RandomDiceRoller();
     this.turnFlow = new TurnFlow(game.getPlayers(), bank);
-    this.robber = createInitialRobber();
+    this.robber = board.createRobber();
     this.phase = GamePhase.SETUP_SETTLEMENT;
     this.buildMode = BuildMode.NONE;
-    this.setupRound = 1;
-    this.setupIdx = 0;
-    this.currentTurnIdx = 0;
     wireActions();
     enterSetupSettlement();
   }
@@ -68,27 +68,19 @@ public class GameController {
     gameView.setOnBuildRoad(this::onBuildRoad);
     gameView.setOnBuildCity(this::onBuildCity);
     gameView.setOnBuyDevCard(this::onBuyDevCard);
-  }
-
-  private Robber createInitialRobber() {
-    Robber r = new Robber();
-    for (Tile tile : board.getTiles()) {
-      if (tile.getTileType() == TileType.DESERT) {
-        r.setTile(tile);
-        break;
-      }
-    }
-    return r;
+    gameView.setOnPlayDevCard(this::onPlayDevCard);
+    gameView.setOnTrade(this::onTrade);
   }
 
   private void enterSetupSettlement() {
     gameView.setRollEnabled(false);
     gameView.setEndTurnEnabled(false);
     gameView.setBuildActionsEnabled(false);
+    gameView.getBoardView().setVertexValidator(
+        v -> turnFlow.canBuildSetupSettlement(v, board));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
-    Player current = getSetupPlayer();
-    gameView.setStatusMessage(
-        Messages.get("status.setup.settlement", setupRound, current.getName()));
+    Player current = game.getCurrentSetupPlayer();
+    gameView.setStatusMessage(Messages.get("status.setup.settlement", current.getName()));
     refreshBoard();
   }
 
@@ -105,16 +97,13 @@ public class GameController {
       gameView.logMessage(Messages.get("log.occupied"));
       return;
     }
-    Player current = getSetupPlayer();
-    current.placeSettlement(vertex);
-    if (setupRound == 2) {
-      distributeSetupResources(current, vertex);
-    }
-    gameView.logMessage(Messages.get("log.placed.settlement", current.getName()));
+    pendingSetupVertex = vertex;
+    Player current = game.getCurrentSetupPlayer();
     phase = GamePhase.SETUP_ROAD;
+    gameView.getBoardView().setEdgeValidator(
+        e -> e.getOwner() == null && edgeTouches(e, pendingSetupVertex));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.EDGE);
-    gameView.setStatusMessage(
-        Messages.get("status.setup.road", setupRound, current.getName()));
+    gameView.setStatusMessage(Messages.get("status.setup.road", current.getName()));
     refreshBoard();
   }
 
@@ -124,16 +113,16 @@ public class GameController {
       try {
         turnFlow.buildSettlement(current, vertex, board);
         gameView.logMessage(Messages.get("log.built.settlement", current.getName()));
-      } catch (IllegalStateException e) {
-        gameView.logMessage(e.getMessage());
+      } catch (RuntimeException e) {
+        gameView.logMessage(Messages.get("log.build.retry.spot", e.getMessage()));
         return;
       }
     } else if (buildMode == BuildMode.CITY) {
       try {
         turnFlow.buildCity(current, vertex);
         gameView.logMessage(Messages.get("log.upgraded.city", current.getName()));
-      } catch (IllegalStateException e) {
-        gameView.logMessage(e.getMessage());
+      } catch (RuntimeException e) {
+        gameView.logMessage(Messages.get("log.build.retry.spot", e.getMessage()));
         return;
       }
     } else {
@@ -158,11 +147,35 @@ public class GameController {
       gameView.logMessage(Messages.get("log.edge.occupied"));
       return;
     }
-    Player current = getSetupPlayer();
-    current.placeRoad(edge);
-    gameView.logMessage(Messages.get("log.placed.road", current.getName()));
+    if (!edgeTouches(edge, pendingSetupVertex)) {
+      gameView.logMessage(Messages.get("log.road.mustconnect"));
+      return;
+    }
+    Player current = game.getCurrentSetupPlayer();
+    try {
+      game.placeSetupSettlement(pendingSetupVertex, edge, board, bank);
+    } catch (RuntimeException e) {
+      gameView.logMessage(e.getMessage());
+      pendingSetupVertex = null;
+      phase = GamePhase.SETUP_SETTLEMENT;
+      enterSetupSettlement();
+      return;
+    }
+    gameView.logMessage(Messages.get("log.placed.settlementroad", current.getName()));
+    pendingSetupVertex = null;
     advanceSetup();
-    refreshBoard();
+  }
+
+  private boolean edgeTouches(Edge edge, Vertex vertex) {
+    if (vertex == null) {
+      return false;
+    }
+    for (String endpoint : edge.getId().split("\\|")) {
+      if (endpoint.equals(vertex.getId())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private void handleMainEdgeClick(Edge edge) {
@@ -173,8 +186,8 @@ public class GameController {
     try {
       turnFlow.buildRoad(current, edge, board);
       gameView.logMessage(Messages.get("log.built.road", current.getName()));
-    } catch (IllegalStateException e) {
-      gameView.logMessage(e.getMessage());
+    } catch (RuntimeException e) {
+      gameView.logMessage(Messages.get("log.build.retry.edge", e.getMessage()));
       return;
     }
     buildMode = BuildMode.NONE;
@@ -184,23 +197,17 @@ public class GameController {
   }
 
   private void advanceSetup() {
-    setupIdx++;
-    if (setupIdx < game.getPlayers().size()) {
-      phase = GamePhase.SETUP_SETTLEMENT;
-      enterSetupSettlement();
-    } else if (setupRound == 1) {
-      setupRound = 2;
-      setupIdx = 0;
-      phase = GamePhase.SETUP_SETTLEMENT;
-      enterSetupSettlement();
-    } else {
+    if (game.isSetupComplete()) {
       startMainGame();
+    } else {
+      phase = GamePhase.SETUP_SETTLEMENT;
+      enterSetupSettlement();
     }
   }
 
   private void startMainGame() {
     phase = GamePhase.MAIN_PRE_ROLL;
-    currentTurnIdx = 0;
+    turnFlow.setCurrentPlayer(game.getCurrentPlayerIndex());
     gameView.logMessage(Messages.get("log.setup.complete"));
     gameView.setRollEnabled(true);
     gameView.setEndTurnEnabled(false);
@@ -218,9 +225,9 @@ public class GameController {
     Player current = getMainPlayer();
     gameView.logMessage(Messages.get("log.rolled", current.getName(), roll));
     if (roll == ROBBER_ROLL) {
-      gameView.logMessage(Messages.get("log.robber"));
+      handleRobberRoll();
     } else {
-      turnFlow.rollForProduction(board, robber, roll);
+      turnFlow.resolveRoll(board, robber, roll);
     }
     phase = GamePhase.MAIN_POST_ROLL;
     gameView.setRollEnabled(false);
@@ -230,16 +237,113 @@ public class GameController {
     refreshViews();
   }
 
+  private void handleRobberRoll() {
+    gameView.logMessage(Messages.get("log.robber.activated"));
+    performDiscards();
+    moveRobberInteractive();
+  }
+
+  private void performDiscards() {
+    List<Player> players = game.getPlayers();
+    for (int i = 0; i < players.size(); i++) {
+      int count = turnFlow.getDiscardCount(i);
+      if (count > 0) {
+        Player player = players.get(i);
+        turnFlow.discard(player, chooseDiscards(player, count));
+        gameView.logMessage(Messages.get("log.discarded", player.getName(), count));
+      }
+    }
+  }
+
+  private Map<Resource, Integer> chooseDiscards(Player player, int count) {
+    Map<Resource, Integer> chosen = new EnumMap<>(Resource.class);
+    int remaining = count;
+    for (Resource resource : Resource.values()) {
+      if (resource == Resource.GENERIC || remaining == 0) {
+        continue;
+      }
+      int take = Math.min(player.getResourceCount(resource), remaining);
+      if (take > 0) {
+        chosen.put(resource, take);
+        remaining -= take;
+      }
+    }
+    return chosen;
+  }
+
+  private void moveRobberInteractive() {
+    Tile target = chooseRobberTile();
+    if (target == null) {
+      return;
+    }
+    turnFlow.moveRobber(robber, target, board);
+    refreshBoard();
+    Player current = getMainPlayer();
+    List<Player> candidates = turnFlow.stealCandidates(robber, board);
+    candidates.remove(current);
+    if (candidates.isEmpty()) {
+      gameView.logMessage(Messages.get("log.steal.none"));
+      return;
+    }
+    Player victim = chooseVictim(candidates);
+    if (victim != null) {
+      turnFlow.stealResource(current, victim, robber, board);
+      gameView.logMessage(
+          Messages.get("log.stole", current.getName(), victim.getName()));
+      refreshViews();
+    }
+  }
+
+  private Tile chooseRobberTile() {
+    Map<String, Tile> options = new LinkedHashMap<>();
+    Tile currentTile = robber.getTile();
+    for (Tile tile : board.getTiles()) {
+      if (currentTile != null && tile.getQ() == currentTile.getQ()
+          && tile.getR() == currentTile.getR()) {
+        continue;
+      }
+      options.put(tile.getTileType() + " (" + tile.getQ() + "," + tile.getR() + ")", tile);
+    }
+    if (options.isEmpty()) {
+      return null;
+    }
+    String first = options.keySet().iterator().next();
+    ChoiceDialog<String> dialog = new ChoiceDialog<>(first, options.keySet());
+    dialog.setTitle(Messages.get("dialog.robber.title"));
+    dialog.setHeaderText(Messages.get("dialog.robber.header"));
+    dialog.setContentText(Messages.get("dialog.robber.content"));
+    Optional<String> result = dialog.showAndWait();
+    return options.get(result.orElse(first));
+  }
+
+  private Player chooseVictim(List<Player> candidates) {
+    Map<String, Player> options = new LinkedHashMap<>();
+    for (Player player : candidates) {
+      options.put(player.getName(), player);
+    }
+    String first = options.keySet().iterator().next();
+    ChoiceDialog<String> dialog = new ChoiceDialog<>(first, options.keySet());
+    dialog.setTitle(Messages.get("dialog.steal.title"));
+    dialog.setHeaderText(Messages.get("dialog.steal.header"));
+    dialog.setContentText(Messages.get("dialog.steal.content"));
+    Optional<String> result = dialog.showAndWait();
+    return options.get(result.orElse(first));
+  }
+
   public void onEndTurn() {
     if (phase != GamePhase.MAIN_POST_ROLL) {
       return;
     }
-    checkWinCondition();
-    if (turnFlow.isGameOver()) {
+    if (checkWinCondition()) {
+      gameView.setRollEnabled(false);
+      gameView.setEndTurnEnabled(false);
+      gameView.setBuildActionsEnabled(false);
+      gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.NONE);
       return;
     }
     turnFlow.endTurn(getMainPlayer());
-    currentTurnIdx = (currentTurnIdx + 1) % game.getPlayers().size();
+    game.endTurn();
+    turnFlow.setCurrentPlayer(game.getCurrentPlayerIndex());
     phase = GamePhase.MAIN_PRE_ROLL;
     buildMode = BuildMode.NONE;
     gameView.setRollEnabled(true);
@@ -255,6 +359,8 @@ public class GameController {
       return;
     }
     buildMode = BuildMode.SETTLEMENT;
+    gameView.getBoardView().setVertexValidator(
+        v -> turnFlow.canBuildSettlement(getMainPlayer(), v, board));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
     gameView.setStatusMessage(
         Messages.get("status.click.settlement", getMainPlayer().getName()));
@@ -266,6 +372,8 @@ public class GameController {
       return;
     }
     buildMode = BuildMode.ROAD;
+    gameView.getBoardView().setEdgeValidator(
+        e -> turnFlow.canBuildRoad(getMainPlayer(), e, board));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.EDGE);
     gameView.setStatusMessage(
         Messages.get("status.click.road", getMainPlayer().getName()));
@@ -277,6 +385,8 @@ public class GameController {
       return;
     }
     buildMode = BuildMode.CITY;
+    gameView.getBoardView().setVertexValidator(
+        v -> turnFlow.canBuildCity(getMainPlayer(), v));
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
     gameView.setStatusMessage(
         Messages.get("status.click.city", getMainPlayer().getName()));
@@ -297,26 +407,160 @@ public class GameController {
     }
   }
 
-  private void distributeSetupResources(Player player, Vertex vertex) {
-    for (Tile tile : vertex.getAdjacentTiles()) {
-      Resource res = tileToResource(tile.getTileType());
-      if (res != null && bank.canDistribute(res, 1)) {
-        player.addResource(res, 1);
-        bank.distributeResource(res, 1);
-      }
+  private void onTrade() {
+    if (phase != GamePhase.MAIN_POST_ROLL) {
+      return;
+    }
+    Player current = getMainPlayer();
+    Resource give = chooseResource(Messages.get("trade.give"));
+    int rate = turnFlow.bestTradeRate(current, give, board);
+    if (current.getResourceCount(give) < rate) {
+      gameView.logMessage(Messages.get("log.trade.insufficient", rate,
+          resourceName(give), current.getResourceCount(give)));
+      return;
+    }
+    Resource receive = chooseResource(Messages.get("trade.receive"));
+    try {
+      turnFlow.maritimeTrade(give, rate, receive, board);
+      gameView.logMessage(Messages.get("log.traded", current.getName(), rate,
+          resourceName(give), resourceName(receive)));
+      refreshViews();
+    } catch (RuntimeException e) {
+      gameView.logMessage(e.getMessage());
     }
   }
 
-  private void checkWinCondition() {
-    turnFlow.updateLongestRoad(board);
-    turnFlow.updateLargestArmy();
-    List<Player> players = game.getPlayers();
-    for (int i = 0; i < players.size(); i++) {
-      if (turnFlow.getVictoryPoints(i) >= WIN_THRESHOLD) {
-        showWinner(players.get(i), turnFlow.getVictoryPoints(i));
-        return;
+  private void onPlayDevCard() {
+    if (phase != GamePhase.MAIN_POST_ROLL) {
+      return;
+    }
+    Player current = getMainPlayer();
+    List<DevelopmentCard> playable = new ArrayList<>();
+    for (DevelopmentCard card : current.getDevelopmentCards()) {
+      if (card != DevelopmentCard.VICTORY_POINT && !playable.contains(card)) {
+        playable.add(card);
       }
     }
+    if (playable.isEmpty()) {
+      gameView.logMessage(Messages.get("log.devcard.none"));
+      return;
+    }
+    DevelopmentCard card = chooseChoice(Messages.get("dialog.playdev.title"),
+        Messages.get("dialog.playdev.header"), playable);
+    try {
+      playDevCard(current, card);
+      refreshViews();
+    } catch (RuntimeException e) {
+      gameView.logMessage(e.getMessage());
+    }
+  }
+
+  private void playDevCard(Player current, DevelopmentCard card) {
+    switch (card) {
+      case KNIGHT:
+        playKnight(current);
+        break;
+      case MONOPOLY:
+        Resource monopolised = chooseResource(Messages.get("devcard.monopoly.prompt"));
+        turnFlow.playMonopolyCard(current, monopolised);
+        gameView.logMessage(Messages.get("log.devcard.monopoly",
+            current.getName(), resourceName(monopolised)));
+        break;
+      case YEAR_OF_PLENTY:
+        Resource first = chooseResource(Messages.get("devcard.yop.first"));
+        Resource second = chooseResource(Messages.get("devcard.yop.second"));
+        turnFlow.playYearOfPlentyCard(current, first, second);
+        gameView.logMessage(Messages.get("log.devcard.yop", current.getName()));
+        break;
+      case ROAD_BUILDING:
+        playRoadBuilding(current);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private void playKnight(Player current) {
+    turnFlow.playDevelopmentCard(current, DevelopmentCard.KNIGHT);
+    Tile target = chooseRobberTile();
+    if (target != null) {
+      turnFlow.moveRobber(robber, target, board);
+    }
+    current.playKnight();
+    turnFlow.updateLargestArmy();
+    refreshBoard();
+    List<Player> candidates = turnFlow.stealCandidates(robber, board);
+    candidates.remove(current);
+    if (candidates.isEmpty()) {
+      gameView.logMessage(Messages.get("log.devcard.knight", current.getName()));
+      return;
+    }
+    Player victim = chooseVictim(candidates);
+    turnFlow.stealResource(current, victim, robber, board);
+    gameView.logMessage(Messages.get("log.devcard.knight.steal",
+        current.getName(), victim.getName()));
+  }
+
+  private void playRoadBuilding(Player current) {
+    List<Edge> legal = new ArrayList<>();
+    for (Edge edge : board.getEdges()) {
+      if (turnFlow.canBuildRoad(current, edge, board)) {
+        legal.add(edge);
+      }
+    }
+    if (legal.size() < 2) {
+      gameView.logMessage(Messages.get("log.devcard.roadbuilding.none"));
+      return;
+    }
+    Edge first = chooseEdge(legal);
+    legal.remove(first);
+    Edge second = chooseEdge(legal);
+    turnFlow.playRoadBuildingCard(current, first, second, board);
+    gameView.logMessage(Messages.get("log.devcard.roadbuilding", current.getName()));
+  }
+
+  private Resource chooseResource(String header) {
+    List<Resource> options = new ArrayList<>();
+    for (Resource resource : Resource.values()) {
+      if (resource != Resource.GENERIC) {
+        options.add(resource);
+      }
+    }
+    return chooseChoice(Messages.get("dialog.devcard.title"), header, options);
+  }
+
+  private Edge chooseEdge(List<Edge> legal) {
+    Map<String, Edge> options = new LinkedHashMap<>();
+    for (Edge edge : legal) {
+      options.put(edge.getId(), edge);
+    }
+    String first = options.keySet().iterator().next();
+    ChoiceDialog<String> dialog = new ChoiceDialog<>(first, options.keySet());
+    dialog.setTitle(Messages.get("dialog.roadbuilding.title"));
+    dialog.setHeaderText(Messages.get("dialog.roadbuilding.header"));
+    dialog.setContentText(Messages.get("dialog.roadbuilding.content"));
+    return options.get(dialog.showAndWait().orElse(first));
+  }
+
+  private <T> T chooseChoice(String title, String header, List<T> options) {
+    T first = options.get(0);
+    ChoiceDialog<T> dialog = new ChoiceDialog<>(first, options);
+    dialog.setTitle(title);
+    dialog.setHeaderText(header);
+    dialog.setContentText(Messages.get("dialog.choice.content"));
+    return dialog.showAndWait().orElse(first);
+  }
+
+  private boolean checkWinCondition() {
+    turnFlow.updateLongestRoad(board);
+    turnFlow.updateLargestArmy();
+    int idx = game.getCurrentPlayerIndex();
+    int vp = turnFlow.getVictoryPoints(idx);
+    if (vp >= WIN_THRESHOLD) {
+      showWinner(game.getPlayers().get(idx), vp);
+      return true;
+    }
+    return false;
   }
 
   private void showWinner(Player player, int vp) {
@@ -328,17 +572,26 @@ public class GameController {
   }
 
   private void refreshBoard() {
-    gameView.getBoardView().refresh(board);
+    gameView.getBoardView().refresh(board, robber);
   }
 
   private void refreshViews() {
     refreshBoard();
     Player current = (phase == GamePhase.SETUP_SETTLEMENT
-        || phase == GamePhase.SETUP_ROAD) ? getSetupPlayer() : getMainPlayer();
+        || phase == GamePhase.SETUP_ROAD) ? game.getCurrentSetupPlayer() : getMainPlayer();
     int idx = game.getPlayers().indexOf(current);
     if (idx >= 0) {
-      gameView.getPlayerInfoView().refresh(current, turnFlow.getVictoryPoints(idx));
+      gameView.getPlayerInfoView().refresh(current, turnFlow.getVictoryPoints(idx),
+          turnFlow.getLongestRoadHolder() == idx,
+          turnFlow.getLargestArmyHolder() == idx);
     }
+    List<Player> players = game.getPlayers();
+    int[] vps = new int[players.size()];
+    for (int i = 0; i < players.size(); i++) {
+      vps[i] = turnFlow.getVictoryPoints(i);
+    }
+    gameView.getPlayerInfoView().refreshSummary(players, vps,
+        turnFlow.getLongestRoadHolder(), turnFlow.getLargestArmyHolder());
   }
 
   private void updateMainGameStatus() {
@@ -346,23 +599,11 @@ public class GameController {
     gameView.setStatusMessage(Messages.get("status.turn.roll", current.getName()));
   }
 
-  private Player getSetupPlayer() {
-    int[] order = (setupRound == 1) ? game.getTurnOrder() : game.getRoundTwoOrder();
-    return game.getPlayers().get(order[setupIdx]);
-  }
-
   private Player getMainPlayer() {
-    return game.getPlayers().get(game.getTurnOrder()[currentTurnIdx]);
+    return game.getPlayers().get(game.getCurrentPlayerIndex());
   }
 
-  private static Resource tileToResource(TileType type) {
-    switch (type) {
-      case FOREST: return Resource.WOOD;
-      case PASTURE: return Resource.SHEEP;
-      case FIELDS: return Resource.WHEAT;
-      case HILLS: return Resource.BRICK;
-      case MOUNTAINS: return Resource.ORE;
-      default: return null;
-    }
+  private static String resourceName(Resource resource) {
+    return Messages.get("resource." + resource.name());
   }
 }

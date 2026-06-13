@@ -403,7 +403,7 @@ public final class TurnFlow {
         player.addResource(receive, 1);
     }
 
-    private int bestTradeRate(Player player, Resource give, Board board) {
+    public int bestTradeRate(Player player, Resource give, Board board) {
         int best = MAX_TRADE_RATE;
         for (Vertex vertex : board.getVertices()) {
             if (!player.equals(vertex.getOwner())
@@ -436,6 +436,13 @@ public final class TurnFlow {
         return currentPlayerIndex;
     }
 
+    public void setCurrentPlayer(int index) {
+        if (index < 0 || index >= players.size()) {
+            throw new IllegalArgumentException("Invalid player index");
+        }
+        currentPlayerIndex = index;
+    }
+
     public void buildSettlement(Player player, Vertex vertex) {
         buildSettlement(player, vertex, null);
     }
@@ -464,20 +471,32 @@ public final class TurnFlow {
 
     private void checkAdjacentRoad(Vertex vertex, Player player,
                                    Board board) {
+        if (!hasAdjacentRoad(vertex, player, board)) {
+            throw new IllegalStateException(
+                    "No adjacent road owned by player");
+        }
+    }
+
+    private boolean hasAdjacentRoad(Vertex vertex, Player player,
+                                    Board board) {
         for (Edge edge : board.getEdges()) {
             String[] verts = edge.getId().split("\\|");
-            if (verts[0].equals(vertex.getId())
-                    || verts[1].equals(vertex.getId())) {
-                if (player.equals(edge.getOwner())) {
-                    return;
-                }
+            if ((verts[0].equals(vertex.getId())
+                    || verts[1].equals(vertex.getId()))
+                    && player.equals(edge.getOwner())) {
+                return true;
             }
         }
-        throw new IllegalStateException(
-                "No adjacent road owned by player");
+        return false;
     }
 
     private void checkDistanceRule(Vertex vertex, Board board) {
+        if (!satisfiesDistanceRule(vertex, board)) {
+            throw new IllegalStateException("Violates distance rule");
+        }
+    }
+
+    private boolean satisfiesDistanceRule(Vertex vertex, Board board) {
         for (Edge edge : board.getEdges()) {
             String[] verts = edge.getId().split("\\|");
             if (verts[0].equals(vertex.getId())
@@ -487,11 +506,11 @@ public final class TurnFlow {
                 Vertex neighbor = board.getVertex(otherKey);
                 if (neighbor != null
                         && neighbor.getSettlement() != null) {
-                    throw new IllegalStateException(
-                            "Violates distance rule");
+                    return false;
                 }
             }
         }
+        return true;
     }
 
     private void payCost(Player player, Map<Resource, Integer> cost) {
@@ -545,13 +564,43 @@ public final class TurnFlow {
 
     private void checkRoadConnectivity(Player player, Edge edge,
                                        Board board) {
-        String[] verts = edge.getId().split("\\|");
-        if (touchesOwnBuilding(player, verts, board)
-                || touchesOwnRoad(player, verts, edge, board)) {
-            return;
+        if (!isRoadConnected(player, edge, board)) {
+            throw new IllegalStateException(
+                    "Road must connect to your own road or settlement");
         }
-        throw new IllegalStateException(
-                "Road must connect to your own road or settlement");
+    }
+
+    private boolean isRoadConnected(Player player, Edge edge,
+                                    Board board) {
+        String[] verts = edge.getId().split("\\|");
+        return touchesOwnBuilding(player, verts, board)
+                || touchesOwnRoad(player, verts, edge, board);
+    }
+
+    public boolean canBuildRoad(Player player, Edge edge, Board board) {
+        return edge.getOwner() == null
+                && player.getRemainingRoads() > 0
+                && isRoadConnected(player, edge, board);
+    }
+
+    public boolean canBuildSettlement(Player player, Vertex vertex,
+                                      Board board) {
+        return vertex.getSettlement() == null
+                && player.getRemainingSettlements() > 0
+                && satisfiesDistanceRule(vertex, board)
+                && hasAdjacentRoad(vertex, player, board);
+    }
+
+    public boolean canBuildSetupSettlement(Vertex vertex, Board board) {
+        return vertex.getSettlement() == null
+                && satisfiesDistanceRule(vertex, board);
+    }
+
+    public boolean canBuildCity(Player player, Vertex vertex) {
+        return vertex.getSettlement() != null
+                && !vertex.getSettlement().isCity()
+                && player.equals(vertex.getOwner())
+                && player.getRemainingCities() > 0;
     }
 
     private boolean touchesOwnBuilding(Player player, String[] verts,

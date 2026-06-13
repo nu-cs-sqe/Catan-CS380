@@ -3,6 +3,7 @@ package view;
 import board.Board;
 import board.Edge;
 import board.Harbor;
+import board.Robber;
 import board.Tile;
 import board.TileType;
 import board.Vertex;
@@ -34,6 +35,7 @@ import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class BoardView extends Pane {
 
@@ -49,6 +51,9 @@ public class BoardView extends Pane {
   private static final double CENTER_Y = 280.0;
   private static final double VERTEX_RADIUS = 8.0;
   private static final double VERTEX_ACTIVE_RADIUS = 13.0;
+  private static final double OWNED_VERTEX_RADIUS = 10.0;
+  private static final double OWNED_VERTEX_STROKE = 2.5;
+  private static final double CITY_INNER_RADIUS = 4.0;
   private static final double ROAD_STROKE = 4.0;
   private static final double ROAD_ACTIVE_STROKE = 9.0;
   private static final double UNOWNED_STROKE = 1.0;
@@ -65,6 +70,9 @@ public class BoardView extends Pane {
   private static final double HARBOR_BOAT_RADIUS = 6.0;
   private static final double HARBOR_TEXT_HALF_W = 8.0;
   private static final double HARBOR_TEXT_HALF_H = 4.0;
+  private static final double ROBBER_RADIUS = 11.0;
+  private static final double ROBBER_OFFSET_Y = 16.0;
+  private static final double ROBBER_STROKE = 2.0;
   private static final double HEX_IMG_WIDTH = 2 * SCALE_X;
   private static final double HEX_IMG_HEIGHT = 4 * SCALE_Y;
   private static final double TOKEN_CIRCLE_RADIUS = 12.0;
@@ -79,6 +87,8 @@ public class BoardView extends Pane {
   private SelectionMode mode = SelectionMode.NONE;
   private Consumer<Vertex> vertexClickHandler;
   private Consumer<Edge> edgeClickHandler;
+  private Predicate<Vertex> vertexValidator = v -> true;
+  private Predicate<Edge> edgeValidator = e -> true;
   private final Map<TileType, Image> tileImages = new EnumMap<>(TileType.class);
 
   public BoardView() {
@@ -123,12 +133,35 @@ public class BoardView extends Pane {
     this.edgeClickHandler = handler;
   }
 
-  public void refresh(Board board) {
+  public void setVertexValidator(Predicate<Vertex> validator) {
+    this.vertexValidator = (validator != null) ? validator : v -> true;
+  }
+
+  public void setEdgeValidator(Predicate<Edge> validator) {
+    this.edgeValidator = (validator != null) ? validator : e -> true;
+  }
+
+  public void refresh(Board board, Robber robber) {
     getChildren().clear();
     drawTiles(board);
     drawHarbors(board);
     drawEdges(board);
     drawVertices(board);
+    drawRobber(robber);
+  }
+
+  private void drawRobber(Robber robber) {
+    if (robber == null || robber.getTile() == null) {
+      return;
+    }
+    Tile tile = robber.getTile();
+    double cx = tileCenterX(tile);
+    double cy = tileCenterY(tile) + ROBBER_OFFSET_Y;
+    Circle marker = new Circle(cx, cy, ROBBER_RADIUS);
+    marker.setFill(Color.web("#202020"));
+    marker.setStroke(Color.WHITE);
+    marker.setStrokeWidth(ROBBER_STROKE);
+    getChildren().add(marker);
   }
 
   private void drawTiles(Board board) {
@@ -270,7 +303,8 @@ public class BoardView extends Pane {
     double[][] pts = edgePixelCoords(edge.getId());
     Line line = new Line(pts[0][0], pts[0][1], pts[1][0], pts[1][1]);
     Player owner = edge.getOwner();
-    boolean active = mode == SelectionMode.EDGE && owner == null;
+    boolean active = mode == SelectionMode.EDGE && owner == null
+        && edgeValidator.test(edge);
     if (owner != null) {
       line.setStroke(playerColor(owner.getColor()));
       line.setStrokeWidth(ROAD_STROKE);
@@ -281,30 +315,52 @@ public class BoardView extends Pane {
       line.setCursor(Cursor.HAND);
       line.setOnMouseEntered(e -> line.setStroke(Color.GOLD));
       line.setOnMouseExited(e -> line.setStroke(Color.WHITE));
+      final Edge edgeRef = edge;
+      line.setOnMouseClicked(e -> onEdgeClicked(edgeRef));
     } else {
       line.setStroke(Color.TRANSPARENT);
       line.setStrokeWidth(ROAD_ACTIVE_STROKE);
     }
-    final Edge edgeRef = edge;
-    line.setOnMouseClicked(e -> onEdgeClicked(edgeRef));
     getChildren().add(line);
   }
 
   private void drawVertices(Board board) {
     for (Vertex vertex : board.getVertices()) {
-      drawVertex(vertex);
+      if (vertex.getOwner() == null) {
+        drawVertex(vertex);
+      }
+    }
+    // Placed settlements/cities are drawn last so they stay visible on top of
+    // candidate highlights in every selection mode.
+    for (Vertex vertex : board.getVertices()) {
+      if (vertex.getOwner() != null) {
+        drawVertex(vertex);
+      }
     }
   }
 
   private void drawVertex(Vertex vertex) {
     double[] px = vertexPixelCoords(vertex.getId());
-    boolean active = mode == SelectionMode.VERTEX && vertex.getSettlement() == null;
-    double radius = active ? VERTEX_ACTIVE_RADIUS : VERTEX_RADIUS;
+    boolean owned = vertex.getOwner() != null;
+    boolean active = mode == SelectionMode.VERTEX
+        && vertexValidator.test(vertex);
+    double radius = owned ? OWNED_VERTEX_RADIUS
+        : (active ? VERTEX_ACTIVE_RADIUS : VERTEX_RADIUS);
     Circle circle = new Circle(px[0], px[1], radius);
     applyVertexStyle(circle, vertex, active);
-    final Vertex vRef = vertex;
-    circle.setOnMouseClicked(e -> onVertexClicked(vRef));
+    if (active) {
+      final Vertex vRef = vertex;
+      circle.setOnMouseClicked(e -> onVertexClicked(vRef));
+    }
     getChildren().add(circle);
+    if (owned && vertex.getSettlement() != null
+        && vertex.getSettlement().isCity()) {
+      Circle inner = new Circle(px[0], px[1], CITY_INNER_RADIUS);
+      inner.setFill(Color.WHITE);
+      inner.setStroke(Color.BLACK);
+      inner.setStrokeWidth(UNOWNED_STROKE);
+      getChildren().add(inner);
+    }
   }
 
   private void applyVertexStyle(Circle circle, Vertex vertex, boolean active) {
@@ -312,7 +368,7 @@ public class BoardView extends Pane {
     if (owner != null) {
       circle.setFill(playerColor(owner.getColor()));
       circle.setStroke(Color.BLACK);
-      circle.setStrokeWidth(UNOWNED_STROKE);
+      circle.setStrokeWidth(OWNED_VERTEX_STROKE);
     } else if (active) {
       circle.setFill(Color.WHITE);
       circle.setStroke(Color.DARKGREEN);
