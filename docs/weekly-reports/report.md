@@ -39,7 +39,8 @@
    it) [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/32)
 4. [done] Yusuf Ozdemir: Project refactoring to fix edge cases and duplications so Classes work together
    seamlessly [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/33)
-5. 
+5. [done] Yusuf Ozdemir: Missing feature implementation and sloppy code revamp
+   [PR](https://github.com/nu-cs-sqe/Catan-CS380/pull/47)
 
 
 
