@@ -83,20 +83,18 @@ public final class TurnFlow {
 
     public void rollForProduction(Board board, Robber robber,
                                   int roll) {
-        Map<Player, Map<Resource, Integer>> gains = new HashMap<>();
-        Map<Resource, Integer> demand = new EnumMap<>(Resource.class);
+        ProductionTally tally = new ProductionTally();
         for (Vertex vertex : board.getVertices()) {
             if (vertex.getOwner() == null) {
                 continue;
             }
-            collectProduction(vertex, robber, roll, gains, demand);
+            collectProduction(vertex, robber, roll, tally);
         }
-        distributeProduction(gains, demand);
+        distributeProduction(tally);
     }
 
     private void collectProduction(Vertex vertex, Robber robber, int roll,
-                                   Map<Player, Map<Resource, Integer>> gains,
-                                   Map<Resource, Integer> demand) {
+                                   ProductionTally tally) {
         Player owner = findMatchingPlayer(vertex.getOwner());
         if (owner == null) {
             return;
@@ -107,27 +105,22 @@ public final class TurnFlow {
                 Resource resource = tileTypeToResource(
                         tile.getTileType());
                 if (resource != null) {
-                    int amount = getProductionAmount(vertex);
-                    gains.computeIfAbsent(owner,
-                            p -> new EnumMap<>(Resource.class))
-                            .merge(resource, amount, Integer::sum);
-                    demand.merge(resource, amount, Integer::sum);
+                    tally.add(owner, resource, getProductionAmount(vertex));
                 }
             }
         }
     }
 
-    private void distributeProduction(
-            Map<Player, Map<Resource, Integer>> gains,
-            Map<Resource, Integer> demand) {
+    private void distributeProduction(ProductionTally tally) {
         Set<Resource> payable = EnumSet.noneOf(Resource.class);
-        for (Map.Entry<Resource, Integer> entry : demand.entrySet()) {
+        for (Map.Entry<Resource, Integer> entry
+                : tally.demand.entrySet()) {
             if (entry.getValue() <= bank.getStock(entry.getKey())) {
                 payable.add(entry.getKey());
             }
         }
         for (Map.Entry<Player, Map<Resource, Integer>> playerGains
-                : gains.entrySet()) {
+                : tally.gains.entrySet()) {
             Player player = playerGains.getKey();
             for (Map.Entry<Resource, Integer> gain
                     : playerGains.getValue().entrySet()) {
@@ -136,6 +129,20 @@ public final class TurnFlow {
                     player.addResource(gain.getKey(), gain.getValue());
                 }
             }
+        }
+    }
+
+    private static final class ProductionTally {
+        private final Map<Player, Map<Resource, Integer>> gains =
+                new HashMap<>();
+        private final Map<Resource, Integer> demand =
+                new EnumMap<>(Resource.class);
+
+        private void add(Player player, Resource resource, int amount) {
+            gains.computeIfAbsent(player,
+                    p -> new EnumMap<>(Resource.class))
+                    .merge(resource, amount, Integer::sum);
+            demand.merge(resource, amount, Integer::sum);
         }
     }
 
@@ -228,8 +235,8 @@ public final class TurnFlow {
     }
 
     public void moveRobberAndSteal(Robber robber, Tile targetTile,
-                                   Player thief, Player victim,
-                                   Board board) {
+                                   Player victim, Board board) {
+        Player thief = players.get(currentPlayerIndex);
         moveRobber(robber, targetTile, board);
         if (victim != null) {
             stealResource(thief, victim, robber, board);
@@ -336,9 +343,9 @@ public final class TurnFlow {
         devCardPlayedThisTurn = true;
     }
 
-    public void playKnightCard(Player player, Robber robber,
-                               Tile targetTile, Player victim,
-                               Board board) {
+    public void playKnightCard(Robber robber, Tile targetTile,
+                               Player victim, Board board) {
+        Player player = players.get(currentPlayerIndex);
         playDevelopmentCard(player, DevelopmentCard.KNIGHT);
         moveRobber(robber, targetTile, board);
         player.playKnight();

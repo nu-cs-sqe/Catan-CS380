@@ -431,7 +431,7 @@ public class TurnFlowTest {
 
         turnFlow.resolveRoll(board, robber, 7);
         turnFlow.moveRobberAndSteal(robber, board.getTile(-2, 0),
-                players.get(0), players.get(1), board);
+                players.get(1), board);
 
         Assertions.assertFalse(turnFlow.isRobberPending());
         Assertions.assertEquals(1,
@@ -610,8 +610,8 @@ public class TurnFlowTest {
         players.get(1).addResource(Resource.ORE, 1);
 
         Tile targetTile = board.getTile(-2, 0);
-        turnFlow.playKnightCard(players.get(0), robber,
-                targetTile, players.get(1), board);
+        turnFlow.playKnightCard(robber, targetTile,
+                players.get(1), board);
 
         Assertions.assertEquals(1,
                 players.get(0).getKnightsPlayed());
