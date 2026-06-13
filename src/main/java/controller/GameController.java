@@ -12,6 +12,7 @@ import domain.Player;
 import domain.RandomDiceRoller;
 import domain.Resource;
 import domain.TurnFlow;
+import i18n.Messages;
 import javafx.scene.control.Alert;
 import view.BoardView;
 import view.GameView;
@@ -86,8 +87,8 @@ public class GameController {
     gameView.setBuildActionsEnabled(false);
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
     Player current = getSetupPlayer();
-    String round = "Round " + setupRound;
-    gameView.setStatusMessage(round + " — " + current.getName() + ": Place a settlement");
+    gameView.setStatusMessage(
+        Messages.get("status.setup.settlement", setupRound, current.getName()));
     refreshBoard();
   }
 
@@ -101,7 +102,7 @@ public class GameController {
 
   private void handleSetupVertexClick(Vertex vertex) {
     if (vertex.getSettlement() != null) {
-      gameView.logMessage("That spot is already occupied.");
+      gameView.logMessage(Messages.get("log.occupied"));
       return;
     }
     Player current = getSetupPlayer();
@@ -109,11 +110,11 @@ public class GameController {
     if (setupRound == 2) {
       distributeSetupResources(current, vertex);
     }
-    gameView.logMessage(current.getName() + " placed a settlement.");
+    gameView.logMessage(Messages.get("log.placed.settlement", current.getName()));
     phase = GamePhase.SETUP_ROAD;
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.EDGE);
-    gameView.setStatusMessage("Round " + setupRound
-        + " — " + current.getName() + ": Place a road");
+    gameView.setStatusMessage(
+        Messages.get("status.setup.road", setupRound, current.getName()));
     refreshBoard();
   }
 
@@ -122,7 +123,7 @@ public class GameController {
     if (buildMode == BuildMode.SETTLEMENT) {
       try {
         turnFlow.buildSettlement(current, vertex, board);
-        gameView.logMessage(current.getName() + " built a settlement.");
+        gameView.logMessage(Messages.get("log.built.settlement", current.getName()));
       } catch (IllegalStateException e) {
         gameView.logMessage(e.getMessage());
         return;
@@ -130,7 +131,7 @@ public class GameController {
     } else if (buildMode == BuildMode.CITY) {
       try {
         turnFlow.buildCity(current, vertex);
-        gameView.logMessage(current.getName() + " upgraded to a city.");
+        gameView.logMessage(Messages.get("log.upgraded.city", current.getName()));
       } catch (IllegalStateException e) {
         gameView.logMessage(e.getMessage());
         return;
@@ -140,7 +141,7 @@ public class GameController {
     }
     buildMode = BuildMode.NONE;
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.NONE);
-    gameView.setStatusMessage(current.getName() + " — Take your actions");
+    gameView.setStatusMessage(Messages.get("status.takeActions", current.getName()));
     refreshViews();
   }
 
@@ -154,12 +155,12 @@ public class GameController {
 
   private void handleSetupEdgeClick(Edge edge) {
     if (edge.getOwner() != null) {
-      gameView.logMessage("That edge already has a road.");
+      gameView.logMessage(Messages.get("log.edge.occupied"));
       return;
     }
     Player current = getSetupPlayer();
     current.placeRoad(edge);
-    gameView.logMessage(current.getName() + " placed a road.");
+    gameView.logMessage(Messages.get("log.placed.road", current.getName()));
     advanceSetup();
     refreshBoard();
   }
@@ -171,14 +172,14 @@ public class GameController {
     Player current = getMainPlayer();
     try {
       turnFlow.buildRoad(current, edge, board);
-      gameView.logMessage(current.getName() + " built a road.");
+      gameView.logMessage(Messages.get("log.built.road", current.getName()));
     } catch (IllegalStateException e) {
       gameView.logMessage(e.getMessage());
       return;
     }
     buildMode = BuildMode.NONE;
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.NONE);
-    gameView.setStatusMessage(current.getName() + " — Take your actions");
+    gameView.setStatusMessage(Messages.get("status.takeActions", current.getName()));
     refreshViews();
   }
 
@@ -200,7 +201,7 @@ public class GameController {
   private void startMainGame() {
     phase = GamePhase.MAIN_PRE_ROLL;
     currentTurnIdx = 0;
-    gameView.logMessage("Setup complete! Game begins.");
+    gameView.logMessage(Messages.get("log.setup.complete"));
     gameView.setRollEnabled(true);
     gameView.setEndTurnEnabled(false);
     gameView.setBuildActionsEnabled(false);
@@ -215,9 +216,9 @@ public class GameController {
     }
     int roll = diceRoller.roll();
     Player current = getMainPlayer();
-    gameView.logMessage(current.getName() + " rolled a " + roll + ".");
+    gameView.logMessage(Messages.get("log.rolled", current.getName(), roll));
     if (roll == ROBBER_ROLL) {
-      gameView.logMessage("Robber! (not yet implemented)");
+      gameView.logMessage(Messages.get("log.robber"));
     } else {
       turnFlow.rollForProduction(board, robber, roll);
     }
@@ -225,7 +226,7 @@ public class GameController {
     gameView.setRollEnabled(false);
     gameView.setEndTurnEnabled(true);
     gameView.setBuildActionsEnabled(true);
-    gameView.setStatusMessage(current.getName() + " — Take your actions");
+    gameView.setStatusMessage(Messages.get("status.takeActions", current.getName()));
     refreshViews();
   }
 
@@ -255,7 +256,8 @@ public class GameController {
     }
     buildMode = BuildMode.SETTLEMENT;
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
-    gameView.setStatusMessage(getMainPlayer().getName() + ": Click a vertex to place settlement");
+    gameView.setStatusMessage(
+        Messages.get("status.click.settlement", getMainPlayer().getName()));
     refreshBoard();
   }
 
@@ -265,7 +267,8 @@ public class GameController {
     }
     buildMode = BuildMode.ROAD;
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.EDGE);
-    gameView.setStatusMessage(getMainPlayer().getName() + ": Click an edge to place road");
+    gameView.setStatusMessage(
+        Messages.get("status.click.road", getMainPlayer().getName()));
     refreshBoard();
   }
 
@@ -275,7 +278,8 @@ public class GameController {
     }
     buildMode = BuildMode.CITY;
     gameView.getBoardView().setSelectionMode(BoardView.SelectionMode.VERTEX);
-    gameView.setStatusMessage(getMainPlayer().getName() + ": Click your settlement to upgrade to city");
+    gameView.setStatusMessage(
+        Messages.get("status.click.city", getMainPlayer().getName()));
     refreshBoard();
   }
 
@@ -286,7 +290,7 @@ public class GameController {
     Player current = getMainPlayer();
     try {
       turnFlow.buyDevelopmentCard(current);
-      gameView.logMessage(current.getName() + " bought a development card.");
+      gameView.logMessage(Messages.get("log.bought.devcard", current.getName()));
       refreshViews();
     } catch (Exception e) {
       gameView.logMessage(e.getMessage());
@@ -317,9 +321,9 @@ public class GameController {
 
   private void showWinner(Player player, int vp) {
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle("Game Over");
-    alert.setHeaderText(player.getName() + " wins!");
-    alert.setContentText(player.getName() + " has " + vp + " victory points.");
+    alert.setTitle(Messages.get("win.title"));
+    alert.setHeaderText(Messages.get("win.header", player.getName()));
+    alert.setContentText(Messages.get("win.content", player.getName(), vp));
     alert.showAndWait();
   }
 
@@ -339,7 +343,7 @@ public class GameController {
 
   private void updateMainGameStatus() {
     Player current = getMainPlayer();
-    gameView.setStatusMessage(current.getName() + "'s turn — Roll the dice");
+    gameView.setStatusMessage(Messages.get("status.turn.roll", current.getName()));
   }
 
   private Player getSetupPlayer() {
