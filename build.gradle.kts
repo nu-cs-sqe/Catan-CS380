@@ -28,6 +28,8 @@ application {
 }
 
 dependencies {
+    implementation("io.github.mkpaz:atlantafx-base:2.0.1")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.platform:junit-platform-suite")
@@ -89,6 +91,7 @@ spotbugs {
     maxHeapSize = "1g"
     extraArgs = listOf("-nested:false")
     //jvmArgs = listOf("-Duser.language=ja") // set user language to japanese
+    excludeFilter = file("config/spotbugs/exclude.xml")
 }
 
 tasks.spotbugsMain {

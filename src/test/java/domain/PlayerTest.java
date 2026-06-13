@@ -5,6 +5,9 @@ import board.Vertex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -230,34 +233,6 @@ class PlayerTest {
     assertTrue(player.hasWon());
   }
 
-  // BVA TC27
-  @Test
-  void shouldHaveNineVp_whenHoldingThreeSettlementsTwoCitiesAndLongestRoad() {
-    placeSettlementsAndCities(3, 2);
-    player.awardLongestRoad();
-    assertEquals(9, player.getVictoryPoints());
-  }
-
-  // BVA TC28
-  @Test
-  void shouldHaveElevenVpAndWin_whenHoldingPiecesPlusLongestRoadAndLargestArmy() {
-    placeSettlementsAndCities(3, 2);
-    player.awardLongestRoad();
-    player.awardLargestArmy();
-    assertEquals(11, player.getVictoryPoints());
-    assertTrue(player.hasWon());
-  }
-
-  // BVA TC29
-  @Test
-  void shouldRestoreVp_whenLongestRoadAwardedThenRevoked() {
-    placeSettlementsAndCities(3, 2);
-    int before = player.getVictoryPoints();
-    player.awardLongestRoad();
-    player.revokeLongestRoad();
-    assertEquals(before, player.getVictoryPoints());
-  }
-
   // BVA TC30
   @Test
   void shouldHaveFiveVp_whenHoldingFiveVictoryPointDevCards() {
@@ -376,6 +351,122 @@ class PlayerTest {
     player.playKnight();
     player.playKnight();
     assertEquals(3, player.getKnightsPlayed());
+  }
+
+  // BVA TC44
+  @Test
+  void shouldHaveEmptyDevelopmentCards_whenFreshlyConstructed() {
+    assertTrue(player.getDevelopmentCards().isEmpty());
+  }
+
+  // BVA TC45
+  @Test
+  void shouldReturnCardsInOrder_whenHoldingDevelopmentCards() {
+    player.addDevelopmentCard(DevelopmentCard.KNIGHT);
+    player.addDevelopmentCard(DevelopmentCard.MONOPOLY);
+    assertEquals(
+        List.of(DevelopmentCard.KNIGHT, DevelopmentCard.MONOPOLY),
+        player.getDevelopmentCards());
+  }
+
+  // BVA TC46
+  @Test
+  void shouldNotExposeInternalList_whenMutatingReturnedDevelopmentCards() {
+    player.addDevelopmentCard(DevelopmentCard.KNIGHT);
+    List<DevelopmentCard> returned = player.getDevelopmentCards();
+    assertThrows(RuntimeException.class, () -> returned.add(DevelopmentCard.MONOPOLY));
+    assertEquals(List.of(DevelopmentCard.KNIGHT), player.getDevelopmentCards());
+  }
+
+  // BVA TC47
+  @Test
+  void shouldAppendToEmptyHand_whenAddingSingleDevelopmentCard() {
+    player.addDevelopmentCard(DevelopmentCard.KNIGHT);
+    assertEquals(List.of(DevelopmentCard.KNIGHT), player.getDevelopmentCards());
+  }
+
+  // BVA TC48
+  @Test
+  void shouldAppendPreservingOrder_whenAddingSingleDevelopmentCardToExistingHand() {
+    player.addDevelopmentCard(DevelopmentCard.KNIGHT);
+    player.addDevelopmentCard(DevelopmentCard.MONOPOLY);
+    assertEquals(
+        List.of(DevelopmentCard.KNIGHT, DevelopmentCard.MONOPOLY),
+        player.getDevelopmentCards());
+  }
+
+  // BVA TC49
+  @Test
+  void shouldThrowNullPointer_whenAddingNullSingleDevelopmentCard() {
+    assertThrows(NullPointerException.class, () -> player.addDevelopmentCard(null));
+  }
+
+  // BVA TC50
+  @Test
+  void shouldRetainDuplicates_whenAddingSameSingleDevelopmentCardTwice() {
+    player.addDevelopmentCard(DevelopmentCard.KNIGHT);
+    player.addDevelopmentCard(DevelopmentCard.KNIGHT);
+    assertEquals(
+        List.of(DevelopmentCard.KNIGHT, DevelopmentCard.KNIGHT),
+        player.getDevelopmentCards());
+  }
+
+  // BVA TC51
+  @Test
+  void shouldAppendToEmptyHand_whenAddingDevelopmentCards() {
+    player.addDevelopmentCards(List.of(DevelopmentCard.KNIGHT, DevelopmentCard.ROAD_BUILDING));
+    assertEquals(
+        List.of(DevelopmentCard.KNIGHT, DevelopmentCard.ROAD_BUILDING),
+        player.getDevelopmentCards());
+  }
+
+  // BVA TC52
+  @Test
+  void shouldConcatenatePreservingOrder_whenAddingDevelopmentCardsToExistingHand() {
+    player.addDevelopmentCard(DevelopmentCard.KNIGHT);
+    player.addDevelopmentCards(List.of(DevelopmentCard.MONOPOLY));
+    assertEquals(
+        List.of(DevelopmentCard.KNIGHT, DevelopmentCard.MONOPOLY),
+        player.getDevelopmentCards());
+  }
+
+  // BVA TC53
+  @Test
+  void shouldLeaveHandUnchanged_whenAddingEmptyDevelopmentCardList() {
+    player.addDevelopmentCard(DevelopmentCard.KNIGHT);
+    player.addDevelopmentCards(List.of());
+    assertEquals(List.of(DevelopmentCard.KNIGHT), player.getDevelopmentCards());
+  }
+
+  // BVA TC54
+  @Test
+  void shouldRetainDuplicates_whenAddingDevelopmentCardsWithDuplicates() {
+    player.addDevelopmentCards(List.of(DevelopmentCard.KNIGHT, DevelopmentCard.KNIGHT));
+    assertEquals(
+        List.of(DevelopmentCard.KNIGHT, DevelopmentCard.KNIGHT),
+        player.getDevelopmentCards());
+  }
+
+  // BVA TC55
+  @Test
+  void shouldThrowNullPointer_whenAddingNullDevelopmentCards() {
+    assertThrows(NullPointerException.class, () -> player.addDevelopmentCards(null));
+  }
+
+  // BVA TC56
+  @Test
+  void shouldThrowNullPointer_whenAddingDevelopmentCardsContainingNull() {
+    List<DevelopmentCard> withNull = Arrays.asList(DevelopmentCard.KNIGHT, null);
+    assertThrows(NullPointerException.class, () -> player.addDevelopmentCards(withNull));
+  }
+
+  // BVA TC57
+  @Test
+  void shouldNotAliasSourceList_whenAddingDevelopmentCards() {
+    List<DevelopmentCard> source = new ArrayList<>(List.of(DevelopmentCard.KNIGHT));
+    player.addDevelopmentCards(source);
+    source.add(DevelopmentCard.MONOPOLY);
+    assertEquals(List.of(DevelopmentCard.KNIGHT), player.getDevelopmentCards());
   }
 
   private Vertex nextVertex() {

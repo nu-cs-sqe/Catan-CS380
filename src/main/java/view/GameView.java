@@ -67,7 +67,6 @@ public class GameView {
   private VBox buildTopBar() {
     VBox top = new VBox(2.0, statusLabel);
     top.setPadding(new Insets(TOP_PADDING));
-    top.setStyle("-fx-background-color: #ddeeff;");
     return top;
   }
 
@@ -82,7 +81,6 @@ public class GameView {
         rollButton, buildSettlementButton, buildRoadButton,
         buildCityButton, buyDevCardButton, endTurnButton);
     bar.setPadding(new Insets(BOTTOM_PADDING));
-    bar.setStyle("-fx-background-color: #eee;");
     return bar;
   }
 

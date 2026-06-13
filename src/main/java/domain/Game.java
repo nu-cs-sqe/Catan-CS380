@@ -1,6 +1,6 @@
 package domain;
 
-import board.Board;
+
 import board.Edge;
 import board.Vertex;
 import java.util.ArrayList;
@@ -13,16 +13,10 @@ public final class Game {
 
     private static final int MIN_PLAYERS = 3;
     private static final int MAX_PLAYERS = 4;
-    private static final int LARGEST_ARMY_VP = 2;
-    private static final int LONGEST_ROAD_VP = 2;
-    private static final int MIN_KNIGHTS_FOR_ARMY = 3;
 
     private final List<Player> players;
     private final int firstPlayerIndex;
     private final int[] turnOrder;
-    private int largestArmyHolder;
-    private int longestRoadHolder;
-    private static final int MIN_ROAD_LENGTH = 5;
     private final AtomicInteger placementCounter = new AtomicInteger();
 
     public Game(List<Player> players) {
@@ -39,8 +33,6 @@ public final class Game {
         this.players = new ArrayList<>(players);
         this.firstPlayerIndex = determineFirstPlayer(diceRoller);
         this.turnOrder = buildTurnOrder();
-        this.largestArmyHolder = -1;
-        this.longestRoadHolder = -1;
     }
 
     private int determineFirstPlayer(DiceRoller diceRoller) {
@@ -124,61 +116,6 @@ public final class Game {
         }
     }
 
-    public void updateLongestRoad(Board board) {
-        int maxLength = MIN_ROAD_LENGTH - 1;
-        int newHolder = -1;
-        for (int i = 0; i < players.size(); i++) {
-            int length = LongestRoadCalculator.calculateForPlayer(
-                    board, players.get(i));
-            if (length > maxLength) {
-                maxLength = length;
-                newHolder = i;
-            }
-        }
-        longestRoadHolder = newHolder;
-    }
-
-    public int getLongestRoadHolder() {
-        return longestRoadHolder;
-    }
-
-    public int[] getRoundTwoOrder() {
-        int[] reverse = new int[players.size()];
-        for (int i = 0; i < players.size(); i++) {
-            reverse[i] = turnOrder[players.size() - 1 - i];
-        }
-        return reverse;
-    }
-
-    public void updateLargestArmy() {
-        int maxKnights = MIN_KNIGHTS_FOR_ARMY - 1;
-        if (largestArmyHolder >= 0) {
-            maxKnights = players.get(largestArmyHolder)
-                    .getKnightsPlayed();
-        }
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getKnightsPlayed() > maxKnights) {
-                largestArmyHolder = i;
-                return;
-            }
-        }
-    }
-
-    public int getLargestArmyHolder() {
-        return largestArmyHolder;
-    }
-
-    public int getVictoryPoints(int playerIndex) {
-        int vp = players.get(playerIndex).getVictoryPoints();
-        if (playerIndex == largestArmyHolder) {
-            vp += LARGEST_ARMY_VP;
-        }
-        if (playerIndex == longestRoadHolder) {
-            vp += LONGEST_ROAD_VP;
-        }
-        return vp;
-    }
-
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
     }
@@ -193,5 +130,13 @@ public final class Game {
 
     public int[] getTurnOrder() {
         return Arrays.copyOf(turnOrder, turnOrder.length);
+    }
+
+    public int[] getRoundTwoOrder() {
+        int[] reverse = new int[players.size()];
+        for (int i = 0; i < players.size(); i++) {
+            reverse[i] = turnOrder[players.size() - 1 - i];
+        }
+        return reverse;
     }
 }

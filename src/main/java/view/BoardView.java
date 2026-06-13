@@ -405,8 +405,8 @@ public class BoardView extends Pane {
         return Color.CRIMSON;
       case BLUE:
         return Color.DODGERBLUE;
-      case WHITE:
-        return Color.LIGHTYELLOW;
+      case PINK:
+        return Color.HOTPINK;
       case ORANGE:
         return Color.DARKORANGE;
       default:

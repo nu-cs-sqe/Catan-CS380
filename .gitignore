@@ -102,7 +102,6 @@ bin/
 
 ########################
 .claude/
-CATAN_A_GRADE_GUIDE.md
 
 ########################
 ### Windows ###
@@ -131,3 +130,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Scala Metals / Bloop / BSP IDE artifacts
+.metals/
+.bloop/
+.bsp/
+project/.bloop/
+metals.sbt

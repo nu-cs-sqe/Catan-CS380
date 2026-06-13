@@ -16,18 +16,15 @@ public final class Player {
   private static final int STARTING_ROADS = 15;
   private static final int DISCARD_THRESHOLD = 7;
   private static final int WIN_THRESHOLD = 10;
-  private static final int LONGEST_ROAD_VP = 2;
-  private static final int LARGEST_ARMY_VP = 2;
 
   private final String name;
   private final PlayerColor color;
   private final Map<Resource, Integer> resources;
   private final List<Settlement> settlements;
   private final List<Edge> roads;
+  private final List<DevelopmentCard> developmentCards;
   private int victoryPointDevCards;
   private int knightsPlayed;
-  private boolean hasLongestRoad;
-  private boolean hasLargestArmy;
 
   public Player(String name, PlayerColor color) {
     this.name = requireNonBlank(name);
@@ -35,6 +32,7 @@ public final class Player {
     this.resources = emptyResourceHand();
     this.settlements = new ArrayList<>();
     this.roads = new ArrayList<>();
+    this.developmentCards = new ArrayList<>();
   }
 
   public Player(Player other) {
@@ -43,10 +41,9 @@ public final class Player {
     this.resources = new EnumMap<>(other.resources);
     this.settlements = new ArrayList<>(other.settlements);
     this.roads = new ArrayList<>(other.roads);
+    this.developmentCards = new ArrayList<>(other.developmentCards);
     this.victoryPointDevCards = other.victoryPointDevCards;
     this.knightsPlayed = other.knightsPlayed;
-    this.hasLongestRoad = other.hasLongestRoad;
-    this.hasLargestArmy = other.hasLargestArmy;
   }
 
   public String getName() {
@@ -60,12 +57,6 @@ public final class Player {
   public int getVictoryPoints() {
     int vp = settlements.stream().mapToInt(Settlement::getVictoryPoints).sum()
         + victoryPointDevCards;
-    if (hasLongestRoad) {
-      vp += LONGEST_ROAD_VP;
-    }
-    if (hasLargestArmy) {
-      vp += LARGEST_ARMY_VP;
-    }
     return vp;
   }
 
@@ -131,20 +122,21 @@ public final class Player {
     e.setOwner(this);
   }
 
-  public void awardLongestRoad() {
-    hasLongestRoad = true;
-  }
-
-  public void revokeLongestRoad() {
-    hasLongestRoad = false;
-  }
-
-  public void awardLargestArmy() {
-    hasLargestArmy = true;
-  }
-
   public void addVictoryPointDevCard() {
     victoryPointDevCards++;
+  }
+
+  public List<DevelopmentCard> getDevelopmentCards() {
+    return List.copyOf(developmentCards);
+  }
+
+  public void addDevelopmentCard(DevelopmentCard card) {
+    Objects.requireNonNull(card, "card");
+    developmentCards.add(card);
+  }
+
+  public void addDevelopmentCards(List<DevelopmentCard> cards) {
+    developmentCards.addAll(List.copyOf(cards));
   }
 
   public void playKnight() {
