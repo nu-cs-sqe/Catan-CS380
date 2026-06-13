@@ -41,6 +41,7 @@ public class SetupView {
   private final ChoiceBox<Locale> languageBox;
   private final Label errorLabel;
   private final Button startButton;
+  private boolean refreshingNames;
 
   public SetupView() {
     Messages.setLocale(Locale.ENGLISH);
@@ -116,6 +117,41 @@ public class SetupView {
     for (int i = 0; i < rowLabels.size(); i++) {
       rowLabels.get(i).setText(Messages.get("setup.player.row", i + 1));
     }
+    refreshNameFields();
+    refreshColorBoxes();
+  }
+
+  // Re-localize each default name, but never overwrite one the user has typed.
+  private void refreshNameFields() {
+    refreshingNames = true;
+    for (int i = 0; i < nameFields.size(); i++) {
+      TextField field = nameFields.get(i);
+      if (Boolean.FALSE.equals(field.getUserData())) {
+        field.setText(Messages.get("setup.player.name", i + 1));
+      }
+    }
+    refreshingNames = false;
+  }
+
+  // Setting a fresh converter forces the ChoiceBox to re-render with new texts.
+  private void refreshColorBoxes() {
+    for (ChoiceBox<PlayerColor> colorBox : colorBoxes) {
+      colorBox.setConverter(colorConverter());
+    }
+  }
+
+  private StringConverter<PlayerColor> colorConverter() {
+    return new StringConverter<PlayerColor>() {
+      @Override
+      public String toString(PlayerColor color) {
+        return color == null ? "" : Messages.get("color." + color.name());
+      }
+
+      @Override
+      public PlayerColor fromString(String value) {
+        return null;
+      }
+    };
   }
 
   private void rebuildPlayerRows(int count) {
@@ -131,7 +167,14 @@ public class SetupView {
   private void addPlayerRow(int index) {
     Label label = new Label(Messages.get("setup.player.row", index + 1));
     TextField nameField = new TextField(Messages.get("setup.player.name", index + 1));
+    nameField.setUserData(Boolean.FALSE);
+    nameField.textProperty().addListener((obs, oldVal, newVal) -> {
+      if (!refreshingNames) {
+        nameField.setUserData(Boolean.TRUE);
+      }
+    });
     ChoiceBox<PlayerColor> colorBox = new ChoiceBox<>();
+    colorBox.setConverter(colorConverter());
     colorBox.getItems().addAll(PlayerColor.values());
     colorBox.setValue(PlayerColor.values()[index]);
     nameFields.add(nameField);
