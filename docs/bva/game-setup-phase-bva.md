@@ -128,4 +128,4 @@ exposes whose placement is next and `isSetupComplete` reports when both rounds a
 - **BVA note**: There must be a single source of truth for the current player;
   `Game.getCurrentPlayerIndex` must agree with turn progression (it currently
   returns `firstPlayerIndex` unconditionally)
-- **Implemented**: [ ]
+- **Implemented**: [x]

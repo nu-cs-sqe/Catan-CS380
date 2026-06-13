@@ -20,6 +20,7 @@ public final class Game {
     private final int[] turnOrder;
     private int setupRound = 1;
     private int setupIndex;
+    private int mainTurnIndex;
 
     public Game(List<Player> players) {
         this(players, new RandomDiceRoller());
@@ -125,7 +126,15 @@ public final class Game {
     }
 
     public int getCurrentPlayerIndex() {
-        return firstPlayerIndex;
+        return turnOrder[mainTurnIndex];
+    }
+
+    public void endTurn() {
+        if (!isSetupComplete()) {
+            throw new IllegalStateException(
+                    "Cannot end a turn before setup is complete");
+        }
+        mainTurnIndex = (mainTurnIndex + 1) % players.size();
     }
 
     public int[] getTurnOrder() {

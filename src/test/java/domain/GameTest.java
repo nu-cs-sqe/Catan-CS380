@@ -219,6 +219,25 @@ public class GameTest {
     Assertions.assertTrue(game.isSetupComplete());
   }
 
+  // TC17 – getCurrentPlayerIndex tracks the active turn, not a fixed start
+  @Test
+  public void testGetCurrentPlayerIndexTracksTurns() {
+    List<Player> players = createPlayers(3);
+    Game game = new Game(players, stubDiceRoller(new int[] {4, 9, 6}));
+    Board board = createBoard();
+    Bank bank = createBank();
+    runFullSetup(game, board, bank);
+
+    // turn order is [1, 2, 0]; the starting player begins
+    Assertions.assertEquals(1, game.getCurrentPlayerIndex());
+    game.endTurn();
+    Assertions.assertEquals(2, game.getCurrentPlayerIndex());
+    game.endTurn();
+    Assertions.assertEquals(0, game.getCurrentPlayerIndex());
+    game.endTurn();
+    Assertions.assertEquals(1, game.getCurrentPlayerIndex());
+  }
+
   private void placeSetup(Game game, Board board, Bank bank, int i) {
     game.placeSetupSettlement(board.getVertex(SETUP_VERTICES[i]),
         board.getEdge(SETUP_ROADS[i]), board, bank);
