@@ -9,6 +9,7 @@ import board.TileType;
 import board.Vertex;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
@@ -19,12 +20,12 @@ public class TurnFlowTest {
     @Test
     public void testRollProducesResourcesForAdjacentSettlement() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
         Robber robber = new Robber();
 
         Vertex vertex = board.getVertex("-3,1");
-        vertex.setOwner(players.get(0));
+        players.get(0).placeSettlement(vertex);
 
         turnFlow.rollForProduction(board, robber, 5);
 
@@ -32,16 +33,59 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.WOOD));
     }
 
+    // TC72 – Production draws the distributed resources from the bank
+    @Test
+    public void testProductionDrawsFromBank() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+        Board board = createBoard();
+
+        players.get(0).placeSettlement(board.getVertex("-3,1"));
+        int before = bank.getStock(Resource.WOOD);
+
+        turnFlow.rollForProduction(board, new Robber(), 5);
+
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.WOOD));
+        Assertions.assertEquals(before - 1,
+                bank.getStock(Resource.WOOD));
+    }
+
+    // TC73 – Production withheld when the bank cannot supply every claimant
+    @Test
+    public void testProductionWithheldWhenBankShort() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+        Board board = createBoard();
+
+        // Two players both produce WOOD from the token-5 forest tile
+        players.get(0).placeSettlement(board.getVertex("-3,1"));
+        players.get(1).placeSettlement(board.getVertex("-4,2"));
+
+        // Leave only 1 WOOD in the bank — not enough for both claimants
+        bank.distributeResource(Resource.WOOD,
+                bank.getStock(Resource.WOOD) - 1);
+
+        turnFlow.rollForProduction(board, new Robber(), 5);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.WOOD));
+        Assertions.assertEquals(0,
+                players.get(1).getResourceCount(Resource.WOOD));
+    }
+
     // TC2 – Roll does not produce for non-matching tile
     @Test
     public void testRollDoesNotProduceForNonMatchingTile() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
         Robber robber = new Robber();
 
         Vertex vertex = board.getVertex("-3,1");
-        vertex.setOwner(players.get(0));
+        players.get(0).placeSettlement(vertex);
 
         turnFlow.rollForProduction(board, robber, 6);
 
@@ -53,12 +97,11 @@ public class TurnFlowTest {
     @Test
     public void testCityYields2Resources() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
         Robber robber = new Robber();
 
         Vertex vertex = board.getVertex("-3,1");
-        vertex.setOwner(players.get(0));
         players.get(0).placeSettlement(vertex);
         players.get(0).upgradeSettlementToCity(vertex);
 
@@ -72,12 +115,12 @@ public class TurnFlowTest {
     @Test
     public void testRobberBlocksResourceProduction() {
         List<Player> players = createPlayers();
-        TurnFlow turnFlow = new TurnFlow(players);
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
         Board board = createBoard();
         Robber robber = new Robber();
 
         Vertex vertex = board.getVertex("-3,1");
-        vertex.setOwner(players.get(0));
+        players.get(0).placeSettlement(vertex);
 
         robber.setTile(board.getTile(-2, 0));
 
@@ -96,7 +139,7 @@ public class TurnFlowTest {
         Robber robber = new Robber();
 
         Vertex vertex = board.getVertex("-3,1");
-        vertex.setOwner(players.get(0));
+        players.get(0).placeSettlement(vertex);
 
         turnFlow.rollForProduction(board, robber, 7);
 
@@ -145,6 +188,43 @@ public class TurnFlowTest {
         Assertions.assertEquals(4, turnFlow.getDiscardCount(0));
     }
 
+    // TC64 – Discarding the required number of cards succeeds
+    @Test
+    public void testDiscardRequiredCountSucceeds() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+
+        for (int i = 0; i < 8; i++) {
+            bank.distributeResource(Resource.BRICK, 1);
+            players.get(0).addResource(Resource.BRICK, 1);
+        }
+        int bankBefore = bank.getStock(Resource.BRICK);
+
+        turnFlow.discard(players.get(0), Map.of(Resource.BRICK, 4));
+
+        Assertions.assertEquals(4,
+                players.get(0).getResourceCount(Resource.BRICK));
+        Assertions.assertEquals(bankBefore + 4,
+                bank.getStock(Resource.BRICK));
+    }
+
+    // TC65 – Discarding the wrong number of cards throws
+    @Test
+    public void testDiscardWrongCountThrows() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+
+        for (int i = 0; i < 8; i++) {
+            players.get(0).addResource(Resource.BRICK, 1);
+        }
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.discard(players.get(0),
+                        Map.of(Resource.BRICK, 3)));
+    }
+
     // TC9 – Robber must move to a different tile
     @Test
     public void testRobberMustMoveToDifferentTile() {
@@ -156,7 +236,22 @@ public class TurnFlowTest {
         robber.setTile(board.getTile(0, 0));
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> turnFlow.moveRobber(robber, board.getTile(0, 0)));
+                () -> turnFlow.moveRobber(robber, board.getTile(0, 0),
+                        board));
+    }
+
+    // TC78 – Moving the robber to a tile not on the board throws
+    @Test
+    public void testMoveRobberToNonBoardTileThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        Tile offBoard = new Tile(TileType.DESERT, 99, 99);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.moveRobber(robber, offBoard, board));
     }
 
     // TC10 – Robber can move to any other tile including desert
@@ -172,7 +267,7 @@ public class TurnFlowTest {
         Tile desertTile = findDesertTile(board);
         Assertions.assertNotNull(desertTile);
 
-        turnFlow.moveRobber(robber, desertTile);
+        turnFlow.moveRobber(robber, desertTile, board);
 
         Assertions.assertEquals(desertTile.getQ(),
                 robber.getTile().getQ());
@@ -185,10 +280,15 @@ public class TurnFlowTest {
     public void testStealResourceFromVictim() {
         List<Player> players = createPlayers();
         TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+        robber.setTile(board.getTile(-2, 0));
 
+        players.get(1).placeSettlement(board.getVertex("-3,1"));
         players.get(1).addResource(Resource.ORE, 1);
 
-        turnFlow.stealResource(players.get(0), players.get(1));
+        turnFlow.stealResource(players.get(0), players.get(1),
+                robber, board);
 
         Assertions.assertEquals(1,
                 players.get(0).getResourceCount(Resource.ORE));
@@ -201,8 +301,14 @@ public class TurnFlowTest {
     public void testStealFromVictimWith0Resources() {
         List<Player> players = createPlayers();
         TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+        robber.setTile(board.getTile(-2, 0));
 
-        turnFlow.stealResource(players.get(0), players.get(1));
+        players.get(1).placeSettlement(board.getVertex("-3,1"));
+
+        turnFlow.stealResource(players.get(0), players.get(1),
+                robber, board);
 
         for (Resource resource : Resource.values()) {
             Assertions.assertEquals(0,
@@ -217,12 +323,121 @@ public class TurnFlowTest {
     public void testCannotStealFromYourself() {
         List<Player> players = createPlayers();
         TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
 
         players.get(0).addResource(Resource.BRICK, 1);
 
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> turnFlow.stealResource(players.get(0),
-                        players.get(0)));
+                        players.get(0), robber, board));
+    }
+
+    // TC66 – stealCandidates lists players bordering the robber's tile
+    @Test
+    public void testStealCandidatesBorderingRobberTile() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+        robber.setTile(board.getTile(-2, 0));
+
+        players.get(1).placeSettlement(board.getVertex("-3,1"));
+        players.get(2).placeSettlement(board.getVertex("2,8"));
+
+        List<Player> candidates = turnFlow.stealCandidates(robber, board);
+
+        Assertions.assertTrue(candidates.contains(players.get(1)));
+        Assertions.assertFalse(candidates.contains(players.get(2)));
+    }
+
+    // TC67 – Stealing from a victim not bordering the robber throws
+    @Test
+    public void testStealFromNonBorderingVictimThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+        robber.setTile(board.getTile(-2, 0));
+
+        players.get(1).placeSettlement(board.getVertex("2,8"));
+        players.get(1).addResource(Resource.ORE, 1);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.stealResource(players.get(0),
+                        players.get(1), robber, board));
+    }
+
+    // TC68 – Resolving a roll of 7 sets the robber pending, skips production
+    @Test
+    public void testResolveRollSevenSetsRobberPending() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        players.get(0).placeSettlement(board.getVertex("-3,1"));
+
+        turnFlow.resolveRoll(board, robber, 7);
+
+        Assertions.assertTrue(turnFlow.isRobberPending());
+        for (Resource resource : Resource.values()) {
+            Assertions.assertEquals(0,
+                    players.get(0).getResourceCount(resource));
+        }
+    }
+
+    // TC69 – Resolving a non-7 roll produces and leaves no robber pending
+    @Test
+    public void testResolveRollNonSevenProduces() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        players.get(0).placeSettlement(board.getVertex("-3,1"));
+
+        turnFlow.resolveRoll(board, robber, 5);
+
+        Assertions.assertFalse(turnFlow.isRobberPending());
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.WOOD));
+    }
+
+    // TC70 – Taking another action while the robber is pending throws
+    @Test
+    public void testActionWhileRobberPendingThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        turnFlow.resolveRoll(board, robber, 7);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.endTurn(players.get(0)));
+    }
+
+    // TC71 – Moving the robber and stealing clears the pending state
+    @Test
+    public void testMoveRobberAndStealClearsPending() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+        Robber robber = new Robber();
+
+        players.get(1).placeSettlement(board.getVertex("-3,1"));
+        players.get(1).addResource(Resource.ORE, 1);
+
+        turnFlow.resolveRoll(board, robber, 7);
+        turnFlow.moveRobberAndSteal(robber, board.getTile(-2, 0),
+                players.get(1), board);
+
+        Assertions.assertFalse(turnFlow.isRobberPending());
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.ORE));
+        Assertions.assertEquals(0,
+                players.get(1).getResourceCount(Resource.ORE));
     }
 
     // TC14 – Buy dev card with exact resources enters pending list
@@ -259,6 +474,24 @@ public class TurnFlowTest {
 
         Assertions.assertThrows(IllegalStateException.class,
                 () -> turnFlow.buyDevelopmentCard(players.get(0)));
+    }
+
+    // TC76 – Buying a dev card with insufficient resources changes nothing
+    @Test
+    public void testBuyDevCardInsufficientLeavesResources() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+
+        players.get(0).addResource(Resource.ORE, 1);
+        players.get(0).addResource(Resource.WHEAT, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buyDevelopmentCard(players.get(0)));
+
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.ORE));
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.WHEAT));
     }
 
     // TC16 – Cannot buy dev card when deck is empty
@@ -373,11 +606,12 @@ public class TurnFlowTest {
         robber.setTile(board.getTile(0, 0));
 
         players.get(0).addDevelopmentCard(DevelopmentCard.KNIGHT);
+        players.get(1).placeSettlement(board.getVertex("-3,1"));
         players.get(1).addResource(Resource.ORE, 1);
 
         Tile targetTile = board.getTile(-2, 0);
-        turnFlow.playKnightCard(players.get(0), robber,
-                targetTile, players.get(1));
+        turnFlow.playKnightCard(robber, targetTile,
+                players.get(1), board);
 
         Assertions.assertEquals(1,
                 players.get(0).getKnightsPlayed());
@@ -431,14 +665,33 @@ public class TurnFlowTest {
 
         players.get(0).addDevelopmentCard(
                 DevelopmentCard.ROAD_BUILDING);
+        players.get(0).placeSettlement(board.getVertex("0,2"));
 
         Edge edge1 = board.getEdge("0,2|1,1");
         Edge edge2 = board.getEdge("1,-1|1,1");
 
-        turnFlow.playRoadBuildingCard(players.get(0), edge1, edge2);
+        turnFlow.playRoadBuildingCard(players.get(0), edge1, edge2, board);
 
         Assertions.assertEquals(13,
                 players.get(0).getRemainingRoads());
+    }
+
+    // TC59 – ROAD_BUILDING roads must connect to player's network
+    @Test
+    public void testRoadBuildingDisconnectedRoadThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        players.get(0).addDevelopmentCard(
+                DevelopmentCard.ROAD_BUILDING);
+
+        Edge edge1 = board.getEdge("0,2|1,1");
+        Edge edge2 = board.getEdge("1,-1|1,1");
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.playRoadBuildingCard(players.get(0),
+                        edge1, edge2, board));
     }
 
     // TC26 – ROAD_BUILDING: player has 0 roads remaining; throws
@@ -465,7 +718,7 @@ public class TurnFlowTest {
 
         Assertions.assertThrows(IllegalStateException.class,
                 () -> turnFlow.playRoadBuildingCard(players.get(0),
-                        edge1, edge2));
+                        edge1, edge2, board));
     }
 
     // TC27 – YEAR_OF_PLENTY: player receives 2 resources from bank
@@ -527,8 +780,8 @@ public class TurnFlowTest {
 
         players.get(0).addResource(Resource.WOOD, 4);
 
-        turnFlow.maritimeTrade(players.get(0),
-                Resource.WOOD, 4, Resource.BRICK);
+        Board board = createBoard();
+        turnFlow.maritimeTrade(Resource.WOOD, 4, Resource.BRICK, board);
 
         Assertions.assertEquals(0,
                 players.get(0).getResourceCount(Resource.WOOD));
@@ -543,10 +796,11 @@ public class TurnFlowTest {
         TurnFlow turnFlow = new TurnFlow(players, createBank());
 
         players.get(0).addResource(Resource.WOOD, 1);
+        Board board = createBoard();
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> turnFlow.maritimeTrade(players.get(0),
-                        Resource.WOOD, 1, Resource.BRICK));
+                () -> turnFlow.maritimeTrade(Resource.WOOD, 1,
+                        Resource.BRICK, board));
     }
 
     // TC32 – Maritime trade same resource give and receive throws
@@ -556,10 +810,11 @@ public class TurnFlowTest {
         TurnFlow turnFlow = new TurnFlow(players, createBank());
 
         players.get(0).addResource(Resource.WOOD, 4);
+        Board board = createBoard();
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> turnFlow.maritimeTrade(players.get(0),
-                        Resource.WOOD, 4, Resource.WOOD));
+                () -> turnFlow.maritimeTrade(Resource.WOOD, 4,
+                        Resource.WOOD, board));
     }
 
     // TC33 – Maritime trade when bank has 0 of receive resource throws
@@ -571,10 +826,44 @@ public class TurnFlowTest {
 
         bank.distributeResource(Resource.BRICK, 19);
         players.get(0).addResource(Resource.WOOD, 4);
+        Board board = createBoard();
 
         Assertions.assertThrows(IllegalStateException.class,
-                () -> turnFlow.maritimeTrade(players.get(0),
-                        Resource.WOOD, 4, Resource.BRICK));
+                () -> turnFlow.maritimeTrade(Resource.WOOD, 4,
+                        Resource.BRICK, board));
+    }
+
+    // TC74 – Maritime trade below the player's best rate (no harbor) throws
+    @Test
+    public void testMaritimeTradeBelowBestRateWithoutHarborThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+        Board board = createBoard();
+
+        players.get(0).addResource(Resource.ORE, 3);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> turnFlow.maritimeTrade(Resource.ORE, 3,
+                        Resource.WHEAT, board));
+    }
+
+    // TC75 – Owning a 2:1 harbor enables that harbor's rate
+    @Test
+    public void testMaritimeTradeWithTwoToOneHarbor() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players, createBank());
+        Board board = createBoard();
+
+        // "3,5" sits on the 2:1 ORE harbor
+        players.get(0).placeSettlement(board.getVertex("3,5"));
+        players.get(0).addResource(Resource.ORE, 2);
+
+        turnFlow.maritimeTrade(Resource.ORE, 2, Resource.WHEAT, board);
+
+        Assertions.assertEquals(0,
+                players.get(0).getResourceCount(Resource.ORE));
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.WHEAT));
     }
 
     // TC34 – getVictoryPoints includes largest army bonus
@@ -614,6 +903,32 @@ public class TurnFlowTest {
         if (edge != null) {
             edge.setOwner(player);
         }
+    }
+
+    // TC79 – A player wins only on their own turn
+    @Test
+    public void testWinOnlyOnOwnTurn() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        for (int i = 0; i < 8; i++) {
+            players.get(1).addVictoryPointDevCard();
+        }
+        setEdgeOwner(board, "0,2|1,1", players.get(1));
+        setEdgeOwner(board, "1,-1|1,1", players.get(1));
+        setEdgeOwner(board, "0,-2|1,-1", players.get(1));
+        setEdgeOwner(board, "-1,-1|0,-2", players.get(1));
+        setEdgeOwner(board, "-1,-1|-1,1", players.get(1));
+
+        // Action resolved during player 0's turn pushes player 1 to 10 VP
+        turnFlow.updateLongestRoad(board);
+        Assertions.assertEquals(10, turnFlow.getVictoryPoints(1));
+        Assertions.assertFalse(turnFlow.isGameOver());
+
+        turnFlow.endTurn(players.get(0));
+
+        Assertions.assertTrue(turnFlow.isGameOver());
     }
 
     // TC36 – checkWin returns true at exactly 10 VP
@@ -879,6 +1194,83 @@ public class TurnFlowTest {
                         v6, board));
     }
 
+    // TC60 – Setup settlement is free and needs no adjacent road
+    @Test
+    public void testBuildSetupSettlementFreeAndNoRoadRequired() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex vertex = board.getVertex("-3,1");
+
+        turnFlow.buildSetupSettlement(players.get(0), vertex, board);
+
+        Assertions.assertNotNull(vertex.getSettlement());
+        Assertions.assertEquals(4,
+                players.get(0).getRemainingSettlements());
+        for (Resource resource : Resource.values()) {
+            Assertions.assertEquals(0,
+                    players.get(0).getResourceCount(resource));
+        }
+    }
+
+    // TC61 – Setup settlement violating the distance rule throws
+    @Test
+    public void testBuildSetupSettlementDistanceRuleThrows() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex vertex1 = board.getVertex("-3,1");
+        Vertex vertex2 = board.getVertex("-3,-1");
+
+        turnFlow.buildSetupSettlement(players.get(0), vertex1, board);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildSetupSettlement(players.get(1),
+                        vertex2, board));
+    }
+
+    // TC62 – Setup road is free and must connect to player's settlement
+    @Test
+    public void testBuildSetupRoadFreeAndConnected() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Vertex vertex = board.getVertex("0,2");
+        turnFlow.buildSetupSettlement(players.get(0), vertex, board);
+
+        Edge edge = board.getEdge("0,2|1,1");
+        turnFlow.buildSetupRoad(players.get(0), edge, board);
+
+        Assertions.assertEquals(14,
+                players.get(0).getRemainingRoads());
+        for (Resource resource : Resource.values()) {
+            Assertions.assertEquals(0,
+                    players.get(0).getResourceCount(resource));
+        }
+    }
+
+    // TC63 – Setup resources derived from settlement's adjacent tiles
+    @Test
+    public void testGrantSetupResourcesFromAdjacentTiles() {
+        List<Player> players = createPlayers();
+        Bank bank = createBank();
+        TurnFlow turnFlow = new TurnFlow(players, bank);
+        Board board = createBoard();
+
+        Vertex vertex = board.getVertex("0,2");
+        players.get(0).placeSettlement(vertex);
+
+        turnFlow.grantSetupResources(players.get(0), vertex);
+
+        Assertions.assertEquals(2,
+                players.get(0).getResourceCount(Resource.WHEAT));
+        Assertions.assertEquals(1,
+                players.get(0).getResourceCount(Resource.BRICK));
+    }
+
     // TC50 – Upgrade settlement to city with exact resources
     @Test
     public void testUpgradeSettlementToCityWithExactResources() {
@@ -1004,6 +1396,7 @@ public class TurnFlowTest {
         Board board = createBoard();
 
         Edge edge = board.getEdge("0,2|1,1");
+        players.get(0).placeSettlement(board.getVertex("0,2"));
 
         players.get(0).addResource(Resource.WOOD, 1);
         players.get(0).addResource(Resource.BRICK, 1);
@@ -1016,6 +1409,22 @@ public class TurnFlowTest {
                 players.get(0).getResourceCount(Resource.BRICK));
         Assertions.assertEquals(14,
                 players.get(0).getRemainingRoads());
+    }
+
+    // TC58 – Cannot build road disconnected from player's network
+    @Test
+    public void testCannotBuildRoadDisconnectedFromNetwork() {
+        List<Player> players = createPlayers();
+        TurnFlow turnFlow = new TurnFlow(players);
+        Board board = createBoard();
+
+        Edge edge = board.getEdge("0,2|1,1");
+
+        players.get(0).addResource(Resource.WOOD, 1);
+        players.get(0).addResource(Resource.BRICK, 1);
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> turnFlow.buildRoad(players.get(0), edge, board));
     }
 
     // TC56 – Build road with insufficient resources throws

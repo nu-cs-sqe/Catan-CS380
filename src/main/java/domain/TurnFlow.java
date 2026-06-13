@@ -2,14 +2,18 @@ package domain;
 
 import board.Board;
 import board.Edge;
+import board.Harbor;
 import board.Robber;
 import board.Tile;
 import board.TileType;
 import board.Vertex;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class TurnFlow {
 
@@ -18,6 +22,8 @@ public final class TurnFlow {
     private static final int MIN_KNIGHTS_FOR_ARMY = 3;
     private static final int MIN_ROAD_LENGTH = 5;
     private static final int WIN_THRESHOLD = 10;
+    private static final int ROBBER_ROLL = 7;
+    private static final int MAX_TRADE_RATE = 4;
     private static final Map<Resource, Integer> SETTLEMENT_COST =
             settlementCost();
     private static final Map<Resource, Integer> CITY_COST =
@@ -59,6 +65,7 @@ public final class TurnFlow {
     private int longestRoadHolder;
     private boolean devCardPlayedThisTurn;
     private boolean gameOver;
+    private boolean robberPending;
     private int currentPlayerIndex;
 
     public TurnFlow(List<Player> players) {
@@ -78,16 +85,18 @@ public final class TurnFlow {
 
     public void rollForProduction(Board board, Robber robber,
                                   int roll) {
+        ProductionTally tally = new ProductionTally();
         for (Vertex vertex : board.getVertices()) {
             if (vertex.getOwner() == null) {
                 continue;
             }
-            distributeForVertex(vertex, robber, roll);
+            collectProduction(vertex, robber, roll, tally);
         }
+        distributeProduction(tally);
     }
 
-    private void distributeForVertex(Vertex vertex,
-                                     Robber robber, int roll) {
+    private void collectProduction(Vertex vertex, Robber robber, int roll,
+                                   ProductionTally tally) {
         Player owner = findMatchingPlayer(vertex.getOwner());
         if (owner == null) {
             return;
@@ -98,10 +107,44 @@ public final class TurnFlow {
                 Resource resource = tileTypeToResource(
                         tile.getTileType());
                 if (resource != null) {
-                    int amount = getProductionAmount(vertex);
-                    owner.addResource(resource, amount);
+                    tally.add(owner, resource, getProductionAmount(vertex));
                 }
             }
+        }
+    }
+
+    private void distributeProduction(ProductionTally tally) {
+        Set<Resource> payable = EnumSet.noneOf(Resource.class);
+        for (Map.Entry<Resource, Integer> entry
+                : tally.demand.entrySet()) {
+            if (entry.getValue() <= bank.getStock(entry.getKey())) {
+                payable.add(entry.getKey());
+            }
+        }
+        for (Map.Entry<Player, Map<Resource, Integer>> playerGains
+                : tally.gains.entrySet()) {
+            Player player = playerGains.getKey();
+            for (Map.Entry<Resource, Integer> gain
+                    : playerGains.getValue().entrySet()) {
+                if (payable.contains(gain.getKey())) {
+                    bank.distributeResource(gain.getKey(), gain.getValue());
+                    player.addResource(gain.getKey(), gain.getValue());
+                }
+            }
+        }
+    }
+
+    private static final class ProductionTally {
+        private final Map<Player, Map<Resource, Integer>> gains =
+                new HashMap<>();
+        private final Map<Resource, Integer> demand =
+                new EnumMap<>(Resource.class);
+
+        private void add(Player player, Resource resource, int amount) {
+            gains.computeIfAbsent(player,
+                    p -> new EnumMap<>(Resource.class))
+                    .merge(resource, amount, Integer::sum);
+            demand.merge(resource, amount, Integer::sum);
         }
     }
 
@@ -146,7 +189,31 @@ public final class TurnFlow {
         return players.get(playerIndex).discardOnSevenCount();
     }
 
-    public void moveRobber(Robber robber, Tile targetTile) {
+    public void discard(Player player, Map<Resource, Integer> chosen) {
+        int required = player.discardOnSevenCount();
+        int total = 0;
+        for (Map.Entry<Resource, Integer> entry : chosen.entrySet()) {
+            if (player.getResourceCount(entry.getKey()) < entry.getValue()) {
+                throw new IllegalArgumentException(
+                        "Cannot discard resources not held");
+            }
+            total += entry.getValue();
+        }
+        if (total != required) {
+            throw new IllegalArgumentException(
+                    "Must discard exactly " + required + " cards");
+        }
+        for (Map.Entry<Resource, Integer> entry : chosen.entrySet()) {
+            player.removeResource(entry.getKey(), entry.getValue());
+            bank.returnResource(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public void moveRobber(Robber robber, Tile targetTile, Board board) {
+        if (board.getTile(targetTile.getQ(), targetTile.getR()) == null) {
+            throw new IllegalArgumentException(
+                    "Robber target is not a board tile");
+        }
         Tile currentTile = robber.getTile();
         if (currentTile != null
                 && currentTile.getQ() == targetTile.getQ()
@@ -157,11 +224,49 @@ public final class TurnFlow {
         robber.setTile(targetTile);
     }
 
-    public void stealResource(Player thief, Player victim) {
+    public void resolveRoll(Board board, Robber robber, int roll) {
+        if (roll == ROBBER_ROLL) {
+            robberPending = true;
+        } else {
+            rollForProduction(board, robber, roll);
+        }
+    }
+
+    public boolean isRobberPending() {
+        return robberPending;
+    }
+
+    public void moveRobberAndSteal(Robber robber, Tile targetTile,
+                                   Player victim, Board board) {
+        Player thief = players.get(currentPlayerIndex);
+        moveRobber(robber, targetTile, board);
+        if (victim != null) {
+            stealResource(thief, victim, robber, board);
+        }
+        robberPending = false;
+    }
+
+    private void requireRobberResolved() {
+        if (robberPending) {
+            throw new IllegalStateException(
+                    "Move the robber before taking other actions");
+        }
+    }
+
+    public void stealResource(Player thief, Player victim,
+                              Robber robber, Board board) {
         if (thief.equals(victim)) {
             throw new IllegalArgumentException(
                     "Cannot steal from yourself");
         }
+        if (!stealCandidates(robber, board).contains(victim)) {
+            throw new IllegalArgumentException(
+                    "Victim does not border the robber");
+        }
+        transferStolenResource(thief, victim);
+    }
+
+    private void transferStolenResource(Player thief, Player victim) {
         for (Resource resource : Resource.values()) {
             if (resource == Resource.GENERIC) {
                 continue;
@@ -174,11 +279,47 @@ public final class TurnFlow {
         }
     }
 
+    public List<Player> stealCandidates(Robber robber, Board board) {
+        List<Player> candidates = new ArrayList<>();
+        Tile robberTile = robber.getTile();
+        if (robberTile == null) {
+            return candidates;
+        }
+        for (Vertex vertex : board.getVertices()) {
+            if (vertex.getOwner() == null
+                    || !vertexBordersTile(vertex, robberTile)) {
+                continue;
+            }
+            Player owner = findMatchingPlayer(vertex.getOwner());
+            if (owner != null && !candidates.contains(owner)) {
+                candidates.add(owner);
+            }
+        }
+        return candidates;
+    }
+
+    private boolean vertexBordersTile(Vertex vertex, Tile tile) {
+        for (Tile adjacent : vertex.getAdjacentTiles()) {
+            if (adjacent.getQ() == tile.getQ()
+                    && adjacent.getR() == tile.getR()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void buyDevelopmentCard(Player player) {
+        requireRobberResolved();
+        if (player.getResourceCount(Resource.ORE) < 1
+                || player.getResourceCount(Resource.WHEAT) < 1
+                || player.getResourceCount(Resource.SHEEP) < 1) {
+            throw new IllegalStateException(
+                    "Insufficient resources for development card");
+        }
+        DevelopmentCard card = bank.drawDevelopmentCard();
         player.removeResource(Resource.ORE, 1);
         player.removeResource(Resource.WHEAT, 1);
         player.removeResource(Resource.SHEEP, 1);
-        DevelopmentCard card = bank.drawDevelopmentCard();
         pendingCards.add(card);
     }
 
@@ -188,6 +329,7 @@ public final class TurnFlow {
 
     public void playDevelopmentCard(Player player,
                                     DevelopmentCard card) {
+        requireRobberResolved();
         if (card == DevelopmentCard.VICTORY_POINT) {
             throw new IllegalArgumentException(
                     "Victory point cards cannot be played");
@@ -203,12 +345,13 @@ public final class TurnFlow {
         devCardPlayedThisTurn = true;
     }
 
-    public void playKnightCard(Player player, Robber robber,
-                               Tile targetTile, Player victim) {
+    public void playKnightCard(Robber robber, Tile targetTile,
+                               Player victim, Board board) {
+        Player player = players.get(currentPlayerIndex);
         playDevelopmentCard(player, DevelopmentCard.KNIGHT);
-        moveRobber(robber, targetTile);
+        moveRobber(robber, targetTile, board);
         player.playKnight();
-        stealResource(player, victim);
+        stealResource(player, victim, robber, board);
         updateLargestArmy();
     }
 
@@ -230,10 +373,12 @@ public final class TurnFlow {
     }
 
     public void playRoadBuildingCard(Player player,
-                                     Edge edge1, Edge edge2) {
+                                     Edge edge1, Edge edge2,
+                                     Board board) {
         playDevelopmentCard(player, DevelopmentCard.ROAD_BUILDING);
-        player.placeRoad(edge1);
-        player.placeRoad(edge2);
+        placeConnectedRoad(player, edge1, board);
+        placeConnectedRoad(player, edge2, board);
+        updateLongestRoad(board);
     }
 
     public void playYearOfPlentyCard(Player player,
@@ -245,14 +390,37 @@ public final class TurnFlow {
         player.addResource(res2, 1);
     }
 
-    public void maritimeTrade(Player player, Resource give,
-                              int giveCount, Resource receive) {
+    public void maritimeTrade(Resource give, int giveCount,
+                              Resource receive, Board board) {
+        requireRobberResolved();
+        Player player = players.get(currentPlayerIndex);
+        if (giveCount < bestTradeRate(player, give, board)) {
+            throw new IllegalArgumentException(
+                    "Below the player's best trade rate");
+        }
         player.removeResource(give, giveCount);
         bank.maritimeTrade(give, giveCount, receive);
         player.addResource(receive, 1);
     }
 
+    private int bestTradeRate(Player player, Resource give, Board board) {
+        int best = MAX_TRADE_RATE;
+        for (Vertex vertex : board.getVertices()) {
+            if (!player.equals(vertex.getOwner())
+                    || vertex.getHarbor() == null) {
+                continue;
+            }
+            Harbor harbor = vertex.getHarbor();
+            if (harbor.getHarborType() == Resource.GENERIC
+                    || harbor.getHarborType() == give) {
+                best = Math.min(best, harbor.getExchangeRate());
+            }
+        }
+        return best;
+    }
+
     public void endTurn(Player player) {
+        requireRobberResolved();
         if (gameOver) {
             throw new IllegalStateException(
                     "Cannot end turn after game is over");
@@ -261,6 +429,7 @@ public final class TurnFlow {
         pendingCards.clear();
         devCardPlayedThisTurn = false;
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        checkForWinner();
     }
 
     public int getCurrentPlayerIndex() {
@@ -273,6 +442,7 @@ public final class TurnFlow {
 
     public void buildSettlement(Player player, Vertex vertex,
                                 Board board) {
+        requireRobberResolved();
         if (!player.hasResources(SETTLEMENT_COST)) {
             throw new IllegalStateException(
                     "Insufficient resources for settlement");
@@ -284,6 +454,12 @@ public final class TurnFlow {
         player.placeSettlement(vertex);
         payCost(player, SETTLEMENT_COST);
         checkForWinner();
+    }
+
+    public void buildSetupSettlement(Player player, Vertex vertex,
+                                     Board board) {
+        checkDistanceRule(vertex, board);
+        player.placeSettlement(vertex);
     }
 
     private void checkAdjacentRoad(Vertex vertex, Player player,
@@ -325,7 +501,7 @@ public final class TurnFlow {
     }
 
     public void buildCity(Player player, Vertex vertex) {
-
+        requireRobberResolved();
         if (!player.hasResources( CITY_COST )) {
 
             throw new IllegalStateException(
@@ -337,18 +513,94 @@ public final class TurnFlow {
     }
 
     public void buildRoad(Player player, Edge edge, Board board) {
+        requireRobberResolved();
         if (!player.hasResources( ROAD_COST )) {
             throw new IllegalStateException (
                     "Insufficient resources to build road");
         }
-        player.placeRoad(edge);
+        placeConnectedRoad(player, edge, board);
         payCost(player, ROAD_COST);
         updateLongestRoad(board);
+    }
+
+    public void buildSetupRoad(Player player, Edge edge, Board board) {
+        placeConnectedRoad(player, edge, board);
+    }
+
+    public void grantSetupResources(Player player, Vertex vertex) {
+        for (Tile tile : vertex.getAdjacentTiles()) {
+            Resource resource = tileTypeToResource(tile.getTileType());
+            if (resource != null && bank.canDistribute(resource, 1)) {
+                bank.distributeResource(resource, 1);
+                player.addResource(resource, 1);
+            }
+        }
+    }
+
+    private void placeConnectedRoad(Player player, Edge edge,
+                                    Board board) {
+        checkRoadConnectivity(player, edge, board);
+        player.placeRoad(edge);
+    }
+
+    private void checkRoadConnectivity(Player player, Edge edge,
+                                       Board board) {
+        String[] verts = edge.getId().split("\\|");
+        if (touchesOwnBuilding(player, verts, board)
+                || touchesOwnRoad(player, verts, edge, board)) {
+            return;
+        }
+        throw new IllegalStateException(
+                "Road must connect to your own road or settlement");
+    }
+
+    private boolean touchesOwnBuilding(Player player, String[] verts,
+                                       Board board) {
+        for (String vertexKey : verts) {
+            Vertex vertex = board.getVertex(vertexKey);
+            if (vertex != null && player.equals(vertex.getOwner())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean touchesOwnRoad(Player player, String[] verts,
+                                   Edge edge, Board board) {
+        for (Edge other : board.getEdges()) {
+            if (other.getId().equals(edge.getId())
+                    || !player.equals(other.getOwner())) {
+                continue;
+            }
+            if (sharesVertex(verts, other.getId().split("\\|"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean sharesVertex(String[] verts, String[] otherVerts) {
+        for (String v : verts) {
+            for (String other : otherVerts) {
+                if (v.equals(other)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void updateLongestRoad(Board board) {
         int maxLength = MIN_ROAD_LENGTH - 1;
         int newHolder = -1;
+        if (longestRoadHolder >= 0) {
+            int holderLength = LongestRoadCalculator.calculateForPlayer(
+                    board, players.get(longestRoadHolder));
+            if (holderLength >= MIN_ROAD_LENGTH) {
+                maxLength = holderLength;
+                newHolder = longestRoadHolder;
+            }
+        }
         for (int i = 0; i < players.size(); i++) {
             int length = LongestRoadCalculator.calculateForPlayer(
                     board, players.get(i));
@@ -381,11 +633,8 @@ public final class TurnFlow {
     }
 
     private void checkForWinner() {
-        for (int i = 0; i < players.size(); i++) {
-            if (checkWin(i)) {
-                gameOver = true;
-                return;
-            }
+        if (checkWin(currentPlayerIndex)) {
+            gameOver = true;
         }
     }
 

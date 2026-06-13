@@ -162,6 +162,14 @@ public class BankTest {
     assertThrows(IllegalArgumentException.class, () -> bank.returnResource(Resource.WOOD, -1));
   }
 
+  // TC37 - Returning beyond the fixed supply cannot exceed 19
+  @Test
+  public void returnResourceCannotExceedInitialStock() {
+    Bank bank = new Bank(list -> {});
+    bank.returnResource(Resource.WOOD, 1);
+    assertEquals(INITIAL_STOCK, bank.getStock(Resource.WOOD));
+  }
+
   // TC19 - Drawing a card reduces deck count by 1
   @Test
   public void drawingCardReducesDeckCountByOne() {

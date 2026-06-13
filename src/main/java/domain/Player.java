@@ -56,7 +56,10 @@ public final class Player {
 
   public int getVictoryPoints() {
     int vp = settlements.stream().mapToInt(Settlement::getVictoryPoints).sum()
-        + victoryPointDevCards;
+        + victoryPointDevCards
+        + (int) developmentCards.stream()
+            .filter(card -> card == DevelopmentCard.VICTORY_POINT)
+            .count();
     return vp;
   }
 
@@ -96,7 +99,7 @@ public final class Player {
     if (getRemainingSettlements() == 0) {
       throw new IllegalStateException("no settlement pieces remaining");
     }
-    Settlement s = new Settlement();
+    Settlement s = new Settlement(this);
     settlements.add(s);
     v.setSettlement(s);
   }
@@ -115,6 +118,9 @@ public final class Player {
 
   public void placeRoad(Edge e) {
     Objects.requireNonNull(e, "edge");
+    if (e.getOwner() != null) {
+      throw new IllegalStateException("edge already has a road");
+    }
     if (getRemainingRoads() == 0) {
       throw new IllegalStateException("no road pieces remaining");
     }
