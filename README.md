@@ -97,8 +97,7 @@ to English whenever a translation is missing.
 ## Libraries we use
 
 JUnit 5.10 for tests, EasyMock 5.4 for mocking, and AtlantaFX for the interface styling. Gradle
-resolves all of them, so there is nothing for you to install. The build file also declares Cucumber
-7.20, but the project has no feature files yet, so nothing uses it at the moment.
+resolves all of them, so there is nothing for you to install.
 
 ## How the build pipeline works
 
