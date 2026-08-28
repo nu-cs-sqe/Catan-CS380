@@ -16,13 +16,15 @@ Engineering). The game logic lives in `domain` and `board`; the JavaFX presentat
 ## Requirements
 
 - **JDK 21** — the Gradle toolchain and `options.release` are both pinned to 21
+  (Gradle provisions the toolchain if it is not already installed)
 - Gradle 8.10 (use the bundled `./gradlew` wrapper)
 - JUnit 5.10, EasyMock 5.4, Cucumber 7.20 (resolved by Gradle)
 
-> **Run the build on JDK 21.** PIT launches its mutation-analysis minion with the default `java` on
-> your `PATH`, not the Gradle toolchain. On an older JDK the minion cannot load classes compiled for
-> Java 21, silently runs zero tests, and the mutation report reads 0%. Because no mutation threshold
-> is configured, the build still passes. If you see 0% mutation coverage, check `java -version` first.
+> **Note on mutation testing.** By default PIT launches its analysis minion with whichever `java` is
+> first on your `PATH`, not the Gradle toolchain. On an older JDK that minion cannot load classes
+> compiled for Java 21, so it silently runs zero tests and reports 0% mutation coverage — and because
+> no mutation threshold is configured, the build still passes. `build.gradle.kts` pins the minion to
+> the toolchain JDK via `jvmPath`, so the mutation score is correct no matter what is on your `PATH`.
 
 ## Building and running
 
