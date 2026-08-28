@@ -138,4 +138,15 @@ pitest {
     useClasspathFile.set(true) //useful with bigger projects on Windows
     fileExtensionsToFilter.addAll("xml")
     exportLineCoverage = true
+
+    // PIT launches its minion with the default `java` on PATH, not the Gradle
+    // toolchain. On an older JDK the minion cannot load classes compiled for
+    // Java 21, silently runs zero tests, and reports 0% mutation coverage while
+    // the build still passes. Pin the minion to the toolchain JDK so the score
+    // is always real.
+    jvmPath.set(
+        javaToolchains.launcherFor {
+            languageVersion = JavaLanguageVersion.of(21)
+        }.map { it.executablePath }
+    )
 }
